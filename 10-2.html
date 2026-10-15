@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>视口响应动画</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      background: #f5d0d0;
+      color: #fff;
+      font-family: Arial, "Microsoft YaHei", sans-serif;
+    }
+
+    .fullscreen-box {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      text-align: center;
+      background: #f5d0d0;
+      animation: bg-change 12s infinite alternate;
+    }
+
+    .content {
+      padding: 1.5rem 2rem;
+      border: 0.0625rem solid rgba(255, 255, 255, 0.6);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .content h1 {
+      margin: 0;
+      font-size: 3rem;
+      line-height: 1.2;
+      letter-spacing: 0.25rem;
+      animation: text-scale 12s infinite alternate;
+    }
+
+    @keyframes bg-change {
+      0% { background: #f5d0d0; }
+      50% { background: #bcd9f2; }
+      100% { background: #cfe9bf; }
+    }
+
+    @keyframes text-scale {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+
+    @media (max-width: 600px) {
+      html { font-size: 14px; }
+      body { background: #f6c39c; }
+      .fullscreen-box { background: #f6c39c; }
+      .content { padding: 1.25rem 1.5rem; }
+    }
+
+    @media (min-width: 601px) and (max-width: 1200px) {
+      html { font-size: 16px; }
+      body { background: #bcd9f2; }
+      .fullscreen-box { background: #bcd9f2; }
+    }
+
+    @media (min-width: 1201px) {
+      html { font-size: 18px; }
+      body { background: #cfe9bf; }
+      .fullscreen-box { background: #cfe9bf; }
+    }
+  </style>
+</head>
+<body>
+  <main class="fullscreen-box">
+    <div class="content">
+      <h1>马欣宇</h1>
+    </div>
+  </main>
+</body>
+</html>

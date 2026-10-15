@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>响应式盒子布局</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background: #f3f6fb;
+      color: #222;
+      font-family: Arial, "Microsoft YaHei", sans-serif;
+    }
+
+    .page {
+      width: min(90%, 72rem);
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    h1 {
+      margin: 0 0 2rem;
+      text-align: center;
+      font-size: 2rem;
+      color: #1d4ed8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .item {
+      display: grid;
+      place-items: center;
+      min-height: 8rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      background: #fff;
+      box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #333;
+      animation: color-shift 6s ease-in-out infinite alternate;
+    }
+
+    .item:nth-child(1) { animation-delay: 0s; }
+    .item:nth-child(2) { animation-delay: 0.4s; }
+    .item:nth-child(3) { animation-delay: 0.8s; }
+    .item:nth-child(4) { animation-delay: 1.2s; }
+    .item:nth-child(5) { animation-delay: 1.6s; }
+    .item:nth-child(6) { animation-delay: 2s; }
+    .item:nth-child(7) { animation-delay: 2.4s; }
+    .item:nth-child(8) { animation-delay: 2.8s; }
+
+    @keyframes color-shift {
+      0% { background: #ffb4b4; }
+      50% { background: #ffd8a8; }
+      100% { background: #b8e6b3; }
+    }
+
+    @media (max-width: 600px) {
+      html { font-size: 14px; }
+      .page { width: 90%; }
+      .grid { grid-template-columns: 1fr; }
+      .item { animation-duration: 4s; }
+      @keyframes color-shift {
+        0% { background: #ff9f9f; }
+        50% { background: #ffcf70; }
+        100% { background: #9edb9a; }
+      }
+    }
+
+    @media (min-width: 601px) and (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .item { animation-duration: 5s; }
+      @keyframes color-shift {
+        0% { background: #c7d9ff; }
+        50% { background: #c9f0d5; }
+        100% { background: #ffd7eb; }
+      }
+    }
+
+    @media (min-width: 901px) {
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .item { animation-duration: 6s; }
+      @keyframes color-shift {
+        0% { background: #f7b6c2; }
+        50% { background: #f6d58d; }
+        100% { background: #9dd9b5; }
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>马欣宇</h1>
+    <section class="grid" aria-label="响应式盒子布局">
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+      <div class="item">5</div>
+      <div class="item">6</div>
+      <div class="item">7</div>
+      <div class="item">8</div>
+    </section>
+  </main>
+</body>
+</html>

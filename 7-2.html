@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        .box{}
+        .zitem{
+            display: flex;
+            padding:10px 5px;
+            margin-bottom: 5px;
+            border-bottom:1px dotted #ccc;
+        }
+        .zitem img{
+           width: 100px;
+        }
+        .ytext{
+            flex-grow: 1;
+            margin-left: 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .ytext h3{
+            width: 100%;
+            font-size: 16px;
+            line-height: 40px;
+            color:#333;
+        }
+        .author{
+            flex-grow: 1;
+            padding-left: 3px;
+
+        }
+        .time{
+            margin-right:20px;
+
+        }
+
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="zitem">
+            <img src="./img/2.jpg">
+            <div class="ytext">
+                <h3>我国粮食产业有望实现年工业总产值4.5万亿元以上</h3>
+                <span class="author">马欣宇</span>
+                <span class="time">2020-10-10</span>
+            </div>
+        </div>
+
+        <div class="zitem">
+            <img src="./img/3.jpg">
+            <div class="ytext">
+                <h3>“双节”出游预订火爆 旅游市场有望结构性改善</h3>
+                <span class="author">马欣宇</span>
+                <span class="time">2020-10-10</span>
+            </div>
+        </div>
+
+        <div class="zitem">
+            <img src="./img/4.jpg">
+            <div class="ytext">
+                <h3>第二十届榆林国际煤博会、第四届西部氢能博览会闭幕</h3>
+                <span class="author">马欣宇</span>
+                <span class="time">2020-10-10</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

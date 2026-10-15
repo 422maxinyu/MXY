@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小米商城首页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        /* 顶部深色导航栏 */
+        .top-dark-nav {
+            background: #333;
+            color: #aaa;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 140px;
+        }
+
+        .top-dark-nav a {
+            color: #aaa;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        /* 主导航栏 */
+        .main-nav {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 14px 140px;
+            gap: 30px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            background: #ff6700;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 26px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-menu {
+            display: flex;
+            gap: 26px;
+            flex: 1;
+        }
+
+        .main-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .search-box {
+            display: flex;
+        }
+
+        .search-box input {
+            width: 240px;
+            padding: 9px 12px;
+            border: 1px solid #ddd;
+            border-right: none;
+        }
+
+        .search-box button {
+            width: 44px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        /* 主体区域 */
+        .content-wrap {
+            width: 1240px;
+            margin: 10px auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 左侧侧边菜单 */
+        .left-menu {
+            width: 240px;
+            background: #444;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        .left-menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 30px;
+            font-size: 15px;
+        }
+
+        /* 轮播图 */
+        .carousel {
+            flex: 1;
+            height: 460px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-inner {
+            width: 500%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.4s ease;
+        }
+
+        .carousel-inner .slide {
+            width: 20%;
+            height: 100%;
+        }
+
+        .carousel-inner .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 左右箭头 */
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 26px;
+            text-align: center;
+            line-height: 70px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .arrow-left {
+            left: 0;
+        }
+
+        .arrow-right {
+            right: 0;
+        }
+
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* 底部圆点 */
+        .dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #fff;
+        }
+
+        /* 底部区域整体变大 */
+        .bottom-card-wrap {
+            width: 1240px;
+            margin: 20px auto 40px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .service-card {
+            width: 240px;
+            background: #555;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .service-item {
+            width: 50%;
+            height: 110px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .goods-card {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+        }
+
+        .product-item {
+            flex: 1;
+            background: #f7f7f7;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        /* 商品图片放大 */
+        .product-item img {
+            width: 220px;
+            height: 220px;
+            object-fit: contain;
+            margin-bottom: 16px;
+        }
+
+        .product-item h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .product-item p {
+            font-size: 15px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部深色导航 -->
+    <div class="top-dark-nav">
+        <div class="left">
+            <a href="#">小米官网</a>
+            <a href="#">小米商城</a>
+            <a href="#">小米澎湃OS</a>
+            <a href="#">小米汽车</a>
+            <a href="#">云服务</a>
+            <a href="#">IoT</a>
+            <a href="#">有品</a>
+            <a href="#">小爱开放平台</a>
+        </div>
+        <div class="right">
+            <a href="#">登录</a>
+            <a href="#">注册</a>
+            <a href="#">消息通知</a>
+            <a href="#">🛒购物车(0)</a>
+        </div>
+    </div>
+
+    <!-- 主导航 -->
+    <div class="main-nav">
+        <div class="logo">MI</div>
+        <div class="main-menu">
+            <a href="#">Xiaomi手机</a>
+            <a href="#">REDMI手机</a>
+            <a href="#">电视</a>
+            <a href="#">笔记本</a>
+            <a href="#">平板</a>
+            <a href="#">家电</a>
+            <a href="#">路由器</a>
+            <a href="#">服务中心</a>
+            <a href="#">社区</a>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="电视">
+            <button>🔍</button>
+        </div>
+    </div>
+
+    <!-- 左侧菜单 + 轮播图 -->
+    <div class="content-wrap">
+        <div class="left-menu">
+            <div class="left-menu-item">手机 <span>></span></div>
+            <div class="left-menu-item">电视 <span>></span></div>
+            <div class="left-menu-item">家电 <span>></span></div>
+            <div class="left-menu-item">笔记本 平板 显示器 <span>></span></div>
+            <div class="left-menu-item">出行 穿戴 <span>></span></div>
+            <div class="left-menu-item">耳机 音箱 <span>></span></div>
+            <div class="left-menu-item">健康 儿童 <span>></span></div>
+            <div class="left-menu-item">生活 箱包 <span>></span></div>
+            <div class="left-menu-item">智能 路由器 <span>></span></div>
+            <div class="left-menu-item">电源 配件 <span>></span></div>
+        </div>
+
+        <div class="carousel">
+            <div class="carousel-inner">
+                <div class="slide"><img src="img/m1.png" alt=""></div>
+                <div class="slide"><img src="img/m2.png" alt=""></div>
+                <div class="slide"><img src="img/m3.png" alt=""></div>
+                <div class="slide"><img src="img/m4.png" alt=""></div>
+                <div class="slide"><img src="img/m5.png" alt=""></div>
+            </div>
+
+            <div class="arrow arrow-left">&lt;</div>
+            <div class="arrow arrow-right">&gt;</div>
+
+            <div class="dots">
+                <div class="dot active" data-index="0"></div>
+                <div class="dot" data-index="1"></div>
+                <div class="dot" data-index="2"></div>
+                <div class="dot" data-index="3"></div>
+                <div class="dot" data-index="4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部商品卡片 -->
+    <div class="bottom-card-wrap">
+        <div class="service-card">
+            <div class="service-item">保障服务</div>
+            <div class="service-item">企业团购</div>
+            <div class="service-item">米粉卡</div>
+            <div class="service-item">以旧换新</div>
+            <div class="service-item">F码通道</div>
+            <div class="service-item">话费充值</div>
+        </div>
+
+        <div class="goods-card">
+            <div class="product-item">
+                <img src="img/m6.png">
+                <h3>K90 Max</h3>
+                <p>天玑9500｜超强风冷主动散热</p>
+            </div>
+            <div class="product-item">
+                <img src="img/m7.png">
+                <h3>xiaomi Pad 9 Pro Max</h3>
+                <p>玄戒O3 AI 旗舰处理器</p>
+            </div>
+            <div class="product-item">
+                <img src="img/m8.png">
+                <h3>Xiaomi Watch S5</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inner = document.querySelector('.carousel-inner');
+        const dots = document.querySelectorAll('.dot');
+        const prevBtn = document.querySelector('.arrow-left');
+        const nextBtn = document.querySelector('.arrow-right');
+
+        let current = 0;
+        const total = 5;
+        let isMoving = false;
+
+        function updateCarousel() {
+            inner.style.transform = `translateX(-${current * 20}%)`;
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === current);
+            });
+        }
+
+        function nextSlide() {
+            if (isMoving) return;
+
+            if (current < total - 1) {
+                current++;
+                updateCarousel();
+            } else {
+                /* 最后一张不再跳第一张，改为回弹 */
+                inner.style.transform = `translateX(-${current * 20}%)`;
+                inner.style.transition = 'transform 0.2s ease';
+
+                setTimeout(() => {
+                    inner.style.transform = `translateX(-${(current - 1) * 20}%)`;
+                }, 50);
+
+                setTimeout(() => {
+                    inner.style.transition = 'transform 0.4s ease';
+                    current--;
+                    updateCarousel();
+                }, 250);
+            }
+        }
+
+        function prevSlide() {
+            if (isMoving) return;
+
+            if (current > 0) {
+                current--;
+                updateCarousel();
+            } else {
+                /* 第一张不再跳最后一张，改为回弹 */
+                inner.style.transform = `translateX(0%)`;
+                inner.style.transition = 'transform 0.2s ease';
+
+                setTimeout(() => {
+                    inner.style.transform = `translateX(-20%)`;
+                }, 50);
+
+                setTimeout(() => {
+                    inner.style.transition = 'transform 0.4s ease';
+                    current = 1;
+                    updateCarousel();
+                }, 250);
+            }
+        }
+
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', function () {
+                if (isMoving) return;
+                current = Number(this.dataset.index);
+                updateCarousel();
+            });
+        });
+    </script>
+</body>
+</html>

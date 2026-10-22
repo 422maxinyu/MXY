@@ -1,0 +1,45 @@
+/*!
+ * iconfont.css —— 课堂练习用本地字体图标（13-3.html）
+ * 字体由 Font Awesome Free 6.7.2 实心字重子集生成，
+ * 原字体版权归 Fonticons, Inc.，采用 SIL Open Font License 1.1 授权。
+ */
+
+@font-face {
+    font-family: "iconfont";
+    src: url("./iconfont.woff2") format("woff2"),
+         url("./iconfont.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-style: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+    font-family: "iconfont" !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shouye::before { content: "\f015"; }  /* 首页 · fa-house */
+.icon-mendian::before { content: "\f54e"; }  /* 门店 · fa-store */
+.icon-sousuo::before { content: "\f002"; }  /* 搜索 · fa-magnifying-glass */
+.icon-wode::before { content: "\f007"; }  /* 我的 · fa-user */
+.icon-xiaoxi::before { content: "\f075"; }  /* 消息 · fa-comment */
+.icon-tongzhi::before { content: "\f0f3"; }  /* 通知 · fa-bell */
+.icon-dingwei::before { content: "\f3c5"; }  /* 定位 · fa-location-dot */
+.icon-jiantou::before { content: "\f054"; }  /* 右箭头 · fa-chevron-right */
+.icon-shoucang::before { content: "\f005"; }  /* 收藏 · fa-star */
+.icon-xihuan::before { content: "\f004"; }  /* 喜欢 · fa-heart */
+.icon-gou::before { content: "\f058"; }  /* 对勾 · fa-circle-check */
+.icon-guanbi::before { content: "\f00d"; }  /* 关闭 · fa-xmark */
+.icon-fanhui::before { content: "\f060"; }  /* 返回 · fa-arrow-left */
+.icon-shezhi::before { content: "\f013"; }  /* 设置 · fa-gear */

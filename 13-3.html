@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="课堂实践 13-3：用 iconfont 字体图标实现移动端固定、宽度自适应的底部导航">
+    <title>13-3 · 字体图标底部导航</title>
+    <link rel="stylesheet" href="./font/iconfont.css">
+    <style>
+        :root {
+            --ink: #17232b;
+            --muted: #6b7a80;
+            --paper: #f2f4f3;
+            --card: #ffffff;
+            --brand: #2a9d8f;
+            --brand-deep: #1f7d72;
+            --brand-soft: rgba(42, 157, 143, 0.12);
+            --red: #ff4d4f;
+            --gold: #e9b44c;
+            --line: rgba(23, 35, 43, 0.1);
+            --nav-h: 56px;
+            --shadow: 0 10px 26px rgba(23, 35, 43, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: #dfe5e3;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, p {
+            margin-top: 0;
+        }
+
+        a {
+            color: var(--brand-deep);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .phone {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: var(--paper);
+        }
+
+        .app-bar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(8px);
+        }
+
+        .bar-btn {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: var(--card);
+            color: var(--ink);
+            font-size: 16px;
+            place-items: center;
+            cursor: pointer;
+        }
+
+        .bar-title {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bar-title strong {
+            display: block;
+            font-size: 17px;
+            line-height: 1.3;
+        }
+
+        .bar-title span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .app-main {
+            padding: 14px 14px calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px);
+        }
+
+        .banner {
+            margin-bottom: 14px;
+            padding: 20px 18px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--brand) 0%, #3c659a 100%);
+            color: #fff;
+            box-shadow: var(--shadow);
+        }
+
+        .banner .tag {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 2px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+        }
+
+        .banner h2 {
+            margin-bottom: 6px;
+            font-size: 21px;
+            line-height: 1.35;
+        }
+
+        .banner p {
+            margin-bottom: 0;
+            font-size: 13px;
+            opacity: 0.92;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 14px;
+            padding: 11px 15px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--card);
+            color: var(--muted);
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(23, 35, 43, 0.05);
+        }
+
+        .search-bar .iconfont {
+            color: var(--brand);
+            font-size: 17px;
+        }
+
+        .card {
+            margin-bottom: 14px;
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--card);
+            box-shadow: 0 4px 14px rgba(23, 35, 43, 0.05);
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .card h3 small {
+            float: right;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .quick-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 0;
+            border: none;
+            background: none;
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .quick-icon {
+            position: relative;
+            display: grid;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: var(--brand-soft);
+            color: var(--brand-deep);
+            font-size: 21px;
+            place-items: center;
+            transition: transform 180ms ease, background 180ms ease;
+        }
+
+        .quick-item:hover .quick-icon {
+            background: var(--brand);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .quick-icon .badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+        }
+
+        .shop-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .shop-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 2px;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .shop-list li:last-child {
+            border-bottom: none;
+            padding-bottom: 2px;
+        }
+
+        .shop-avatar {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            flex: none;
+            border-radius: 12px;
+            background: rgba(233, 180, 76, 0.18);
+            color: #a97a17;
+            font-size: 20px;
+            place-items: center;
+        }
+
+        .shop-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .shop-info strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .shop-info span {
+            display: block;
+            overflow: hidden;
+            color: var(--muted);
+            font-size: 12px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .shop-list .icon-jiantou {
+            color: #b6c0c2;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            min-width: 17px;
+            height: 17px;
+            padding: 0 5px;
+            border: 1.5px solid #fff;
+            border-radius: 999px;
+            background: var(--red);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 14px;
+            text-align: center;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            border: 1.5px solid #fff;
+            border-radius: 50%;
+            background: var(--red);
+        }
+
+        .note {
+            padding: 16px;
+            border: 1px dashed rgba(42, 157, 143, 0.5);
+            border-radius: 16px;
+            background: rgba(42, 157, 143, 0.06);
+            font-size: 13px;
+        }
+
+        .note h3 {
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: var(--brand-deep);
+        }
+
+        .note p {
+            margin-bottom: 10px;
+            color: var(--muted);
+        }
+
+        .note p:last-child {
+            margin-bottom: 0;
+        }
+
+        .note code {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            color: var(--ink);
+        }
+
+        .note pre {
+            margin: 0 0 10px;
+            padding: 12px 14px;
+            overflow-x: auto;
+            border-radius: 10px;
+            background: var(--ink);
+            color: #e6ece7;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            line-height: 1.75;
+        }
+
+        .page-links {
+            margin: 4px 0 0;
+            font-size: 13px;
+        }
+
+        /* ---------- 固定 + 宽度自适应的底部导航 ---------- */
+        .tab-shell {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 50;
+            width: 100%;
+            padding-bottom: env(safe-area-inset-bottom);
+            border-top: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.97);
+            box-shadow: 0 -8px 24px rgba(23, 35, 43, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-radio {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .tabbar {
+            display: flex;
+            height: var(--nav-h);
+        }
+
+        .tab-item {
+            position: relative;
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: var(--muted);
+            font-size: 11px;
+            cursor: pointer;
+            user-select: none;
+            transition: color 180ms ease;
+        }
+
+        .tab-item::after {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 26px;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+            background: var(--brand);
+            content: "";
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 200ms ease;
+        }
+
+        .tab-item:hover {
+            color: var(--brand-deep);
+        }
+
+        .tab-icon {
+            position: relative;
+            display: inline-flex;
+            width: 30px;
+            height: 26px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-icon .iconfont {
+            font-size: 22px;
+        }
+
+        .tab-label {
+            font-weight: 400;
+            transition: font-weight 120ms ease;
+        }
+
+        /* 选中态：由 radio 状态驱动，纯 CSS 切换 */
+        #tab-home:checked ~ .tabbar .tab-item[for="tab-home"],
+        #tab-store:checked ~ .tabbar .tab-item[for="tab-store"],
+        #tab-search:checked ~ .tabbar .tab-item[for="tab-search"],
+        #tab-me:checked ~ .tabbar .tab-item[for="tab-me"] {
+            color: var(--brand-deep);
+        }
+
+        #tab-home:checked ~ .tabbar .tab-item[for="tab-home"]::after,
+        #tab-store:checked ~ .tabbar .tab-item[for="tab-store"]::after,
+        #tab-search:checked ~ .tabbar .tab-item[for="tab-search"]::after,
+        #tab-me:checked ~ .tabbar .tab-item[for="tab-me"]::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        #tab-home:checked ~ .tabbar .tab-item[for="tab-home"] .tab-label,
+        #tab-store:checked ~ .tabbar .tab-item[for="tab-store"] .tab-label,
+        #tab-search:checked ~ .tabbar .tab-item[for="tab-search"] .tab-label,
+        #tab-me:checked ~ .tabbar .tab-item[for="tab-me"] .tab-label {
+            font-weight: 700;
+        }
+
+        /* 键盘可达：选中的 radio 获得焦点时给对应标签描边 */
+        .tab-shell:has(#tab-home:focus-visible) .tab-item[for="tab-home"],
+        .tab-shell:has(#tab-store:focus-visible) .tab-item[for="tab-store"],
+        .tab-shell:has(#tab-search:focus-visible) .tab-item[for="tab-search"],
+        .tab-shell:has(#tab-me:focus-visible) .tab-item[for="tab-me"] {
+            outline: 2px solid var(--brand);
+            outline-offset: -3px;
+            border-radius: 8px;
+        }
+
+        /* 图标右上角：数字徽章 / 红点 */
+        .tab-icon .badge {
+            position: absolute;
+            top: -9px;
+            right: -15px;
+            z-index: 1;
+        }
+
+        .tab-icon .dot {
+            position: absolute;
+            top: -3px;
+            right: -6px;
+            z-index: 1;
+        }
+
+        @media (max-width: 360px) {
+            .quick-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .tab-icon .badge {
+                right: -11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <header class="app-bar">
+            <button class="bar-btn" type="button" aria-label="返回">
+                <i class="iconfont icon-fanhui" aria-hidden="true"></i>
+            </button>
+            <div class="bar-title">
+                <strong>校园生活馆</strong>
+                <span>13-3 · iconfont 字体图标底部导航</span>
+            </div>
+            <button class="bar-btn" type="button" aria-label="设置">
+                <i class="iconfont icon-shezhi" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <main class="app-main">
+            <section class="banner">
+                <span class="tag">FIXED BOTTOM NAV</span>
+                <h2>固定且宽度自适应的移动端底部导航</h2>
+                <p>position: fixed + left:0/right:0，导航宽度 100% 随屏幕铺满，四个标签 flex 等分，不设固定宽度。</p>
+            </section>
+
+            <div class="search-bar">
+                <i class="iconfont icon-sousuo" aria-hidden="true"></i>
+                <span>搜索门店、商品或服务</span>
+            </div>
+
+            <section class="card">
+                <h3>快捷入口 <small>图标 = font/iconfont.woff2 中的字符</small></h3>
+                <div class="quick-grid">
+                    <button class="quick-item" type="button">
+                        <span class="quick-icon"><i class="iconfont icon-mendian" aria-hidden="true"></i><span class="badge">12</span></span>
+                        <span>门店优惠</span>
+                    </button>
+                    <button class="quick-item" type="button">
+                        <span class="quick-icon"><i class="iconfont icon-xiaoxi" aria-hidden="true"></i></span>
+                        <span>消息</span>
+                    </button>
+                    <button class="quick-item" type="button">
+                        <span class="quick-icon"><i class="iconfont icon-dingwei" aria-hidden="true"></i></span>
+                        <span>附近定位</span>
+                    </button>
+                    <button class="quick-item" type="button">
+                        <span class="quick-icon"><i class="iconfont icon-shoucang" aria-hidden="true"></i></span>
+                        <span>我的收藏</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3>今日推荐 <small>共 3 家</small></h3>
+                <ul class="shop-list">
+                    <li>
+                        <span class="shop-avatar"><i class="iconfont icon-mendian" aria-hidden="true"></i></span>
+                        <span class="shop-info">
+                            <strong>文具便利店 · 东门店</strong>
+                            <span>营业中 · 距你 260m · 满 30 减 5</span>
+                        </span>
+                        <span class="badge">99+</span>
+                        <i class="iconfont icon-jiantou" aria-hidden="true"></i>
+                    </li>
+                    <li>
+                        <span class="shop-avatar"><i class="iconfont icon-dingwei" aria-hidden="true"></i></span>
+                        <span class="shop-info">
+                            <strong>拾光咖啡 · 图书馆店</strong>
+                            <span>营业中 · 距你 420m · 新客 8 折</span>
+                        </span>
+                        <span class="dot" aria-label="有新活动"></span>
+                        <i class="iconfont icon-jiantou" aria-hidden="true"></i>
+                    </li>
+                    <li>
+                        <span class="shop-avatar"><i class="iconfont icon-xihuan" aria-hidden="true"></i></span>
+                        <span class="shop-info">
+                            <strong>运动仓 · 北苑店</strong>
+                            <span>已打烊 · 明早 09:00 营业</span>
+                        </span>
+                        <i class="iconfont icon-jiantou" aria-hidden="true"></i>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="note">
+                <h3>实现要点</h3>
+                <pre>.tab-shell {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  width: 100%;                /* 始终铺满屏幕，不固定宽度 */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tabbar { display: flex; }
+.tab-item { flex: 1 1 0; }   /* 四项等分，宽度自适应 */</pre>
+                <p><code>1)</code> 导航用 <code>position: fixed</code> 固定在视口底部，宽度 100% 随屏幕自适应；<code>2)</code> 标签用 flex 四等分；<code>3)</code> 选中态由隐藏的 radio 驱动，纯 CSS 切换，无需 JavaScript；<code>4)</code> 内容区预留 <code>padding-bottom</code> 避让导航，避免末尾内容被遮住。</p>
+                <p>本页图标全部来自 <code>font/iconfont.css</code>（<code>&lt;i class="iconfont icon-shouye"&gt;</code>），角标为图标容器右上角绝对定位的 <code>.badge</code> 与 <code>.dot</code>。</p>
+                <p class="page-links">
+                    <a href="./index.html">← 返回实践目录</a>
+                    <a href="./13-4.html">对照页：13-4 SVG 版 →</a>
+                </p>
+            </section>
+        </main>
+
+        <div class="tab-shell">
+            <input class="tab-radio" type="radio" name="app-tab" id="tab-home" checked>
+            <input class="tab-radio" type="radio" name="app-tab" id="tab-store">
+            <input class="tab-radio" type="radio" name="app-tab" id="tab-search">
+            <input class="tab-radio" type="radio" name="app-tab" id="tab-me">
+
+            <nav class="tabbar" aria-label="底部导航">
+                <label class="tab-item" for="tab-home">
+                    <span class="tab-icon"><i class="iconfont icon-shouye" aria-hidden="true"></i></span>
+                    <span class="tab-label">首页</span>
+                </label>
+                <label class="tab-item" for="tab-store">
+                    <span class="tab-icon">
+                        <i class="iconfont icon-mendian" aria-hidden="true"></i>
+                        <span class="badge">99+</span>
+                    </span>
+                    <span class="tab-label">门店</span>
+                </label>
+                <label class="tab-item" for="tab-search">
+                    <span class="tab-icon">
+                        <i class="iconfont icon-sousuo" aria-hidden="true"></i>
+                        <span class="dot" aria-label="有更新"></span>
+                    </span>
+                    <span class="tab-label">搜索</span>
+                </label>
+                <label class="tab-item" for="tab-me">
+                    <span class="tab-icon">
+                        <i class="iconfont icon-wode" aria-hidden="true"></i>
+                        <span class="badge">6</span>
+                    </span>
+                    <span class="tab-label">我的</span>
+                </label>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

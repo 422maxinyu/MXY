@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-10-26；功能名称：JavaScript 循环与条件判断演示 -->
+    <meta name="description" content="课堂实践 15-2：用 JavaScript 循环生成数字，并通过条件判断区分奇偶数">
+    <title>15-2 · 循环与条件判断</title>
+    <style>
+        :root {
+            --yl_ink: #1c2a32;
+            --yl_muted: #69777d;
+            --yl_paper: #f4f2eb;
+            --yl_card: #fffefa;
+            --yl_line: rgba(28, 42, 50, 0.14);
+            --yl_coral: #e76f51;
+            --yl_teal: #248b80;
+            --yl_gold: #d49b2a;
+            --yl_blue: #5577a8;
+            --yl_shadow: 0 20px 50px rgba(28, 42, 50, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--yl_ink);
+            background:
+                radial-gradient(circle at 8% 8%, rgba(231, 111, 81, 0.13), transparent 23rem),
+                radial-gradient(circle at 95% 54%, rgba(36, 139, 128, 0.12), transparent 26rem),
+                var(--yl_paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.7;
+        }
+
+        .yl_page-shell {
+            width: min(1080px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .yl_intro {
+            padding: 68px 0 34px;
+        }
+
+        .yl_eyebrow {
+            margin: 0 0 14px;
+            color: var(--yl_coral);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1, h2, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 12px;
+            font-size: clamp(36px, 6vw, 62px);
+            letter-spacing: -0.05em;
+            line-height: 1.12;
+        }
+
+        .yl_intro-copy {
+            max-width: 720px;
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 16px;
+        }
+
+        .yl_concept-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .yl_concept-card,
+        .yl_demo-card {
+            border: 1px solid var(--yl_line);
+            border-radius: 16px;
+            background: rgba(255, 254, 250, 0.88);
+            box-shadow: var(--yl_shadow);
+        }
+
+        .yl_concept-card {
+            padding: 22px;
+        }
+
+        .yl_concept-card h2 {
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        .yl_concept-card p {
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 14px;
+        }
+
+        .yl_concept-card code {
+            color: var(--yl_blue);
+            font-weight: 700;
+        }
+
+        .yl_demo-card {
+            margin-bottom: 56px;
+            padding: 24px;
+        }
+
+        .yl_demo-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 16px;
+        }
+
+        .yl_demo-heading h2 {
+            margin-bottom: 4px;
+            font-size: 22px;
+        }
+
+        .yl_demo-heading p {
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_controls {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .yl_controls label {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .yl_controls input {
+            width: 90px;
+            padding: 9px 10px;
+            border: 1px solid var(--yl_line);
+            border-radius: 8px;
+            color: var(--yl_ink);
+            font: inherit;
+        }
+
+        .yl_controls button {
+            padding: 9px 16px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--yl_teal);
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .yl_controls button:hover {
+            background: #1f7169;
+        }
+
+        .yl_controls button:focus-visible,
+        .yl_controls input:focus-visible {
+            outline: 3px solid rgba(85, 119, 168, 0.35);
+            outline-offset: 2px;
+        }
+
+        .yl_result {
+            min-height: 24px;
+            margin: 0 0 12px;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_result[role="alert"] {
+            color: #a33d32;
+        }
+
+        .yl_number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .yl_number-card {
+            display: grid;
+            min-height: 76px;
+            align-content: center;
+            justify-items: center;
+            gap: 2px;
+            border: 1px solid var(--yl_line);
+            border-radius: 12px;
+            background: var(--yl_card);
+        }
+
+        .yl_number-card--even {
+            border-color: rgba(36, 139, 128, 0.35);
+            background: rgba(36, 139, 128, 0.08);
+        }
+
+        .yl_number-card--odd {
+            border-color: rgba(212, 155, 42, 0.38);
+            background: rgba(212, 155, 42, 0.1);
+        }
+
+        .yl_number {
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .yl_number-kind {
+            color: var(--yl_muted);
+            font-size: 11px;
+        }
+
+        .yl_code-sample {
+            overflow-x: auto;
+            margin: 0;
+            padding: 16px 18px;
+            border-radius: 10px;
+            background: #202b32;
+            color: #f5f2e9;
+            font: 13px/1.75 Consolas, "Courier New", monospace;
+        }
+
+        .yl_code-sample code {
+            white-space: pre;
+        }
+
+        @media (max-width: 760px) {
+            .yl_intro {
+                padding-top: 46px;
+            }
+
+            .yl_concept-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_demo-heading {
+                display: block;
+            }
+
+            .yl_demo-heading p {
+                margin-top: 5px;
+            }
+
+            .yl_demo-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page-shell">
+        <header class="yl_intro">
+            <p class="yl_eyebrow">JavaScript · Lesson 15-2</p>
+            <h1>循环与条件判断</h1>
+            <p class="yl_intro-copy">
+                循环可以重复执行一段程序，条件语句则根据不同情况选择执行路径。
+                调整数字数量，观察程序如何生成奇数和偶数卡片。
+            </p>
+        </header>
+
+        <section class="yl_concept-grid" aria-label="循环和条件判断的说明">
+            <article class="yl_concept-card">
+                <h2>循环：重复执行</h2>
+                <p><code>for</code> 循环从 1 开始，每次加 1，直到达到输入的数字数量。</p>
+            </article>
+            <article class="yl_concept-card">
+                <h2>条件：选择分支</h2>
+                <p><code>if / else</code> 检查数字除以 2 的余数，决定显示“偶数”还是“奇数”。</p>
+            </article>
+        </section>
+
+        <section class="yl_demo-card" aria-labelledby="yl_demo-title">
+            <div class="yl_demo-heading">
+                <div>
+                    <h2 id="yl_demo-title">运行程序</h2>
+                    <p>请输入 1 到 50 之间的整数。</p>
+                </div>
+                <p>绿色：偶数　·　黄色：奇数</p>
+            </div>
+
+            <form class="yl_controls" id="yl_demo-form">
+                <label for="yl_count-input">生成数量</label>
+                <input id="yl_count-input" name="count" type="number" min="1" max="50" step="1" value="20">
+                <button type="submit">生成卡片</button>
+            </form>
+
+            <p class="yl_result" id="yl_result" aria-live="polite"></p>
+            <div class="yl_number-grid" id="yl_number-grid" aria-label="循环和条件判断生成的数字卡片"></div>
+
+            <pre class="yl_code-sample"><code>var yl_count = Number(yl_countInput.value);
+
+for (var yl_number = 1; yl_number &lt;= yl_count; yl_number += 1) {
+    if (yl_number % 2 === 0) {
+        // 偶数分支
+    } else {
+        // 奇数分支
+    }
+}</code></pre>
+        </section>
+    </main>
+
+    <script>
+        var yl_form = document.getElementById("yl_demo-form");
+        var yl_countInput = document.getElementById("yl_count-input");
+        var yl_numberGrid = document.getElementById("yl_number-grid");
+        var yl_result = document.getElementById("yl_result");
+
+        yl_form.addEventListener("submit", function (yl_event) {
+            yl_event.preventDefault();
+
+            var yl_count = Number(yl_countInput.value);
+            if (!Number.isInteger(yl_count) || yl_count < 1 || yl_count > 50) {
+                yl_numberGrid.replaceChildren();
+                yl_result.textContent = "请输入 1 到 50 之间的整数。";
+                yl_result.setAttribute("role", "alert");
+                return;
+            }
+
+            var yl_fragment = document.createDocumentFragment();
+            var yl_evenCount = 0;
+
+            for (var yl_number = 1; yl_number <= yl_count; yl_number += 1) {
+                var yl_numberCard = document.createElement("div");
+                var yl_numberValue = document.createElement("span");
+                var yl_numberKind = document.createElement("span");
+                var yl_isEven = yl_number % 2 === 0;
+
+                yl_numberCard.className = yl_isEven
+                    ? "yl_number-card yl_number-card--even"
+                    : "yl_number-card yl_number-card--odd";
+                yl_numberCard.setAttribute("aria-label", yl_number + (yl_isEven ? "，偶数" : "，奇数"));
+                yl_numberValue.className = "yl_number";
+                yl_numberValue.textContent = yl_number;
+                yl_numberKind.className = "yl_number-kind";
+                yl_numberKind.textContent = yl_isEven ? "偶数" : "奇数";
+
+                if (yl_isEven) {
+                    yl_evenCount += 1;
+                }
+
+                yl_numberCard.append(yl_numberValue, yl_numberKind);
+                yl_fragment.appendChild(yl_numberCard);
+            }
+
+            yl_numberGrid.replaceChildren(yl_fragment);
+            yl_result.removeAttribute("role");
+            yl_result.textContent = "循环执行 " + yl_count + " 次：偶数 " + yl_evenCount
+                + " 个，奇数 " + (yl_count - yl_evenCount) + " 个。";
+        });
+
+        yl_form.requestSubmit();
+    </script>
+</body>
+</html>

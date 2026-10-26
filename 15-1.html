@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-10-26；功能名称：逢七留空数字盒子练习 -->
+    <meta name="description" content="课堂实践 15-1：生成 1 到 100 的数字盒子，按逢七规则留空">
+    <title>15-1 · 逢七留空</title>
+    <style>
+        :root {
+            --yl_ink: #1c2a32;
+            --yl_muted: #69777d;
+            --yl_paper: #f4f2eb;
+            --yl_card: #fffefa;
+            --yl_line: rgba(28, 42, 50, 0.14);
+            --yl_coral: #e76f51;
+            --yl_teal: #248b80;
+            --yl_gold: #d49b2a;
+            --yl_shadow: 0 20px 50px rgba(28, 42, 50, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--yl_ink);
+            background:
+                radial-gradient(circle at 8% 8%, rgba(231, 111, 81, 0.13), transparent 23rem),
+                radial-gradient(circle at 95% 54%, rgba(36, 139, 128, 0.12), transparent 26rem),
+                var(--yl_paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.7;
+        }
+
+        .yl_page-shell {
+            width: min(1080px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .yl_intro {
+            padding: 68px 0 32px;
+        }
+
+        .yl_eyebrow {
+            margin: 0 0 14px;
+            color: var(--yl_coral);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 12px;
+            font-size: clamp(36px, 6vw, 62px);
+            letter-spacing: -0.05em;
+            line-height: 1.12;
+        }
+
+        .yl_intro-copy {
+            max-width: 720px;
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 16px;
+        }
+
+        .yl_rule {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            margin: 0 0 18px;
+            padding: 15px 18px;
+            border: 1px solid var(--yl_line);
+            border-radius: 12px;
+            background: rgba(255, 254, 250, 0.8);
+            color: var(--yl_muted);
+            font-size: 14px;
+        }
+
+        .yl_rule strong {
+            color: var(--yl_ink);
+        }
+
+        .yl_box-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+            gap: 10px;
+            margin-bottom: 58px;
+        }
+
+        .yl_box {
+            display: grid;
+            min-width: 0;
+            aspect-ratio: 1;
+            place-items: center;
+            border: 1px solid var(--yl_line);
+            border-radius: 12px;
+            background: var(--yl_card);
+            box-shadow: var(--yl_shadow);
+            color: var(--yl_teal);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .yl_box--empty {
+            border-style: dashed;
+            background: rgba(255, 254, 250, 0.45);
+            box-shadow: none;
+        }
+
+        @media (max-width: 520px) {
+            .yl_page-shell {
+                width: min(100% - 28px, 420px);
+            }
+
+            .yl_intro {
+                padding-top: 46px;
+            }
+
+            .yl_box-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .yl_box {
+                border-radius: 9px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page-shell">
+        <header class="yl_intro">
+            <p class="yl_eyebrow">JavaScript · Lesson 15-1</p>
+            <h1>逢七留空</h1>
+            <p class="yl_intro-copy">从 1 数到 100：遇到 7 的倍数，或个位数字是 7 的数字，就不显示数字，让盒子空着。</p>
+        </header>
+
+        <section aria-label="逢七留空规则">
+            <p class="yl_rule">
+                <span><strong>留空条件：</strong>数字是 7 的倍数，或个位数为 7</span>
+                <span><strong>例如：</strong>7、14、17、21、27</span>
+            </p>
+        </section>
+
+        <section class="yl_box-grid" aria-label="从 1 到 100 的数字盒子" id="yl_box-grid"></section>
+    </main>
+
+    <script>
+        var yl_boxGrid = document.getElementById("yl_box-grid");
+        var yl_fragment = document.createDocumentFragment();
+
+        for (var yl_number = 1; yl_number <= 100; yl_number += 1) {
+            var yl_box = document.createElement("div");
+            var yl_isEmpty = yl_number % 7 === 0 || yl_number % 10 === 7;
+
+            yl_box.className = yl_isEmpty ? "yl_box yl_box--empty" : "yl_box";
+            yl_box.setAttribute(
+                "aria-label",
+                yl_isEmpty ? yl_number + "，逢七留空" : "数字 " + yl_number
+            );
+
+            if (!yl_isEmpty) {
+                yl_box.textContent = yl_number;
+            }
+
+            yl_fragment.appendChild(yl_box);
+        }
+
+        yl_boxGrid.appendChild(yl_fragment);
+    </script>
+</body>
+</html>

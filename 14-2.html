@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-10-22；功能名称：JavaScript 六种基本数据类型演示 -->
+    <meta name="description" content="认识 JavaScript 的字符串、数字、布尔值、未定义、空值和对象六种基本数据类型">
+    <title>JavaScript 六种基本数据类型 · 马欣宇</title>
+    <style>
+        :root {
+            --yl_ink: #1c2a32;
+            --yl_muted: #69777d;
+            --yl_paper: #f4f2eb;
+            --yl_card: #fffefa;
+            --yl_line: rgba(28, 42, 50, 0.14);
+            --yl_coral: #e76f51;
+            --yl_teal: #248b80;
+            --yl_gold: #d49b2a;
+            --yl_blue: #5577a8;
+            --yl_purple: #8166a8;
+            --yl_shadow: 0 20px 50px rgba(28, 42, 50, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--yl_ink);
+            background:
+                radial-gradient(circle at 8% 8%, rgba(231, 111, 81, 0.13), transparent 23rem),
+                radial-gradient(circle at 95% 54%, rgba(36, 139, 128, 0.12), transparent 26rem),
+                var(--yl_paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.7;
+        }
+
+        .yl_page-shell {
+            width: min(1080px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .yl_intro {
+            padding: 68px 0 42px;
+        }
+
+        .yl_eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 16px;
+            color: var(--yl_coral);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .yl_eyebrow::before {
+            width: 30px;
+            height: 3px;
+            background: currentColor;
+            content: "";
+        }
+
+        h1, h2, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            max-width: 760px;
+            margin-bottom: 14px;
+            font-size: clamp(36px, 6vw, 62px);
+            letter-spacing: -0.055em;
+            line-height: 1.12;
+        }
+
+        .yl_intro-copy {
+            max-width: 680px;
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 17px;
+        }
+
+        .yl_type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            padding-bottom: 28px;
+        }
+
+        .yl_type-card {
+            min-width: 0;
+            padding: 23px;
+            border: 1px solid var(--yl_line);
+            border-radius: 18px;
+            background: var(--yl_card);
+            box-shadow: var(--yl_shadow);
+        }
+
+        .yl_card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 17px;
+        }
+
+        .yl_card-number {
+            color: var(--yl_muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+        }
+
+        .yl_type-badge {
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: rgba(36, 139, 128, 0.1);
+            color: var(--yl_teal);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .yl_type-card h2 {
+            margin-bottom: 13px;
+            font-size: 21px;
+            line-height: 1.35;
+        }
+
+        .yl_type-card h2 code {
+            margin-left: 5px;
+            color: var(--yl_muted);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .yl_code-sample {
+            overflow-x: auto;
+            margin: 0 0 15px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #202b32;
+            color: #f5f2e9;
+            font: 13px/1.65 Consolas, "Courier New", monospace;
+        }
+
+        .yl_code-sample code {
+            white-space: pre;
+        }
+
+        .yl_type-card p {
+            min-height: 48px;
+            margin-bottom: 14px;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--yl_line);
+            font-size: 13px;
+        }
+
+        .yl_result code {
+            color: var(--yl_blue);
+            font-weight: 700;
+        }
+
+        .yl_result output {
+            color: var(--yl_teal);
+            font: 700 14px Consolas, "Courier New", monospace;
+        }
+
+        .yl_note {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px;
+            align-items: start;
+            margin: 2px 0 56px;
+            padding: 19px 22px;
+            border: 1px solid rgba(212, 155, 42, 0.3);
+            border-radius: 14px;
+            background: rgba(255, 254, 250, 0.8);
+        }
+
+        .yl_note-mark {
+            display: grid;
+            width: 30px;
+            height: 30px;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(212, 155, 42, 0.16);
+            color: #8c6517;
+            font-weight: 800;
+        }
+
+        .yl_note p {
+            margin: 0;
+            color: var(--yl_muted);
+            font-size: 14px;
+        }
+
+        .yl_note strong {
+            color: var(--yl_ink);
+        }
+
+        @media (max-width: 760px) {
+            .yl_intro {
+                padding-top: 46px;
+            }
+
+            .yl_type-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .yl_type-card {
+                padding: 19px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .yl_page-shell {
+                width: min(100% - 28px, 420px);
+            }
+
+            .yl_type-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_type-card p {
+                min-height: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page-shell">
+        <header class="yl_intro">
+            <p class="yl_eyebrow">JavaScript · Lesson 14-2</p>
+            <h1>认识六种基本数据类型</h1>
+            <p class="yl_intro-copy">
+                数据类型描述一个值是什么。观察每个示例，并查看 JavaScript 使用
+                <code>typeof</code> 检查时返回的结果。
+            </p>
+        </header>
+
+        <section class="yl_type-grid" aria-label="JavaScript 六种基本数据类型">
+            <article class="yl_type-card">
+                <div class="yl_card-top">
+                    <span class="yl_card-number">01 / TEXT</span>
+                    <span class="yl_type-badge">基本类型</span>
+                </div>
+                <h2>字符串 <code>String</code></h2>
+                <pre class="yl_code-sample"><code>"你好，JavaScript"</code></pre>
+                <p>由文字组成的数据。字符串要放在单引号或双引号中。</p>
+                <div class="yl_result"><code>typeof 示例值</code><output data-yl-type="string">检测中</output></div>
+            </article>
+
+            <article class="yl_type-card">
+                <div class="yl_card-top">
+                    <span class="yl_card-number">02 / NUMBER</span>
+                    <span class="yl_type-badge">基本类型</span>
+                </div>
+                <h2>数字 <code>Number</code></h2>
+                <pre class="yl_code-sample"><code>2026</code></pre>
+                <p>表示整数或小数。JavaScript 使用同一种 Number 类型表示它们。</p>
+                <div class="yl_result"><code>typeof 示例值</code><output data-yl-type="number">检测中</output></div>
+            </article>
+
+            <article class="yl_type-card">
+                <div class="yl_card-top">
+                    <span class="yl_card-number">03 / BOOLEAN</span>
+                    <span class="yl_type-badge">基本类型</span>
+                </div>
+                <h2>布尔值 <code>Boolean</code></h2>
+                <pre class="yl_code-sample"><code>true</code></pre>
+                <p>只表示真或假，常用于条件判断；两个值是 <code>true</code> 和 <code>false</code>。</p>
+                <div class="yl_result"><code>typeof 示例值</code><output data-yl-type="boolean">检测中</output></div>
+            </article>
+
+            <article class="yl_type-card">
+                <div class="yl_card-top">
+                    <span class="yl_card-number">04 / UNDEFINED</span>
+                    <span class="yl_type-badge">基本类型</span>
+                </div>
+                <h2>未定义 <code>Undefined</code></h2>
+                <pre class="yl_code-sample"><code>let yl_value;
+yl_value</code></pre>
+                <p>变量声明后尚未赋值时，默认值就是 <code>undefined</code>。</p>
+                <div class="yl_result"><code>typeof 示例值</code><output data-yl-type="undefined">检测中</output></div>
+            </article>
+
+            <article class="yl_type-card">
+                <div class="yl_card-top">
+                    <span class="yl_card-number">05 / NULL</span>
+                    <span class="yl_type-badge">基本类型</span>
+                </div>
+                <h2>空值 <code>Null</code></h2>
+                <pre class="yl_code-sample"><code>null</code></pre>
+                <p>表示“有意留空”。它与尚未赋值的 <code>undefined</code> 含义不同。</p>
+                <div class="yl_result"><code>typeof 示例值</code><output data-yl-type="null">检测中</output></div>
+            </article>
+
+            <article class="yl_type-card">
+                <div class="yl_card-top">
+                    <span class="yl_card-number">06 / OBJECT</span>
+                    <span class="yl_type-badge">引用类型</span>
+                </div>
+                <h2>对象 <code>Object</code></h2>
+                <pre class="yl_code-sample"><code>({ name: "马欣宇" })</code></pre>
+                <p>用于组织多个相关数据。对象由属性和值组成。</p>
+                <div class="yl_result"><code>typeof 示例值</code><output data-yl-type="object">检测中</output></div>
+            </article>
+        </section>
+
+        <aside class="yl_note">
+            <span class="yl_note-mark" aria-hidden="true">!</span>
+            <p><strong>特别注意：</strong><code>null</code> 是基本类型，但由于 JavaScript 历史原因，<code>typeof null</code> 的结果是 <code>"object"</code>。因此要判断空值时，应使用 <code>value === null</code>，不要只依赖 <code>typeof</code>。</p>
+        </aside>
+    </main>
+
+    <script>
+        let yl_unassignedValue;
+        const yl_typeResults = {
+            string: typeof "你好，JavaScript",
+            number: typeof 2026,
+            boolean: typeof true,
+            undefined: typeof yl_unassignedValue,
+            null: typeof null,
+            object: typeof { name: "马欣宇" }
+        };
+
+        for (const [yl_typeName, yl_result] of Object.entries(yl_typeResults)) {
+            const yl_output = document.querySelector(`[data-yl-type="${yl_typeName}"]`);
+            if (yl_output) {
+                yl_output.textContent = yl_result;
+            }
+        }
+    </script>
+</body>
+</html>

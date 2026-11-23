@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 姓名：马欣宇；日期：2026-10-26；功能名称：高级网页设计课堂实践目录 -->
+    <!-- 姓名：马欣宇；日期：2026-11-23；功能名称：高级网页设计课堂实践目录 -->
     <meta name="description" content="马欣宇的《高级网页设计》课堂实践作品集入口">
     <title>马欣宇 · 高级网页设计课堂实践</title>
     <style>
@@ -341,6 +341,209 @@
             footer span {
                 display: block;
                 margin-bottom: 5px;
+            }
+        }
+
+        /* 高对比平面风格覆盖 */
+        :root {
+            --ink: #141a29;
+            --muted: #697086;
+            --paper: #f4f1e8;
+            --cream: #fffef8;
+            --coral: #ff6247;
+            --gold: #c7ed18;
+            --teal: #3155ff;
+            --line: rgba(20, 26, 41, 0.14);
+            --shadow: 10px 10px 0 #ff6247;
+        }
+
+        body {
+            background:
+                linear-gradient(90deg, transparent 79.8%, rgba(49, 85, 255, 0.07) 79.8%, rgba(49, 85, 255, 0.07) 80.2%, transparent 80.2%),
+                var(--paper);
+        }
+
+        .hero {
+            min-height: 520px;
+            grid-template-columns: 1.35fr 0.65fr;
+            gap: 32px;
+            padding: 48px 0 58px;
+        }
+
+        .eyebrow {
+            border: 1px solid var(--ink);
+            border-radius: 999px;
+            padding: 6px 13px;
+            color: var(--ink);
+            background: var(--gold);
+        }
+
+        .eyebrow::before {
+            width: 0;
+        }
+
+        h1 {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-size: clamp(4.2rem, 8vw, 7.8rem);
+            font-weight: 950;
+            line-height: 0.96;
+        }
+
+        .hero-copy {
+            border-left: 6px solid var(--coral);
+            max-width: 620px;
+            padding-left: 18px;
+        }
+
+        .hero-visual {
+            min-height: 400px;
+        }
+
+        .hero-visual::before {
+            display: none;
+        }
+
+        .hero-image {
+            inset: 35px 18px 20px 15px;
+            width: calc(100% - 33px);
+            height: calc(100% - 55px);
+            border: 10px solid var(--cream);
+            box-shadow: 15px 15px 0 var(--teal);
+            transform: rotate(2deg);
+        }
+
+        .seal {
+            width: 112px;
+            height: 112px;
+            color: var(--ink);
+            background: var(--gold);
+            border: 3px solid var(--ink);
+            font-family: "Microsoft YaHei", sans-serif;
+            font-weight: 950;
+            transform: rotate(-8deg);
+        }
+
+        .section-heading {
+            border-top: 2px solid var(--ink);
+            border-bottom: 0;
+            padding: 14px 0 0;
+        }
+
+        .section-heading h2 {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-size: clamp(2.6rem, 5vw, 4.5rem);
+            font-weight: 950;
+        }
+
+        .section-heading p {
+            border-radius: 999px;
+            padding: 6px 12px;
+            color: var(--cream);
+            background: var(--ink);
+        }
+
+        .work-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .work-card,
+        .work-card:nth-child(4),
+        .work-card:nth-child(5) {
+            grid-column: span 1;
+            min-height: 230px;
+            border: 1px solid var(--line);
+            background: var(--cream);
+            box-shadow: none;
+        }
+
+        .work-card:nth-child(5n + 1) {
+            color: var(--cream);
+            background: var(--teal);
+        }
+
+        .work-card:nth-child(5n + 2) {
+            color: var(--ink);
+            background: var(--gold);
+        }
+
+        .work-card:nth-child(5n + 3) {
+            color: var(--ink);
+            background: #dde4ff;
+        }
+
+        .work-card::after {
+            top: -24px;
+            right: -24px;
+            bottom: auto;
+            width: 72px;
+            height: 72px;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+        }
+
+        .work-card:hover,
+        .work-card:focus-visible {
+            border-color: var(--ink);
+            box-shadow: 8px 8px 0 var(--coral);
+            transform: translate(-5px, -5px);
+        }
+
+        .work-card h3 {
+            color: currentColor;
+        }
+
+        .work-card p {
+            color: currentColor;
+            opacity: 0.72;
+        }
+
+        .work-number,
+        .visit {
+            color: currentColor;
+        }
+
+        .prompt-section {
+            border-top: 0;
+            color: var(--cream);
+            background: var(--ink);
+            box-shadow: 12px 12px 0 var(--teal);
+        }
+
+        .prompt-section h2 {
+            color: var(--gold);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-weight: 950;
+        }
+
+        .prompt-section blockquote {
+            border-left: 1px solid rgba(255, 255, 255, 0.48);
+            padding-left: 22px;
+        }
+
+        @media (max-width: 760px) {
+            .hero {
+                grid-template-columns: 1fr;
+                min-height: auto;
+                padding-top: 38px;
+            }
+
+            h1 {
+                font-size: clamp(3.7rem, 17vw, 5.2rem);
+            }
+
+            .hero-visual {
+                min-height: 315px;
+            }
+
+            .work-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .work-card,
+            .work-card:nth-child(4),
+            .work-card:nth-child(5) {
+                min-height: 210px;
             }
         }
     </style>

@@ -1,0 +1,83 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>个人中心 · 小米商城 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+<body id="ma_account-page">
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+
+  <main class="ma_account-main">
+    <header class="ma_account-topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <span class="ma_status"><span class="ma_status-dot"></span> 已登录</span>
+    </header>
+
+    <section class="ma_account-head">
+      <p class="ma_eyebrow">MY ACCOUNT <span>—</span> TOKEN VERIFIED</p>
+      <h1>个人中心<span class="ma_auth-dot">.</span></h1>
+      <p class="ma_lead">
+        本页使用 localStorage 中保存的 token 调用 <code>GET /api/auth/profile</code>。
+        刷新页面或重新打开浏览器后依然保持登录状态，退出登录会同时清除本地 token。
+      </p>
+    </section>
+
+    <section class="ma_account-card" aria-labelledby="ma_account-title">
+      <div class="ma_account-profile">
+        <div class="ma_account-avatar" id="ma_account-avatar" aria-hidden="true">MY</div>
+        <div>
+          <strong id="ma_account-username">正在加载…</strong>
+          <span id="ma_account-subtitle">正在校验登录状态</span>
+        </div>
+      </div>
+
+      <dl class="ma_account-rows" id="ma_account-title">
+        <div class="ma_account-row">
+          <dt>邮箱</dt>
+          <dd id="ma_account-email">—</dd>
+        </div>
+        <div class="ma_account-row">
+          <dt>手机号</dt>
+          <dd id="ma_account-phone">—</dd>
+        </div>
+        <div class="ma_account-row">
+          <dt>注册时间</dt>
+          <dd id="ma_account-created">—</dd>
+        </div>
+        <div class="ma_account-row">
+          <dt>登录时间</dt>
+          <dd id="ma_account-issued">—</dd>
+        </div>
+        <div class="ma_account-row">
+          <dt>token 有效期</dt>
+          <dd id="ma_account-expires">—</dd>
+        </div>
+        <div class="ma_account-row">
+          <dt>localStorage token</dt>
+          <dd class="ma_account-token" id="ma_account-token">—</dd>
+        </div>
+      </dl>
+
+      <div class="ma_account-actions">
+        <button class="ma_account-button ma_account-button--primary" id="ma_account-copy" type="button">复制 token</button>
+        <a class="ma_account-button" href="./index.html">返回首页</a>
+        <button class="ma_account-button ma_account-button--danger" id="ma_account-logout" type="button">退出登录</button>
+      </div>
+
+      <p class="ma_account-status" id="ma_account-status" role="status"></p>
+    </section>
+  </main>
+
+  <script src="./js/mock-api.js" defer></script>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/auth.js" defer></script>
+</body>
+</html>

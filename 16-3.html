@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-10-29；功能名称：点击排行榜页面 -->
+    <meta name="description" content="课堂实践 16-3：使用本地图片素材制作点击排行榜">
+    <title>16-3 · 点击排行</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #fff;
+            color: #666;
+            font-family: "Microsoft YaHei", "SimSun", sans-serif;
+        }
+
+        .yl_ranking {
+            width: min(280px, calc(100% - 32px));
+            margin: 12px auto;
+        }
+
+        .yl_title {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .yl_tabs {
+            display: grid;
+            grid-template-columns: 150px minmax(0, 1fr);
+            height: 38px;
+            margin-top: 2px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .yl_tab {
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .yl_tab:first-child {
+            background: #e6e6e6;
+        }
+
+        .yl_tab.yl_active {
+            background: url("./lin.jpg") center bottom / 100% 38px no-repeat;
+            color: #f45b19;
+            font-weight: 700;
+        }
+
+        .yl_tab:focus-visible {
+            outline: 2px solid #f45b19;
+            outline-offset: -3px;
+        }
+
+        .yl_list {
+            margin: 14px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .yl_item {
+            display: grid;
+            grid-template-columns: 22px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 7px;
+            height: 32px;
+            font-size: 13px;
+        }
+
+        .yl_empty {
+            margin: 14px 0 0;
+            color: #888;
+            font-size: 13px;
+            line-height: 32px;
+            text-align: center;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .yl_rank {
+            display: grid;
+            width: 15px;
+            height: 15px;
+            place-items: center;
+            color: #f45b19;
+            font-size: 12px;
+            line-height: 15px;
+        }
+
+        .yl_rank.yl_top {
+            background: url("./k.jpg") center / 15px 15px no-repeat;
+        }
+
+        .yl_story {
+            overflow: hidden;
+            color: #666;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .yl_story:hover {
+            color: #f45b19;
+        }
+
+        .yl_count {
+            color: #999;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_ranking" aria-label="点击排行">
+        <img class="yl_title" src="./tit06.jpg" alt="点击排行">
+        <div class="yl_tabs" role="tablist" aria-label="排行分类">
+            <button class="yl_tab" id="yl_realtime-tab" type="button" role="tab" aria-selected="false" aria-controls="yl_realtime-panel">实时点击</button>
+            <button class="yl_tab yl_active" id="yl_daily-tab" type="button" role="tab" aria-selected="true" aria-controls="yl_daily-panel">24小时排行</button>
+        </div>
+        <div id="yl_realtime-panel" role="tabpanel" aria-labelledby="yl_realtime-tab" hidden>
+            <p class="yl_empty">暂未提供实时点击数据</p>
+        </div>
+        <div id="yl_daily-panel" role="tabpanel" aria-labelledby="yl_daily-tab">
+        <ol class="yl_list">
+            <li class="yl_item">
+                <span class="yl_rank yl_top">1</span>
+                <span class="yl_story">灯塔水母：地球上唯一不死生物</span>
+                <span class="yl_count">356322</span>
+            </li>
+            <li class="yl_item">
+                <span class="yl_rank yl_top">2</span>
+                <span class="yl_story">阿里巴巴全资收购UC 俞永福称U</span>
+                <span class="yl_count">311246</span>
+            </li>
+            <li class="yl_item">
+                <span class="yl_rank yl_top">3</span>
+                <span class="yl_story">亚马逊惊现三米长巨蟒吞鱼肺</span>
+                <span class="yl_count">295883</span>
+            </li>
+            <li class="yl_item">
+                <span class="yl_rank">4</span>
+                <span class="yl_story">孝化男子上山抓野味 遭遇极源</span>
+                <span class="yl_count">266061</span>
+            </li>
+            <li class="yl_item">
+                <span class="yl_rank">5</span>
+                <span class="yl_story">大白鲨深海失踪 或被大型生物</span>
+                <span class="yl_count">243936</span>
+            </li>
+            <li class="yl_item">
+                <span class="yl_rank">6</span>
+                <span class="yl_story">南非小犀牛目睹母亲被猎杀不肯</span>
+                <span class="yl_count">224346</span>
+            </li>
+            <li class="yl_item">
+                <span class="yl_rank">7</span>
+                <span class="yl_story">余额宝周岁：收益率“过山车”</span>
+                <span class="yl_count">172694</span>
+            </li>
+            <li class="yl_item">
+                <span class="yl_rank">8</span>
+                <span class="yl_story">“尸油入餐桌”纯属无稽之谈</span>
+                <span class="yl_count">128789</span>
+            </li>
+        </ol>
+        </div>
+    </main>
+    <script>
+        const yl_tabs = document.querySelectorAll('[role="tab"]');
+        const yl_panels = document.querySelectorAll('[role="tabpanel"]');
+
+        yl_tabs.forEach((yl_tab) => {
+            yl_tab.addEventListener("click", () => {
+                const yl_panelId = yl_tab.getAttribute("aria-controls");
+
+                yl_tabs.forEach((yl_item) => {
+                    const yl_isSelected = yl_item === yl_tab;
+                    yl_item.setAttribute("aria-selected", String(yl_isSelected));
+                    yl_item.classList.toggle("yl_active", yl_isSelected);
+                });
+
+                yl_panels.forEach((yl_panel) => {
+                    yl_panel.hidden = yl_panel.id !== yl_panelId;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

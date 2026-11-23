@@ -1,0 +1,124 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>大模型实验室 · 小米商城 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+
+  <main class="ma_admin-main">
+    <header class="ma_admin-topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <nav class="ma_admin-nav" aria-label="后台导航">
+        <a href="./admin.html">实体管理</a>
+        <a href="./dashboard.html">图表仪表盘</a>
+        <a class="is-active" href="./ai-lab.html">大模型实验室</a>
+        <a href="./index.html">返回首页</a>
+      </nav>
+    </header>
+
+    <section class="ma_admin-head">
+      <div>
+        <p class="ma_eyebrow">LLM LAB</p>
+        <h1>商品评论智能分析<span class="ma_auth-dot">.</span></h1>
+        <p>
+          输入一段商品评论，调用大模型接口返回固定 JSON：情感倾向、评分、关键词、摘要与改进建议。
+          默认使用离线模拟接口，双击 HTML 即可运行；切换为真实接口后走项目后端 <code>/api/chat</code>。
+        </p>
+      </div>
+      <div class="ma_kt-row" aria-label="本页覆盖的考点">
+        <span class="ma_kt-tag">KT3 表单校验</span>
+        <span class="ma_kt-tag">KT25 AJAX JSON</span>
+      </div>
+    </section>
+
+    <section class="ma_ai-grid">
+      <!-- 左侧：输入 -->
+      <article class="ma_ai-card">
+        <h2>输入评论</h2>
+        <p>至少输入 10 个字符，点击「开始分析」后会把请求内容与返回结果打印到浏览器控制台。</p>
+
+        <form id="ma_ai-form" novalidate>
+          <div class="ma_ai-field">
+            <label for="ma_ai-text">商品评论内容</label>
+            <textarea id="ma_ai-text" maxlength="500" placeholder="例如：手机屏幕很清晰，系统也很流畅，就是充电时有点发热。">手机屏幕很清晰，系统也很流畅，拍照效果超出预期，就是充电时有点发热，整体还是很满意，值得推荐。</textarea>
+            <p class="ma_form-error" id="ma_ai-text-error" role="alert"></p>
+          </div>
+
+          <div class="ma_ai-field">
+            <label for="ma_ai-mode">调用方式</label>
+            <select id="ma_ai-mode">
+              <option value="mock">离线模拟接口（无需后端，推荐）</option>
+              <option value="real">真实大模型接口（项目后端 /api/chat）</option>
+            </select>
+          </div>
+
+          <div class="ma_ai-actions">
+            <button class="ma_btn ma_btn--primary" id="ma_ai-submit" type="submit">开始分析</button>
+            <button class="ma_btn ma_btn--ghost" id="ma_ai-sample" type="button">换一条示例</button>
+          </div>
+          <p class="ma_ai-status" id="ma_ai-status" role="status"></p>
+        </form>
+
+        <div class="ma_ai-note">
+          <strong>说明：</strong>
+          <br>1. 返回 JSON 格式：<code>{ "sentiment": "好评", "score": 86, "keywords": [], "summary": "", "suggestion": "" }</code>
+          <br>2. 模拟模式在前端按关键词规则生成同结构 JSON，便于离线演示。
+          <br>3. 真实模式向 <code>POST /api/chat</code> 发送 <code>{ "ma_messages": [...] }</code>，
+          由后端转发给 SiliconFlow 大模型，返回 <code>data.ma_reply</code>。
+        </div>
+      </article>
+
+      <!-- 右侧：结果 -->
+      <article class="ma_ai-card">
+        <h2>分析结果</h2>
+        <p id="ma_ai-mode-label">当前模式：离线模拟接口</p>
+
+        <div class="ma_ai-empty" id="ma_ai-empty">
+          还没有分析结果。<br>输入评论后点击「开始分析」。
+        </div>
+
+        <div class="ma_ai-result" id="ma_ai-result" hidden>
+          <div class="ma_ai-result-row">
+            <span>情感倾向</span>
+            <strong id="ma_ai-sentiment">—</strong>
+          </div>
+          <div class="ma_ai-result-row">
+            <span>综合评分</span>
+            <strong id="ma_ai-score">—</strong>
+          </div>
+          <div class="ma_ai-result-row">
+            <span>关键词</span>
+            <div class="ma_ai-tags" id="ma_ai-keywords"></div>
+          </div>
+          <div class="ma_ai-result-row">
+            <span>评论摘要</span>
+            <p id="ma_ai-summary">—</p>
+          </div>
+          <div class="ma_ai-result-row">
+            <span>改进建议</span>
+            <p id="ma_ai-suggestion">—</p>
+          </div>
+          <div class="ma_ai-result-row">
+            <span>原始 JSON</span>
+            <pre class="ma_ai-json" id="ma_ai-json">—</pre>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="./js/mock-db.js" defer></script>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/ai-lab.js" defer></script>
+</body>
+</html>

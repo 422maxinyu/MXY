@@ -1,0 +1,7 @@
+# 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-09 | 大模型：Copilot（具体模型名称未提供）
+node_modules/
+**/node_modules/
+.env
+**/.env
+backend/data/ma_knowledge.json
+npm-debug.log*

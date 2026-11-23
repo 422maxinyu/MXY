@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-05；功能名称：Canvas 粒子文字动画 -->
+    <meta name="description" content="课堂实践 18-1：使用原生 Canvas 绘制包含马欣宇文字的动态粒子动画">
+    <title>18-1 · Canvas 粒子动画</title>
+    <style>
+        :root {
+            --yl_ink: #e7f2ef;
+            --yl_muted: #9db8b3;
+            --yl_paper: #071613;
+            --yl_panel: #0d211d;
+            --yl_line: rgb(167 224 207 / 15%);
+            --yl_mint: #8df0cf;
+            --yl_blue: #72b9ff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 46px 20px;
+            background:
+                radial-gradient(ellipse at 50% 34%, rgb(31 91 73 / 35%), transparent 48%),
+                var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1120px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 12px;
+            color: var(--yl_mint);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 48px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 700px;
+            margin: 14px 0 26px;
+            color: var(--yl_muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .yl_canvas-frame {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--yl_line);
+            border-radius: 22px;
+            background: linear-gradient(145deg, #0d211d, #091714 72%);
+            box-shadow: 0 28px 80px rgb(0 0 0 / 28%);
+        }
+
+        .yl_animation {
+            display: block;
+            width: 100%;
+            height: clamp(360px, 52vw, 560px);
+        }
+
+        .yl_canvas-caption {
+            position: absolute;
+            right: 22px;
+            bottom: 18px;
+            color: rgb(210 235 228 / 55%);
+            font: 11px/1.5 Consolas, monospace;
+            letter-spacing: 0.12em;
+            pointer-events: none;
+        }
+
+        .yl_note {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px 24px;
+            margin-top: 16px;
+            padding: 15px 18px;
+            border: 1px solid var(--yl_line);
+            border-radius: 12px;
+            color: var(--yl_muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .yl_note strong {
+            color: var(--yl_ink);
+            font-weight: 600;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .yl_canvas-frame {
+                scroll-behavior: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 32px 16px;
+            }
+
+            .yl_animation {
+                height: 390px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 18-1 / CANVAS</p>
+        <h1>让名字在星河中浮现</h1>
+        <p class="yl_intro">通过 Canvas 逐帧绘制光点、轨道与文字光晕，观察 JavaScript 动画循环如何将一张静态画布变成流动的视觉作品。</p>
+        <figure class="yl_canvas-frame">
+            <canvas class="yl_animation" id="yl_animation" role="img" aria-label="青绿色星点和轨道环绕着发光文字马欣宇的动态画面">
+                Canvas 动画：马欣宇。您的浏览器不支持 Canvas。
+            </canvas>
+            <figcaption class="yl_canvas-caption">CANVAS · PARTICLE FIELD / 2026</figcaption>
+        </figure>
+        <div class="yl_note">
+            <span><strong>绘制内容</strong>　粒子、轨迹、光环与文字</span>
+            <span><strong>实现方式</strong>　原生 Canvas API + requestAnimationFrame</span>
+            <span>已尊重系统的减少动态效果设置</span>
+        </div>
+    </main>
+    <script>
+        const yl_canvas = document.getElementById("yl_animation");
+        const yl_context = yl_canvas.getContext("2d");
+        const yl_reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const yl_particles = Array.from({ length: 76 }, (yl_item, yl_index) => ({
+            x: ((yl_index * 137.5) % 997) / 997,
+            y: ((yl_index * 263.7) % 991) / 991,
+            size: 0.7 + (yl_index % 5) * 0.28,
+            phase: yl_index * 0.71,
+            speed: 0.35 + (yl_index % 7) * 0.07
+        }));
+        let yl_width = 0;
+        let yl_height = 0;
+        let yl_animationFrame = 0;
+
+        function yl_resizeCanvas() {
+            const yl_bounds = yl_canvas.getBoundingClientRect();
+            const yl_pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            yl_width = yl_bounds.width;
+            yl_height = yl_bounds.height;
+            yl_canvas.width = Math.round(yl_width * yl_pixelRatio);
+            yl_canvas.height = Math.round(yl_height * yl_pixelRatio);
+            yl_context.setTransform(yl_pixelRatio, 0, 0, yl_pixelRatio, 0, 0);
+            yl_drawFrame(performance.now());
+        }
+
+        function yl_drawFrame(yl_timestamp) {
+            const yl_time = yl_reducedMotion.matches ? 0 : yl_timestamp * 0.001;
+            const yl_centerX = yl_width * 0.5;
+            const yl_centerY = yl_height * 0.49;
+            const yl_minDimension = Math.min(yl_width, yl_height);
+
+            yl_context.clearRect(0, 0, yl_width, yl_height);
+
+            const yl_glow = yl_context.createRadialGradient(
+                yl_centerX, yl_centerY, 8, yl_centerX, yl_centerY, yl_minDimension * 0.58
+            );
+            yl_glow.addColorStop(0, "rgba(49, 146, 111, 0.21)");
+            yl_glow.addColorStop(0.58, "rgba(22, 89, 73, 0.09)");
+            yl_glow.addColorStop(1, "rgba(7, 22, 19, 0)");
+            yl_context.fillStyle = yl_glow;
+            yl_context.fillRect(0, 0, yl_width, yl_height);
+
+            for (const yl_particle of yl_particles) {
+                const yl_twinkle = 0.38 + (Math.sin(yl_time * yl_particle.speed + yl_particle.phase) + 1) * 0.31;
+                const yl_x = yl_particle.x * yl_width;
+                const yl_y = yl_particle.y * yl_height;
+                yl_context.beginPath();
+                yl_context.arc(yl_x, yl_y, yl_particle.size, 0, Math.PI * 2);
+                yl_context.fillStyle = `rgba(174, 241, 220, ${yl_twinkle})`;
+                yl_context.fill();
+            }
+
+            for (let yl_ring = 0; yl_ring < 3; yl_ring += 1) {
+                yl_context.save();
+                yl_context.translate(yl_centerX, yl_centerY);
+                yl_context.rotate(yl_time * (yl_ring % 2 === 0 ? 0.08 : -0.06) + yl_ring * 0.7);
+                yl_context.beginPath();
+                yl_context.ellipse(
+                    0, 0,
+                    yl_minDimension * (0.28 + yl_ring * 0.09),
+                    yl_minDimension * (0.095 + yl_ring * 0.028),
+                    yl_ring * 0.23, 0, Math.PI * 2
+                );
+                yl_context.strokeStyle = `rgba(118, 226, 195, ${0.19 - yl_ring * 0.035})`;
+                yl_context.lineWidth = 1;
+                yl_context.stroke();
+                yl_context.restore();
+            }
+
+            const yl_textSize = Math.min(yl_width * 0.115, yl_height * 0.21, 112);
+            yl_context.save();
+            yl_context.textAlign = "center";
+            yl_context.textBaseline = "middle";
+            yl_context.font = `700 ${yl_textSize}px "Microsoft YaHei", "PingFang SC", sans-serif`;
+            yl_context.shadowColor = "#80f4cb";
+            yl_context.shadowBlur = 22 + Math.sin(yl_time * 1.4) * 7;
+            yl_context.fillStyle = "#e7fff5";
+            yl_context.fillText("马欣宇", yl_centerX, yl_centerY);
+            yl_context.shadowBlur = 0;
+            yl_context.lineWidth = 1;
+            yl_context.strokeStyle = "rgba(141, 240, 207, 0.55)";
+            yl_context.strokeText("马欣宇", yl_centerX, yl_centerY);
+            yl_context.restore();
+
+            if (!yl_reducedMotion.matches) {
+                yl_animationFrame = window.requestAnimationFrame(yl_drawFrame);
+            }
+        }
+
+        function yl_updateMotionPreference() {
+            window.cancelAnimationFrame(yl_animationFrame);
+            yl_drawFrame(performance.now());
+        }
+
+        window.addEventListener("resize", yl_resizeCanvas);
+        yl_reducedMotion.addEventListener("change", yl_updateMotionPreference);
+        yl_resizeCanvas();
+    </script>
+</body>
+</html>

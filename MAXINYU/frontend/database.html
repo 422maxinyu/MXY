@@ -1,0 +1,84 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-09 | 大模型：Copilot（具体模型名称未提供） -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- 姓名：马欣宇；日期：2026-11-09；功能名称：MySQL 数据库连接测试 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>数据库连接 · 小米商城</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+  <main class="ma_shell">
+    <header class="ma_topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回小米商城首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <a class="ma_back-link" href="./index.html">返回首页 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <section class="ma_database-main" aria-labelledby="ma_database-title">
+      <p class="ma_eyebrow">DATABASE <span>—</span> CONNECTION</p>
+      <h1 id="ma_database-title">连接<span class="ma_name">数据库</span><span class="ma_cursor">.</span></h1>
+      <p class="ma_lead">验证输入的账号，并测试后端配置的 MySQL 数据库连接。</p>
+
+      <form class="ma_database-card" id="ma_database-form">
+        <div class="ma_database-heading">
+          <span class="ma_database-icon" aria-hidden="true">DB</span>
+          <div>
+            <h2>MySQL 连接测试</h2>
+            <p>连接凭据仅用于本次验证，不会保存。</p>
+          </div>
+        </div>
+
+        <label class="ma_database-label" for="ma_username">用户名</label>
+        <input
+          class="ma_database-input"
+          id="ma_username"
+          name="ma_username"
+          type="text"
+          value="root"
+          autocomplete="username"
+          maxlength="128"
+          required
+        >
+
+        <label class="ma_database-label" for="ma_password">密码</label>
+        <input
+          class="ma_database-input"
+          id="ma_password"
+          name="ma_password"
+          type="password"
+          placeholder="请输入数据库密码"
+          autocomplete="current-password"
+          maxlength="256"
+          required
+        >
+
+        <button class="ma_database-submit" id="ma_database-submit" type="submit">
+          连接数据库 <span aria-hidden="true">→</span>
+        </button>
+        <p
+          class="ma_database-message"
+          id="ma_database-message"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >请输入数据库密码后开始连接。</p>
+      </form>
+
+      <p class="ma_database-note">账号信息须与后端 <code>backend/.env</code> 配置一致。</p>
+    </section>
+
+    <footer class="ma_footer">
+      <span>用好奇心构建，用细节表达。</span>
+      <span>马欣宇 <span class="ma_footer-dot">·</span> 2026</span>
+    </footer>
+  </main>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/database.js" defer></script>
+</body>
+</html>

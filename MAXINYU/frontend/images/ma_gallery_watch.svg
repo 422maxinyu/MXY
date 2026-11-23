@@ -1,0 +1,21 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-09 | 大模型：Copilot（智能手表原创矢量插画） -->
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">
+  <defs>
+    <linearGradient id="ma_bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c5e4dc"/><stop offset="1" stop-color="#86c8bc"/></linearGradient>
+    <linearGradient id="ma_band" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e6f4ed"/><stop offset="1" stop-color="#8fbbb0"/></linearGradient>
+    <filter id="ma_shadow" x="-40%" y="-30%" width="180%" height="180%"><feDropShadow dx="0" dy="15" stdDeviation="13" flood-color="#315952" flood-opacity=".27"/></filter>
+  </defs>
+  <rect width="480" height="320" rx="26" fill="url(#ma_bg)"/>
+  <circle cx="385" cy="75" r="55" fill="#f1fff0" opacity=".4"/><path d="M0 254Q134 219 246 258t234-12v74H0Z" fill="#69aa9e" opacity=".3"/>
+  <g filter="url(#ma_shadow)" transform="rotate(13 243 160)">
+    <path d="M202 36Q242 16 282 36l14 78H188Z" fill="url(#ma_band)"/>
+    <path d="M188 206h108l-14 78q-40 20-80 0Z" fill="url(#ma_band)"/>
+    <rect x="158" y="91" width="166" height="145" rx="42" fill="#2f343b"/>
+    <rect x="166" y="99" width="150" height="129" rx="35" fill="#17242a"/>
+    <rect x="316" y="139" width="14" height="44" rx="7" fill="#8b9b99"/>
+    <circle cx="241" cy="164" r="48" fill="none" stroke="#74d2b0" stroke-width="8"/>
+    <path d="M241 125v41l27 17" fill="none" stroke="#e2f5da" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="241" cy="164" r="5" fill="#f8d286"/>
+  </g>
+  <text x="30" y="286" fill="#315e56" font-family="sans-serif" font-size="12" letter-spacing="3">MI · SMART WATCH</text>
+</svg>

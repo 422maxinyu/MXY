@@ -1,0 +1,640 @@
+/* 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash */
+/* 登录 / 注册 / 个人中心 三个页面的专属样式，颜色全部复用 style.css 中的 :root 变量 */
+
+/* ---------- 整体布局 ---------- */
+.ma_auth-shell {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 48px, 1080px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 56px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
+  align-items: center;
+  gap: clamp(32px, 6vw, 78px);
+}
+
+/* ---------- 左侧介绍区 ---------- */
+.ma_auth-brand {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 0;
+}
+
+.ma_auth-brand .ma_brand {
+  width: fit-content;
+  margin-bottom: 46px;
+}
+
+.ma_auth-brand h1 {
+  margin: 0;
+  font-size: clamp(36px, 5.4vw, 58px);
+  font-weight: 650;
+  letter-spacing: -0.055em;
+  line-height: 1.14;
+}
+
+.ma_auth-dot {
+  color: var(--ma_teal);
+}
+
+.ma_auth-lead {
+  max-width: 520px;
+  margin: 18px 0 0;
+  color: var(--ma_muted);
+  font-size: 14px;
+  line-height: 1.95;
+}
+
+/* 考点列表（KT3 / KT20 / KT25） */
+.ma_auth-points {
+  margin: 34px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  list-style: none;
+}
+
+.ma_auth-points li {
+  padding: 13px 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid var(--ma_line);
+  border-radius: 11px;
+  background: rgba(22, 27, 40, 0.5);
+}
+
+.ma_auth-points strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ma_auth-points div > span {
+  color: var(--ma_muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.ma_kt-tag {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border: 1px solid rgba(120, 226, 208, 0.42);
+  border-radius: 6px;
+  color: var(--ma_teal);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.ma_kt-tag--mini {
+  margin-left: 6px;
+  padding: 3px 5px;
+  font-size: 8px;
+  vertical-align: 1px;
+}
+
+.ma_auth-note {
+  margin: 20px 0 0;
+  color: var(--ma_muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.ma_auth-note a,
+.ma_auth-sub-link {
+  color: var(--ma_accent);
+  text-decoration: none;
+}
+
+.ma_auth-note a:hover,
+.ma_auth-sub-link:hover {
+  text-decoration: underline;
+}
+
+.ma_account-main .ma_lead code {
+  padding: 2px 5px;
+  border: 1px solid var(--ma_line);
+  border-radius: 5px;
+  color: var(--ma_text);
+  font-family: Consolas, monospace;
+  font-size: 11px;
+}
+
+/* ---------- 右侧表单卡片 ---------- */
+.ma_auth-panel {
+  min-width: 0;
+}
+
+.ma_auth-card {
+  padding: 30px;
+  border: 1px solid var(--ma_line);
+  border-radius: 18px;
+  background: var(--ma_panel);
+  box-shadow: 0 24px 60px rgba(6, 9, 16, 0.38);
+  backdrop-filter: blur(14px);
+}
+
+.ma_auth-card-head h2 {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 620;
+  letter-spacing: -0.035em;
+}
+
+.ma_auth-card-head .ma_eyebrow {
+  margin-bottom: 11px;
+}
+
+.ma_auth-sub {
+  margin: 9px 0 0;
+  color: var(--ma_muted);
+  font-size: 12px;
+}
+
+.ma_auth-sub a,
+.ma_auth-card-foot a,
+.ma_auth-notice a {
+  color: var(--ma_accent);
+  text-decoration: none;
+}
+
+.ma_auth-sub a:hover,
+.ma_auth-card-foot a:hover,
+.ma_auth-notice a:hover {
+  text-decoration: underline;
+}
+
+/* 顶部提示条 */
+.ma_auth-notice {
+  margin-top: 18px;
+  padding: 11px 13px;
+  border: 1px solid var(--ma_line);
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.ma_auth-notice[hidden] {
+  display: none;
+}
+
+.ma_auth-notice--info {
+  border-color: rgba(155, 175, 255, 0.34);
+  background: rgba(155, 175, 255, 0.08);
+  color: var(--ma_accent);
+}
+
+.ma_auth-notice--success {
+  border-color: rgba(120, 226, 208, 0.34);
+  background: rgba(120, 226, 208, 0.08);
+  color: var(--ma_teal);
+}
+
+.ma_auth-notice--error {
+  border-color: rgba(255, 154, 171, 0.36);
+  background: rgba(255, 154, 171, 0.08);
+  color: #ff9aab;
+}
+
+/* ---------- 表单字段 ---------- */
+.ma_auth-form {
+  margin-top: 24px;
+  display: grid;
+  gap: 15px;
+}
+
+.ma_field {
+  display: grid;
+  gap: 7px;
+}
+
+.ma_field-label {
+  color: var(--ma_muted);
+  font-size: 11px;
+}
+
+.ma_field-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid var(--ma_line);
+  border-radius: 9px;
+  outline: none;
+  background: rgba(13, 17, 26, 0.72);
+  color: var(--ma_text);
+  font: inherit;
+  font-size: 13px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.ma_field-input::placeholder {
+  color: rgba(154, 165, 187, 0.62);
+}
+
+.ma_field-input:focus {
+  border-color: rgba(155, 175, 255, 0.72);
+  box-shadow: 0 0 0 3px rgba(155, 175, 255, 0.1);
+}
+
+.ma_field-input.is-invalid {
+  border-color: rgba(255, 137, 157, 0.78);
+  box-shadow: 0 0 0 3px rgba(255, 137, 157, 0.09);
+}
+
+.ma_field-input:disabled {
+  opacity: 0.6;
+}
+
+.ma_field-error {
+  min-height: 15px;
+  margin: 0;
+  color: #ff9aab;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.ma_field-hint {
+  margin: 0;
+  color: var(--ma_muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* 密码输入框 + 显示切换 */
+.ma_password-wrap {
+  position: relative;
+  display: flex;
+}
+
+.ma_password-wrap .ma_field-input {
+  padding-right: 58px;
+}
+
+.ma_password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  padding: 6px 8px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ma_muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+}
+
+.ma_password-toggle:hover {
+  color: var(--ma_accent);
+  background: rgba(155, 175, 255, 0.1);
+}
+
+/* ---------- Canvas 图形验证码（KT20） ---------- */
+.ma_captcha-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 136px;
+  align-items: center;
+  gap: 10px;
+}
+
+.ma_captcha {
+  padding: 0;
+  overflow: hidden;
+  display: block;
+  border: 1px solid var(--ma_line);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  line-height: 0;
+}
+
+.ma_captcha:hover,
+.ma_captcha:focus-visible {
+  border-color: rgba(120, 226, 208, 0.6);
+  outline: none;
+}
+
+.ma_captcha canvas {
+  width: 132px;
+  height: 46px;
+  display: block;
+}
+
+/* ---------- 协议勾选 ---------- */
+.ma_agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: var(--ma_muted);
+  font-size: 11px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.ma_agreement input {
+  width: 15px;
+  height: 15px;
+  margin: 1px 0 0;
+  accent-color: #9bafff;
+  cursor: pointer;
+}
+
+.ma_agreement a {
+  color: var(--ma_accent);
+  text-decoration: none;
+}
+
+/* ---------- 提交与状态 ---------- */
+.ma_auth-submit {
+  min-height: 48px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(110deg, #a6b7ff, #78e2d0);
+  color: #141a25;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition: filter 160ms ease, transform 160ms ease;
+}
+
+.ma_auth-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+.ma_auth-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ma_auth-status {
+  min-height: 16px;
+  margin: 0;
+  color: var(--ma_muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.ma_auth-status--error {
+  color: #ff9aab;
+}
+
+.ma_auth-status--success {
+  color: var(--ma_teal);
+}
+
+.ma_auth-card-foot {
+  margin-top: 20px;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--ma_line);
+  color: var(--ma_muted);
+  font-size: 10px;
+}
+
+/* ---------- 个人中心 ---------- */
+.ma_account-main {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 48px, 760px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 56px 0 64px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ma_account-topbar {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ma_line);
+}
+
+.ma_account-head {
+  padding: 52px 0 8px;
+}
+
+.ma_account-head h1 {
+  margin: 0;
+  font-size: clamp(34px, 6vw, 52px);
+  font-weight: 650;
+  letter-spacing: -0.055em;
+}
+
+.ma_account-head .ma_lead {
+  margin-top: 14px;
+}
+
+.ma_account-card {
+  margin-top: 26px;
+  padding: 28px;
+  border: 1px solid var(--ma_line);
+  border-radius: 16px;
+  background: var(--ma_panel);
+  backdrop-filter: blur(12px);
+}
+
+.ma_account-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ma_account-avatar {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(120, 226, 208, 0.38);
+  border-radius: 16px;
+  color: var(--ma_teal);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.ma_account-profile strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 620;
+}
+
+.ma_account-profile span {
+  color: var(--ma_muted);
+  font-size: 11px;
+}
+
+.ma_account-rows {
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  border-top: 1px solid var(--ma_line);
+}
+
+.ma_account-row {
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--ma_line);
+}
+
+.ma_account-row dt {
+  color: var(--ma_muted);
+  font-size: 11px;
+}
+
+.ma_account-row dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--ma_text);
+  font-size: 12px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.ma_account-token {
+  color: var(--ma_accent);
+  font-family: Consolas, monospace;
+  font-size: 11px;
+}
+
+.ma_account-actions {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.ma_account-button {
+  min-height: 42px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ma_line);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ma_text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.ma_account-button:hover {
+  border-color: rgba(155, 175, 255, 0.5);
+  background: rgba(155, 175, 255, 0.1);
+}
+
+.ma_account-button--primary {
+  border: 0;
+  background: linear-gradient(110deg, #a6b7ff, #78e2d0);
+  color: #141a25;
+  font-weight: 700;
+}
+
+.ma_account-button--danger:hover {
+  border-color: rgba(255, 154, 171, 0.6);
+  background: rgba(255, 154, 171, 0.1);
+  color: #ff9aab;
+}
+
+.ma_account-status {
+  min-height: 16px;
+  margin: 14px 0 0;
+  color: var(--ma_muted);
+  font-size: 11px;
+}
+
+.ma_account-status--error {
+  color: #ff9aab;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 960px) {
+  .ma_auth-shell {
+    width: min(100% - 40px, 560px);
+    grid-template-columns: 1fr;
+    align-content: start;
+    gap: 32px;
+    padding: 40px 0 56px;
+  }
+
+  .ma_auth-brand .ma_brand {
+    margin-bottom: 30px;
+  }
+
+  .ma_auth-points {
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .ma_auth-shell {
+    width: min(100% - 32px, 560px);
+    padding: 30px 0 44px;
+  }
+
+  .ma_auth-card {
+    padding: 22px;
+  }
+
+  .ma_captcha-row {
+    grid-template-columns: minmax(0, 1fr) 124px;
+    gap: 8px;
+  }
+
+  .ma_captcha canvas {
+    width: 120px;
+  }
+
+  .ma_auth-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .ma_account-main {
+    width: min(100% - 32px, 760px);
+    padding: 30px 0 48px;
+  }
+
+  .ma_account-card {
+    padding: 20px;
+  }
+
+  .ma_account-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ma_account-row dd {
+    text-align: left;
+  }
+}

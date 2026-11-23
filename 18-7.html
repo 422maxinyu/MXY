@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-05；功能名称：Three.js 三维数据图表 -->
+    <meta name="description" content="课堂实践 18-7：使用 Three.js 创建可交互的三维柱状图与三维散点图">
+    <title>18-7 · Three.js 三维图表</title>
+    <style>
+        :root {
+            --yl_ink: #1d2b3d;
+            --yl_muted: #66788a;
+            --yl_paper: #f1f5f8;
+            --yl_card: #fff;
+            --yl_border: #dfe8ee;
+            --yl_blue: #4386d7;
+            --yl_teal: #36a895;
+            --yl_amber: #e1a84a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 42px 20px 54px;
+            background:
+                radial-gradient(circle at 88% 0%, #e3eef5, transparent 30rem),
+                var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1180px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_blue);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 850px;
+            margin: 14px 0 24px;
+            color: var(--yl_muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .yl_chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .yl_chart-card {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--yl_border);
+            border-radius: 17px;
+            background: var(--yl_card);
+            box-shadow: 0 16px 42px rgb(35 62 82 / 7%);
+        }
+
+        .yl_chart-heading {
+            padding: 20px 21px 0;
+        }
+
+        .yl_chart-heading h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .yl_chart-heading p {
+            margin: 7px 0 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .yl_chart {
+            width: 100%;
+            height: 440px;
+            overflow: hidden;
+            touch-action: none;
+            cursor: grab;
+        }
+
+        .yl_chart:active {
+            cursor: grabbing;
+        }
+
+        .yl_chart canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .yl_chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px 16px;
+            padding: 0 20px 18px;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .yl_swatch {
+            width: 9px;
+            height: 9px;
+            border-radius: 3px;
+            background: var(--yl_blue);
+        }
+
+        .yl_swatch.yl_swatch-teal {
+            background: var(--yl_teal);
+        }
+
+        .yl_swatch.yl_swatch-amber {
+            background: var(--yl_amber);
+        }
+
+        .yl_note {
+            margin: 17px 2px 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .yl_error {
+            margin: 14px 0;
+            padding: 12px 15px;
+            border: 1px solid #efb9b9;
+            border-radius: 10px;
+            background: #fff0f0;
+            color: #962e2e;
+            font-size: 14px;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 30px 13px 42px;
+            }
+
+            .yl_chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_chart {
+                height: 390px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 18-7 / THREE.JS</p>
+        <h1>把数据放进三维空间</h1>
+        <p class="yl_intro">Three.js 将业务示例数据转化为三维柱体和空间散点。拖动图表可旋转视角；图中指标为静态课堂演示数据，不代表线上业务。</p>
+        <div class="yl_error" id="yl_chart-error" role="alert" hidden></div>
+        <div class="yl_chart-grid">
+            <section class="yl_chart-card" aria-labelledby="yl_bar-heading">
+                <div class="yl_chart-heading">
+                    <h2 id="yl_bar-heading">季度品类销售 · 三维柱状图</h2>
+                    <p>比较 5 个商品品类在 4 个季度的模拟销售额</p>
+                </div>
+                <div class="yl_chart" id="yl_bar-chart" role="img" aria-label="按品类和季度展示模拟销售额的三维柱状图"></div>
+                <div class="yl_chart-legend" aria-label="柱状图图例">
+                    <span class="yl_legend-item"><i class="yl_swatch"></i>第一、二季度</span>
+                    <span class="yl_legend-item"><i class="yl_swatch yl_swatch-teal"></i>第三、四季度</span>
+                </div>
+            </section>
+            <section class="yl_chart-card" aria-labelledby="yl_scatter-heading">
+                <div class="yl_chart-heading">
+                    <h2 id="yl_scatter-heading">客户价值分布 · 三维散点图</h2>
+                    <p>访问频次、客单价与复购间隔的样例关系</p>
+                </div>
+                <div class="yl_chart" id="yl_scatter-chart" role="img" aria-label="展示三类模拟客户群体特征的三维散点图"></div>
+                <div class="yl_chart-legend" aria-label="散点图图例">
+                    <span class="yl_legend-item"><i class="yl_swatch"></i>活跃会员</span>
+                    <span class="yl_legend-item"><i class="yl_swatch yl_swatch-teal"></i>成长客户</span>
+                    <span class="yl_legend-item"><i class="yl_swatch yl_swatch-amber"></i>待唤醒客户</span>
+                </div>
+            </section>
+        </div>
+        <p class="yl_note">交互方式：在图表区域拖动可旋转三维视角。全部三维对象由 Three.js 原生几何体及 Canvas 纹理构成。</p>
+    </main>
+    <script src="./cdn/three/three.min.js"></script>
+    <script>
+        const yl_error = document.getElementById("yl_chart-error");
+
+        if (!window.THREE) {
+            yl_error.hidden = false;
+            yl_error.textContent = "Three.js 加载失败，请确认 cdn/three/three.min.js 文件存在。";
+            throw new Error("Three.js local script failed to load.");
+        }
+
+        const yl_three = window.THREE;
+        const yl_charts = [];
+        const yl_barCategories = ["数码", "服饰", "家居", "美妆", "食品"];
+        const yl_quarters = ["Q1", "Q2", "Q3", "Q4"];
+        const yl_sales = [
+            [52, 68, 74, 91],
+            [76, 82, 71, 96],
+            [44, 58, 65, 73],
+            [68, 72, 88, 104],
+            [56, 64, 82, 90]
+        ];
+        const yl_palette = [0x4386d7, 0x36a895, 0xe1a84a];
+
+        function yl_createTextSprite(yl_text, yl_color, yl_fontSize) {
+            const yl_canvas = document.createElement("canvas");
+            const yl_context = yl_canvas.getContext("2d");
+            yl_canvas.width = 512;
+            yl_canvas.height = 128;
+            yl_context.clearRect(0, 0, yl_canvas.width, yl_canvas.height);
+            yl_context.font = `600 ${yl_fontSize || 50}px "Microsoft YaHei", sans-serif`;
+            yl_context.fillStyle = yl_color || "#66788a";
+            yl_context.textAlign = "center";
+            yl_context.textBaseline = "middle";
+            yl_context.fillText(yl_text, 256, 64);
+            const yl_texture = new yl_three.CanvasTexture(yl_canvas);
+            yl_texture.colorSpace = yl_three.SRGBColorSpace || "srgb";
+            const yl_material = new yl_three.SpriteMaterial({
+                map: yl_texture,
+                transparent: true,
+                depthWrite: false
+            });
+            return new yl_three.Sprite(yl_material);
+        }
+
+        function yl_addLabel(yl_group, yl_text, yl_position, yl_size, yl_color) {
+            const yl_label = yl_createTextSprite(yl_text, yl_color);
+            yl_label.position.set(yl_position[0], yl_position[1], yl_position[2]);
+            yl_label.scale.set(yl_size[0], yl_size[1], 1);
+            yl_group.add(yl_label);
+            return yl_label;
+        }
+
+        function yl_addAxes(yl_group, yl_dimensions, yl_maxY, yl_xLabels, yl_zLabels) {
+            const yl_material = new yl_three.LineBasicMaterial({ color: 0xb7c7d4, transparent: true, opacity: 0.8 });
+            const yl_points = [
+                new yl_three.Vector3(0, 0, 0),
+                new yl_three.Vector3(yl_dimensions.x, 0, 0),
+                new yl_three.Vector3(0, 0, 0),
+                new yl_three.Vector3(0, yl_maxY, 0),
+                new yl_three.Vector3(0, 0, 0),
+                new yl_three.Vector3(0, 0, yl_dimensions.z)
+            ];
+            const yl_axisGeometry = new yl_three.BufferGeometry().setFromPoints(yl_points);
+            yl_group.add(new yl_three.LineSegments(yl_axisGeometry, yl_material));
+
+            const yl_gridMaterial = new yl_three.LineBasicMaterial({ color: 0xe2eaf0, transparent: true, opacity: 0.7 });
+            const yl_gridPoints = [];
+            for (let yl_step = 1; yl_step <= 4; yl_step += 1) {
+                const yl_y = yl_maxY * yl_step / 5;
+                yl_gridPoints.push(
+                    new yl_three.Vector3(0, yl_y, 0),
+                    new yl_three.Vector3(yl_dimensions.x, yl_y, 0),
+                    new yl_three.Vector3(0, yl_y, 0),
+                    new yl_three.Vector3(0, yl_y, yl_dimensions.z)
+                );
+            }
+            const yl_gridGeometry = new yl_three.BufferGeometry().setFromPoints(yl_gridPoints);
+            yl_group.add(new yl_three.LineSegments(yl_gridGeometry, yl_gridMaterial));
+
+            yl_xLabels.forEach((yl_label, yl_index) => {
+                const yl_x = yl_xLabels.length === 1 ? 0 : yl_dimensions.x * yl_index / (yl_xLabels.length - 1);
+                yl_addLabel(yl_group, yl_label, [yl_x, -0.32, yl_dimensions.z + 0.35], [1.3, 0.34]);
+            });
+            yl_zLabels.forEach((yl_label, yl_index) => {
+                const yl_z = yl_zLabels.length === 1 ? 0 : yl_dimensions.z * yl_index / (yl_zLabels.length - 1);
+                yl_addLabel(yl_group, yl_label, [-0.38, -0.25, yl_z], [0.9, 0.3]);
+            });
+            yl_addLabel(yl_group, "数值", [-0.48, yl_maxY, 0], [0.86, 0.3], "#4386d7");
+        }
+
+        function yl_createChart(yl_containerId, yl_sceneBackground) {
+            const yl_container = document.getElementById(yl_containerId);
+            let yl_renderer;
+            try {
+                yl_renderer = new yl_three.WebGLRenderer({ antialias: true, alpha: false });
+            } catch (yl_rendererError) {
+                yl_error.hidden = false;
+                yl_error.textContent = "当前浏览器无法创建 WebGL 画布，请在支持 WebGL 的浏览器中打开页面。";
+                throw yl_rendererError;
+            }
+
+            yl_renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+            yl_renderer.setClearColor(yl_sceneBackground, 1);
+            yl_container.append(yl_renderer.domElement);
+
+            const yl_scene = new yl_three.Scene();
+            yl_scene.background = new yl_three.Color(yl_sceneBackground);
+            const yl_camera = new yl_three.PerspectiveCamera(38, 1, 0.1, 100);
+            yl_camera.position.set(8.5, 7.3, 10.5);
+            yl_camera.lookAt(2.5, 1.4, 1.8);
+
+            const yl_ambientLight = new yl_three.AmbientLight(0xffffff, 0.62);
+            yl_scene.add(yl_ambientLight);
+            const yl_directionalLight = new yl_three.DirectionalLight(0xffffff, 0.72);
+            yl_directionalLight.position.set(5, 9, 7);
+            yl_scene.add(yl_directionalLight);
+
+            const yl_plotGroup = new yl_three.Group();
+            yl_scene.add(yl_plotGroup);
+            const yl_record = {
+                container: yl_container,
+                renderer: yl_renderer,
+                scene: yl_scene,
+                camera: yl_camera,
+                plotGroup: yl_plotGroup,
+                dragging: false,
+                pointerX: 0,
+                pointerY: 0
+            };
+            yl_charts.push(yl_record);
+
+            yl_renderer.domElement.addEventListener("pointerdown", (yl_event) => {
+                yl_record.dragging = true;
+                yl_record.pointerX = yl_event.clientX;
+                yl_record.pointerY = yl_event.clientY;
+                yl_renderer.domElement.setPointerCapture(yl_event.pointerId);
+            });
+            yl_renderer.domElement.addEventListener("pointermove", (yl_event) => {
+                if (!yl_record.dragging) return;
+                const yl_deltaX = yl_event.clientX - yl_record.pointerX;
+                const yl_deltaY = yl_event.clientY - yl_record.pointerY;
+                yl_record.pointerX = yl_event.clientX;
+                yl_record.pointerY = yl_event.clientY;
+                yl_plotGroup.rotation.y += yl_deltaX * 0.008;
+                yl_plotGroup.rotation.x = Math.max(-0.45, Math.min(0.45, yl_plotGroup.rotation.x + yl_deltaY * 0.004));
+            });
+            yl_renderer.domElement.addEventListener("pointerup", () => {
+                yl_record.dragging = false;
+            });
+            yl_renderer.domElement.addEventListener("pointercancel", () => {
+                yl_record.dragging = false;
+            });
+
+            return yl_record;
+        }
+
+        const yl_barChart = yl_createChart("yl_bar-chart", 0xf8fbfd);
+        const yl_barDimensions = { x: 5.2, z: 3.9 };
+        yl_addAxes(yl_barChart.plotGroup, yl_barDimensions, 5.2, yl_barCategories, yl_quarters);
+        const yl_barGeometry = new yl_three.BoxGeometry(0.42, 1, 0.42);
+
+        yl_sales.forEach((yl_row, yl_categoryIndex) => {
+            yl_row.forEach((yl_value, yl_quarterIndex) => {
+                const yl_height = yl_value / 20;
+                const yl_material = new yl_three.MeshStandardMaterial({
+                    color: yl_palette[yl_quarterIndex < 2 ? 0 : 1],
+                    roughness: 0.45,
+                    metalness: 0.08
+                });
+                const yl_bar = new yl_three.Mesh(yl_barGeometry, yl_material);
+                const yl_x = 0.35 + yl_categoryIndex * 1.1;
+                const yl_z = 0.35 + yl_quarterIndex * 1.05;
+                yl_bar.scale.y = yl_height;
+                yl_bar.position.set(yl_x, yl_height / 2, yl_z);
+                yl_bar.userData.value = yl_value;
+                yl_barChart.plotGroup.add(yl_bar);
+            });
+        });
+        yl_addLabel(yl_barChart.plotGroup, "季度", [2.65, -0.65, 4.65], [1.05, 0.32], "#4386d7");
+
+        const yl_scatterChart = yl_createChart("yl_scatter-chart", 0xf8fbfd);
+        const yl_scatterDimensions = { x: 6.2, z: 4.8 };
+        const yl_scatterGroups = [
+            { name: "活跃", color: yl_palette[0], origin: [4.1, 3.5], count: 15, offset: [0.8, 0.8] },
+            { name: "成长", color: yl_palette[1], origin: [2.7, 2.4], count: 13, offset: [1, 0.9] },
+            { name: "待唤醒", color: yl_palette[2], origin: [1.1, 1.2], count: 12, offset: [0.85, 0.9] }
+        ];
+        yl_addAxes(
+            yl_scatterChart.plotGroup,
+            yl_scatterDimensions,
+            5.2,
+            ["少", "访问频次", "多"],
+            ["低", "客单价", "高"]
+        );
+        const yl_pointGeometry = new yl_three.SphereGeometry(0.09, 12, 10);
+        yl_scatterGroups.forEach((yl_group, yl_groupIndex) => {
+            const yl_material = new yl_three.MeshStandardMaterial({
+                color: yl_group.color,
+                roughness: 0.35,
+                metalness: 0.05
+            });
+            for (let yl_index = 0; yl_index < yl_group.count; yl_index += 1) {
+                const yl_seed = yl_index + yl_groupIndex * 29;
+                const yl_x = Math.max(0.2, Math.min(yl_scatterDimensions.x, yl_group.origin[0] + Math.sin(yl_seed * 12.9898) * yl_group.offset[0]));
+                const yl_z = Math.max(0.2, Math.min(yl_scatterDimensions.z, yl_group.origin[1] + Math.cos(yl_seed * 7.233) * yl_group.offset[1]));
+                const yl_y = Math.max(0.25, Math.min(4.5, 0.45 + yl_x * 0.35 + yl_z * 0.32 + Math.sin(yl_seed * 3.7) * 0.75));
+                const yl_point = new yl_three.Mesh(yl_pointGeometry, yl_material);
+                yl_point.position.set(yl_x, yl_y, yl_z);
+                yl_point.userData.segment = yl_group.name;
+                yl_scatterChart.plotGroup.add(yl_point);
+            }
+        });
+        yl_addLabel(yl_scatterChart.plotGroup, "复购间隔", [3.15, -0.65, 5.45], [1.45, 0.34], "#4386d7");
+
+        const yl_resizeObserver = new ResizeObserver((yl_entries) => {
+            for (const yl_entry of yl_entries) {
+                const yl_chart = yl_charts.find((yl_item) => yl_item.container === yl_entry.target);
+                if (!yl_chart) continue;
+                const yl_width = Math.max(1, yl_entry.contentRect.width);
+                const yl_height = Math.max(1, yl_entry.contentRect.height);
+                yl_chart.camera.aspect = yl_width / yl_height;
+                yl_chart.camera.updateProjectionMatrix();
+                yl_chart.renderer.setSize(yl_width, yl_height);
+            }
+        });
+        yl_charts.forEach((yl_chart) => yl_resizeObserver.observe(yl_chart.container));
+
+        function yl_renderCharts() {
+            yl_charts.forEach((yl_chart) => {
+                yl_chart.renderer.render(yl_chart.scene, yl_chart.camera);
+            });
+            window.requestAnimationFrame(yl_renderCharts);
+        }
+
+        yl_renderCharts();
+    </script>
+</body>
+</html>

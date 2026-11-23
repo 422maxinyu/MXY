@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-02；功能名称：远程接口请求测试 -->
+    <meta name="description" content="课堂实践 17-4：使用 Fetch 测试 GET、POST、PUT、PATCH 与 DELETE 接口">
+    <title>17-4 · 接口测试台</title>
+    <style>
+        :root {
+            --yl_ink: #202b3d;
+            --yl_muted: #758097;
+            --yl_paper: #f3f5fa;
+            --yl_card: #fff;
+            --yl_blue: #4968ca;
+            --yl_border: #e3e8f2;
+            --yl_code: #18251f;
+            --yl_error: #b42318;
+            --yl_success: #247449;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 42px 20px 60px;
+            background: var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1040px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_blue);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 44px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            margin: 10px 0 24px;
+            color: var(--yl_muted);
+            line-height: 1.8;
+        }
+
+        .yl_panel {
+            padding: clamp(18px, 4vw, 28px);
+            border: 1px solid var(--yl_border);
+            border-radius: 18px;
+            background: var(--yl_card);
+            box-shadow: 0 12px 32px rgb(35 48 77 / 5%);
+        }
+
+        .yl_request-grid {
+            display: grid;
+            grid-template-columns: minmax(150px, 0.3fr) minmax(0, 1fr);
+            gap: 14px;
+        }
+
+        .yl_field {
+            display: grid;
+            min-width: 0;
+            gap: 8px;
+        }
+
+        .yl_field.yl_full {
+            grid-column: 1 / -1;
+        }
+
+        .yl_label {
+            color: #44516a;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .yl_control {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid var(--yl_border);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--yl_ink);
+            font: inherit;
+            font-size: 14px;
+        }
+
+        .yl_control:focus-visible {
+            border-color: var(--yl_blue);
+            outline: 3px solid rgb(73 104 202 / 16%);
+        }
+
+        .yl_url-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+        }
+
+        .yl_url {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
+        }
+
+        .yl_body {
+            min-height: 180px;
+            resize: vertical;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.65;
+            tab-size: 2;
+        }
+
+        .yl_hint {
+            margin: 0;
+            color: var(--yl_muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .yl_actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .yl_button {
+            min-height: 44px;
+            padding: 10px 20px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--yl_blue);
+            color: #fff;
+            cursor: pointer;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .yl_button:hover:not(:disabled) {
+            background: #3855b0;
+        }
+
+        .yl_button:focus-visible {
+            outline: 3px solid #aebcf3;
+            outline-offset: 3px;
+        }
+
+        .yl_button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .yl_error {
+            margin: 16px 0 0;
+            padding: 12px 14px;
+            border: 1px solid #f3c9c5;
+            border-radius: 10px;
+            background: #fff1f0;
+            color: var(--yl_error);
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .yl_response {
+            margin-top: 20px;
+        }
+
+        .yl_response-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .yl_response-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .yl_badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #eef1f7;
+            color: var(--yl_muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_badge.yl_ok {
+            background: #e9f6ee;
+            color: var(--yl_success);
+        }
+
+        .yl_badge.yl_bad {
+            background: #fff1f0;
+            color: var(--yl_error);
+        }
+
+        .yl_response-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            margin: 0 0 14px;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_output {
+            overflow: auto;
+            min-height: 180px;
+            max-height: 460px;
+            margin: 0;
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--yl_code);
+            color: #d7f0dc;
+            font: 13px/1.75 Consolas, "Courier New", monospace;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 30px 15px 44px;
+            }
+
+            .yl_request-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_field.yl_full {
+                grid-column: auto;
+            }
+
+            .yl_url-row {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .yl_button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 17-4</p>
+        <h1>远程接口测试台</h1>
+        <p class="yl_intro">选择请求方法并填写接口地址，发送原生 Fetch 请求。以 JSONPlaceholder 为例，GET 和 POST 均可直接测试。</p>
+
+        <section class="yl_panel" aria-label="接口请求配置">
+            <form id="yl_request-form">
+                <div class="yl_request-grid">
+                    <label class="yl_field" for="yl_method">
+                        <span class="yl_label">请求方法</span>
+                        <select class="yl_control" id="yl_method" name="method">
+                            <option value="GET">GET · 查询</option>
+                            <option value="POST">POST · 新增</option>
+                            <option value="PUT">PUT · 替换</option>
+                            <option value="PATCH">PATCH · 更新</option>
+                            <option value="DELETE">DELETE · 删除</option>
+                        </select>
+                    </label>
+                    <div class="yl_field">
+                        <label class="yl_label" for="yl_url">请求地址</label>
+                        <span class="yl_url-row">
+                            <input class="yl_control yl_url" id="yl_url" name="url" type="url" value="https://jsonplaceholder.typicode.com/posts/1" placeholder="https://example.com/api" required>
+                            <button class="yl_button" id="yl_send" type="submit">发送请求</button>
+                        </span>
+                    </div>
+                    <label class="yl_field yl_full" id="yl_body-field" for="yl_body">
+                        <span class="yl_label">JSON 请求体</span>
+                        <textarea class="yl_control yl_body" id="yl_body" name="body" spellcheck="false">{
+  "title": "接口测试",
+  "body": "通过 Fetch 发送的示例数据",
+  "userId": 1
+}</textarea>
+                        <span class="yl_hint">POST、PUT、PATCH 会发送此 JSON 数据，并自动设置 Content-Type: application/json。</span>
+                    </label>
+                    <div class="yl_field yl_full yl_actions">
+                        <p class="yl_hint">JSONPlaceholder 示例：GET /posts/1 · POST /posts</p>
+                        <span class="yl_hint" id="yl_request-note" role="status">就绪</span>
+                    </div>
+                </div>
+            </form>
+
+            <p class="yl_error" id="yl_error" role="alert" hidden></p>
+
+            <section class="yl_response" aria-labelledby="yl_response-title">
+                <div class="yl_response-header">
+                    <h2 id="yl_response-title">响应结果</h2>
+                    <span class="yl_badge" id="yl_status-badge">尚未请求</span>
+                </div>
+                <p class="yl_response-meta" id="yl_response-meta" aria-live="polite">
+                    <span>状态：等待请求</span>
+                    <span>耗时：—</span>
+                </p>
+                <pre class="yl_output" id="yl_output" aria-label="接口返回的数据">点击“发送请求”查看接口响应。</pre>
+            </section>
+        </section>
+    </main>
+    <script>
+        const yl_form = document.getElementById("yl_request-form");
+        const yl_method = document.getElementById("yl_method");
+        const yl_url = document.getElementById("yl_url");
+        const yl_body = document.getElementById("yl_body");
+        const yl_bodyField = document.getElementById("yl_body-field");
+        const yl_sendButton = document.getElementById("yl_send");
+        const yl_requestNote = document.getElementById("yl_request-note");
+        const yl_error = document.getElementById("yl_error");
+        const yl_statusBadge = document.getElementById("yl_status-badge");
+        const yl_responseMeta = document.getElementById("yl_response-meta");
+        const yl_output = document.getElementById("yl_output");
+        const yl_suggestedUrls = {
+            GET: "https://jsonplaceholder.typicode.com/posts/1",
+            POST: "https://jsonplaceholder.typicode.com/posts",
+            PUT: "https://jsonplaceholder.typicode.com/posts/1",
+            PATCH: "https://jsonplaceholder.typicode.com/posts/1",
+            DELETE: "https://jsonplaceholder.typicode.com/posts/1"
+        };
+        let yl_lastSuggestedUrl = yl_suggestedUrls.GET;
+
+        function yl_updateMethodOptions() {
+            const yl_nextMethod = yl_method.value;
+            const yl_needsBody = ["POST", "PUT", "PATCH"].includes(yl_nextMethod);
+            yl_bodyField.hidden = !yl_needsBody;
+            yl_body.disabled = !yl_needsBody;
+
+            if (yl_url.value === yl_lastSuggestedUrl) {
+                yl_url.value = yl_suggestedUrls[yl_nextMethod];
+            }
+            yl_lastSuggestedUrl = yl_suggestedUrls[yl_nextMethod];
+        }
+
+        function yl_setResponseMeta(statusText, durationText) {
+            yl_responseMeta.replaceChildren();
+            [statusText, durationText].forEach((yl_text) => {
+                const yl_item = document.createElement("span");
+                yl_item.textContent = yl_text;
+                yl_responseMeta.append(yl_item);
+            });
+        }
+
+        function yl_formatData(data) {
+            if (typeof data === "string") {
+                return data || "（响应正文为空）";
+            }
+            return JSON.stringify(data, null, 2);
+        }
+
+        async function yl_sendRequest() {
+            const yl_requestMethod = yl_method.value;
+            let yl_requestUrl;
+            let yl_requestBody;
+
+            yl_error.hidden = true;
+            yl_error.textContent = "";
+            yl_statusBadge.className = "yl_badge";
+            yl_statusBadge.textContent = "请求中…";
+            yl_requestNote.textContent = "正在发送请求…";
+            yl_output.textContent = "等待接口响应…";
+            yl_setResponseMeta("状态：请求中", "耗时：计算中");
+
+            try {
+                try {
+                    yl_requestUrl = new URL(yl_url.value.trim());
+                } catch (yl_urlError) {
+                    throw new Error("请求地址无效，请填写完整的 http:// 或 https:// 地址。");
+                }
+
+                if (!["http:", "https:"].includes(yl_requestUrl.protocol)) {
+                    throw new Error("请求地址必须以 http:// 或 https:// 开头。");
+                }
+
+                const yl_requestOptions = {
+                    method: yl_requestMethod,
+                    headers: {
+                        Accept: "application/json"
+                    }
+                };
+
+                if (["POST", "PUT", "PATCH"].includes(yl_requestMethod)) {
+                    try {
+                        yl_requestBody = JSON.parse(yl_body.value);
+                    } catch (yl_parseError) {
+                        throw new Error(`请求体不是有效的 JSON：${yl_parseError.message}`);
+                    }
+                    yl_requestOptions.headers["Content-Type"] = "application/json";
+                    yl_requestOptions.body = JSON.stringify(yl_requestBody);
+                }
+
+                const yl_startTime = performance.now();
+                const yl_response = await fetch(yl_requestUrl, yl_requestOptions);
+                const yl_responseText = await yl_response.text();
+                const yl_duration = Math.round(performance.now() - yl_startTime);
+                let yl_responseData = yl_responseText;
+
+                if (yl_responseText) {
+                    try {
+                        yl_responseData = JSON.parse(yl_responseText);
+                    } catch (yl_parseError) {
+                        yl_responseData = yl_responseText;
+                    }
+                }
+
+                const yl_statusText = `${yl_response.status} ${yl_response.statusText}`.trim();
+                yl_statusBadge.textContent = yl_response.ok ? `成功 · ${yl_response.status}` : `HTTP 错误 · ${yl_response.status}`;
+                yl_statusBadge.classList.add(yl_response.ok ? "yl_ok" : "yl_bad");
+                yl_setResponseMeta(`状态：${yl_statusText}`, `耗时：${yl_duration} ms`);
+                yl_output.textContent = yl_formatData(yl_responseData);
+
+                if (!yl_response.ok) {
+                    yl_error.textContent = `服务器返回 HTTP ${yl_statusText}。请检查接口地址或请求参数；响应正文已显示在下方。`;
+                    yl_error.hidden = false;
+                    yl_requestNote.textContent = "请求已完成，但服务器返回错误状态。";
+                } else {
+                    yl_requestNote.textContent = `${yl_requestMethod} 请求完成。`;
+                }
+            } catch (yl_errorValue) {
+                yl_statusBadge.textContent = "请求失败";
+                yl_statusBadge.classList.add("yl_bad");
+                yl_setResponseMeta("状态：请求失败", "耗时：—");
+                yl_output.textContent = "未收到接口响应。";
+                yl_error.textContent = yl_errorValue instanceof TypeError
+                    ? `网络请求失败：${yl_errorValue.message}。请检查网络、接口地址及服务器的跨域（CORS）设置。`
+                    : yl_errorValue.message;
+                yl_error.hidden = false;
+                yl_requestNote.textContent = "请求未成功。";
+            } finally {
+                yl_sendButton.disabled = false;
+                yl_sendButton.textContent = "发送请求";
+            }
+        }
+
+        yl_method.addEventListener("change", yl_updateMethodOptions);
+        yl_form.addEventListener("submit", (yl_event) => {
+            yl_event.preventDefault();
+            yl_sendButton.disabled = true;
+            yl_sendButton.textContent = "请求中…";
+            yl_sendRequest();
+        });
+
+        yl_updateMethodOptions();
+    </script>
+</body>
+</html>

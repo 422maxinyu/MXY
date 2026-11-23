@@ -1,0 +1,129 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>图表仪表盘 · 小米商城 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+
+  <main class="ma_admin-main">
+    <header class="ma_admin-topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <nav class="ma_admin-nav" aria-label="后台导航">
+        <a href="./admin.html">实体管理</a>
+        <a class="is-active" href="./dashboard.html">图表仪表盘</a>
+        <a href="./ai-lab.html">大模型实验室</a>
+        <a href="./index.html">返回首页</a>
+      </nav>
+    </header>
+
+    <section class="ma_admin-head">
+      <div>
+        <p class="ma_eyebrow">DASHBOARD</p>
+        <h1>图表仪表盘<span class="ma_auth-dot">.</span></h1>
+        <p>
+          所有图表都由 <code>GET /api/stats/dashboard</code> 返回的数据动态绘制：
+          卡片数字、柱状图、折线、环形图与条形图均与接口数据一一对应。
+        </p>
+      </div>
+      <div class="ma_kt-row" aria-label="本页覆盖的考点">
+        <span class="ma_kt-tag">KT20 Canvas 绘图</span>
+        <span class="ma_kt-tag">KT25 动态数据</span>
+      </div>
+    </section>
+
+    <div class="ma_toolbar">
+      <span class="ma_pager-info" id="ma_dashboard-updated">正在加载数据…</span>
+      <button class="ma_btn" id="ma_dashboard-refresh" type="button">刷新数据</button>
+    </div>
+
+    <!-- KPI 数字卡片 -->
+    <section class="ma_kpi-grid" aria-label="核心指标">
+      <article class="ma_kpi">
+        <span>商品总数</span>
+        <strong id="ma_kpi-products">—</strong>
+        <small>products 表记录数</small>
+      </article>
+      <article class="ma_kpi">
+        <span>订单总数</span>
+        <strong id="ma_kpi-orders">—</strong>
+        <small>orders 表记录数</small>
+      </article>
+      <article class="ma_kpi">
+        <span>注册用户</span>
+        <strong id="ma_kpi-users">—</strong>
+        <small>users 表记录数</small>
+      </article>
+      <article class="ma_kpi">
+        <span>有效销售额</span>
+        <strong id="ma_kpi-revenue">—</strong>
+        <small>不含已取消订单</small>
+      </article>
+    </section>
+
+    <!-- 图表区域（KT20：全部用 Canvas 手绘，无第三方图表库） -->
+    <section class="ma_chart-grid" aria-label="图表区域">
+      <article class="ma_chart-card ma_chart-card--wide">
+        <div class="ma_chart-head">
+          <h3>月度销售额与订单量</h3>
+          <span>柱状：销售额（元） · 折线：订单数</span>
+        </div>
+        <div class="ma_chart-canvas-wrap">
+          <canvas id="ma_chart-monthly" aria-label="月度销售额柱状图与订单量折线图"></canvas>
+        </div>
+        <div class="ma_chart-legend">
+          <span><i style="background:#9bafff"></i>销售额</span>
+          <span><i style="background:#78e2d0"></i>订单数</span>
+        </div>
+      </article>
+
+      <article class="ma_chart-card">
+        <div class="ma_chart-head">
+          <h3>商品分类占比</h3>
+          <span>按商品数量统计</span>
+        </div>
+        <div class="ma_chart-canvas-wrap">
+          <canvas id="ma_chart-category" aria-label="商品分类占比环形图"></canvas>
+        </div>
+        <div class="ma_chart-legend" id="ma_chart-category-legend"></div>
+      </article>
+
+      <article class="ma_chart-card">
+        <div class="ma_chart-head">
+          <h3>订单状态分布</h3>
+          <span>按订单数量统计</span>
+        </div>
+        <div class="ma_chart-canvas-wrap">
+          <canvas id="ma_chart-status" aria-label="订单状态横向条形图"></canvas>
+        </div>
+        <div class="ma_chart-legend" id="ma_chart-status-legend"></div>
+      </article>
+
+      <article class="ma_chart-card ma_chart-card--wide">
+        <div class="ma_chart-head">
+          <h3>商品销售额 Top 5</h3>
+          <span>不含已取消订单</span>
+        </div>
+        <div class="ma_chart-canvas-wrap">
+          <canvas id="ma_chart-top" aria-label="商品销售额 Top5 横向条形图"></canvas>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="ma_toast" id="ma_toast" hidden role="status"></div>
+
+  <script src="./js/mock-db.js" defer></script>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/dashboard.js" defer></script>
+</body>
+</html>

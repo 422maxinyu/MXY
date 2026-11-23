@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-05；功能名称：Canvas 电商系统架构图 -->
+    <meta name="description" content="课堂实践 18-2：使用 Canvas 绘制电商全站系统的分层架构图">
+    <title>18-2 · 电商系统架构图</title>
+    <style>
+        :root {
+            --yl_ink: #172a3a;
+            --yl_muted: #607789;
+            --yl_paper: #f2f6fa;
+            --yl_border: #dce6ee;
+            --yl_blue: #3978c5;
+            --yl_green: #318b78;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 44px 20px;
+            background:
+                radial-gradient(circle at 90% 0%, #e0edf8, transparent 30rem),
+                var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1160px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_blue);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 760px;
+            margin: 14px 0 24px;
+            color: var(--yl_muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .yl_diagram-card {
+            overflow: hidden;
+            border: 1px solid var(--yl_border);
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 18px 48px rgb(31 64 91 / 8%);
+        }
+
+        .yl_diagram-scroll {
+            overflow-x: auto;
+            padding: 14px;
+        }
+
+        .yl_architecture {
+            display: block;
+            width: 1120px;
+            height: 760px;
+        }
+
+        .yl_legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 24px;
+            padding: 16px 20px;
+            border-top: 1px solid var(--yl_border);
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .yl_swatch {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            background: var(--yl_blue);
+        }
+
+        .yl_swatch.yl_swatch-green {
+            background: var(--yl_green);
+        }
+
+        .yl_swatch.yl_swatch-amber {
+            background: #c28a31;
+        }
+
+        .yl_note {
+            margin: 16px 2px 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 32px 14px;
+            }
+
+            .yl_diagram-scroll {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 18-2 / SYSTEM DESIGN</p>
+        <h1>电商全站系统架构</h1>
+        <p class="yl_intro">从多端入口、统一接入到交易域服务与数据底座，使用 Canvas 画出电商平台的主要模块及其调用关系。图表可横向滚动查看。</p>
+        <section class="yl_diagram-card" aria-label="电商全站系统架构图">
+            <div class="yl_diagram-scroll">
+                <canvas class="yl_architecture" id="yl_architecture" role="img" aria-label="电商系统分层架构：用户渠道经过接入层调用业务服务，业务服务连接数据与消息中间件，并由云平台和运维能力支撑">
+                    电商全站系统架构图：用户渠道、接入层、业务服务、数据中间件和平台运维。
+                </canvas>
+            </div>
+            <div class="yl_legend" aria-label="架构图图例">
+                <span><i class="yl_swatch"></i>接入与平台能力</span>
+                <span><i class="yl_swatch yl_swatch-green"></i>业务域服务</span>
+                <span><i class="yl_swatch yl_swatch-amber"></i>数据与消息组件</span>
+                <span>连线表示主要调用或数据流向</span>
+            </div>
+        </section>
+        <p class="yl_note">架构示意：实际部署可按业务规模拆分服务，并通过服务治理、监控告警、权限控制与持续交付保障稳定运行。</p>
+    </main>
+    <script>
+        const yl_canvas = document.getElementById("yl_architecture");
+        const yl_context = yl_canvas.getContext("2d");
+        const yl_width = 1120;
+        const yl_height = 760;
+        const yl_colors = {
+            ink: "#183349",
+            muted: "#607789",
+            blue: "#3978c5",
+            blueFill: "#edf5ff",
+            green: "#318b78",
+            greenFill: "#edf8f4",
+            amber: "#b47b22",
+            amberFill: "#fff7e8",
+            line: "#9bb2c5",
+            border: "#d9e5ee"
+        };
+        const yl_layers = [
+            { y: 34, height: 94, title: "用户渠道", fill: "#f7faff" },
+            { y: 144, height: 94, title: "统一接入", fill: "#f3f8ff" },
+            { y: 254, height: 194, title: "业务服务", fill: "#f4faf7" },
+            { y: 464, height: 104, title: "数据与中间件", fill: "#fffaf1" },
+            { y: 584, height: 112, title: "平台与运维", fill: "#f7f9fc" }
+        ];
+
+        function yl_drawRoundRect(yl_x, yl_y, yl_widthValue, yl_heightValue, yl_radius, yl_fill, yl_stroke) {
+            yl_context.beginPath();
+            yl_context.roundRect(yl_x, yl_y, yl_widthValue, yl_heightValue, yl_radius);
+            yl_context.fillStyle = yl_fill;
+            yl_context.fill();
+            yl_context.strokeStyle = yl_stroke;
+            yl_context.lineWidth = 1;
+            yl_context.stroke();
+        }
+
+        function yl_drawNode(yl_x, yl_y, yl_widthValue, yl_title, yl_subtitle, yl_kind) {
+            const yl_palette = yl_kind === "green"
+                ? { fill: yl_colors.greenFill, stroke: "#b8ddcf", title: yl_colors.green }
+                : yl_kind === "amber"
+                    ? { fill: yl_colors.amberFill, stroke: "#ead4a6", title: yl_colors.amber }
+                    : { fill: yl_colors.blueFill, stroke: "#c5d9ef", title: yl_colors.blue };
+            const yl_heightValue = 58;
+            yl_drawRoundRect(yl_x, yl_y, yl_widthValue, yl_heightValue, 11, yl_palette.fill, yl_palette.stroke);
+            yl_context.textAlign = "center";
+            yl_context.fillStyle = yl_palette.title;
+            yl_context.font = "700 15px Microsoft YaHei, sans-serif";
+            yl_context.fillText(yl_title, yl_x + yl_widthValue / 2, yl_y + 25);
+            yl_context.fillStyle = yl_colors.muted;
+            yl_context.font = "11px Microsoft YaHei, sans-serif";
+            yl_context.fillText(yl_subtitle, yl_x + yl_widthValue / 2, yl_y + 44);
+        }
+
+        function yl_drawArrow(yl_startX, yl_startY, yl_endX, yl_endY) {
+            const yl_head = 6;
+            const yl_angle = Math.atan2(yl_endY - yl_startY, yl_endX - yl_startX);
+            yl_context.beginPath();
+            yl_context.moveTo(yl_startX, yl_startY);
+            yl_context.lineTo(yl_endX, yl_endY);
+            yl_context.strokeStyle = yl_colors.line;
+            yl_context.lineWidth = 1.5;
+            yl_context.stroke();
+            yl_context.beginPath();
+            yl_context.moveTo(yl_endX, yl_endY);
+            yl_context.lineTo(
+                yl_endX - yl_head * Math.cos(yl_angle - Math.PI / 6),
+                yl_endY - yl_head * Math.sin(yl_angle - Math.PI / 6)
+            );
+            yl_context.lineTo(
+                yl_endX - yl_head * Math.cos(yl_angle + Math.PI / 6),
+                yl_endY - yl_head * Math.sin(yl_angle + Math.PI / 6)
+            );
+            yl_context.closePath();
+            yl_context.fillStyle = yl_colors.line;
+            yl_context.fill();
+        }
+
+        function yl_drawArchitecture() {
+            const yl_pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            yl_canvas.width = yl_width * yl_pixelRatio;
+            yl_canvas.height = yl_height * yl_pixelRatio;
+            yl_context.setTransform(yl_pixelRatio, 0, 0, yl_pixelRatio, 0, 0);
+            yl_context.fillStyle = "#ffffff";
+            yl_context.fillRect(0, 0, yl_width, yl_height);
+
+            for (const yl_layer of yl_layers) {
+                yl_drawRoundRect(14, yl_layer.y, 1092, yl_layer.height, 13, yl_layer.fill, yl_colors.border);
+                yl_context.textAlign = "left";
+                yl_context.fillStyle = yl_colors.muted;
+                yl_context.font = "700 11px Microsoft YaHei, sans-serif";
+                yl_context.fillText(yl_layer.title, 30, yl_layer.y + 19);
+            }
+
+            const yl_channelXs = [112, 356, 600, 844];
+            const yl_channelNodes = [
+                ["PC 商城", "商品浏览 · 下单"],
+                ["移动 App", "会员 · 交易"],
+                ["微信小程序", "内容 · 社交触达"],
+                ["运营管理台", "商品 · 订单管理"]
+            ];
+            yl_channelNodes.forEach((yl_node, yl_index) => {
+                yl_drawNode(yl_channelXs[yl_index], 58, 174, yl_node[0], yl_node[1], "blue");
+                yl_drawArrow(yl_channelXs[yl_index] + 87, 116, 560, 158);
+            });
+
+            yl_drawNode(370, 165, 380, "API 网关 / BFF", "鉴权 · 路由 · 限流 · 聚合", "blue");
+            yl_drawArrow(560, 223, 560, 274);
+
+            const yl_businessNodes = [
+                ["用户与会员", "账号 · 地址 · 积分"],
+                ["商品与目录", "SPU/SKU · 库存"],
+                ["搜索与推荐", "检索 · 排序 · 个性化"],
+                ["营销与促销", "优惠券 · 活动 · 定价"],
+                ["购物车与订单", "购物车 · 订单状态"],
+                ["支付与结算", "支付 · 对账 · 退款"],
+                ["仓储与履约", "仓库 · 配送 · 物流"],
+                ["消息与内容", "通知 · 评价 · CMS"]
+            ];
+            const yl_businessXs = [105, 355, 605, 855];
+            yl_businessNodes.forEach((yl_node, yl_index) => {
+                const yl_row = yl_index < 4 ? 282 : 366;
+                const yl_x = yl_businessXs[yl_index % 4];
+                yl_drawNode(yl_x, yl_row, 190, yl_node[0], yl_node[1], "green");
+                if (yl_index < 4) {
+                    yl_drawArrow(560, 274, yl_x + 95, 281);
+                    yl_drawArrow(yl_x + 95, 340, yl_businessXs[yl_index] + 95, 365);
+                }
+            });
+
+            const yl_dataNodes = [
+                ["MySQL", "交易与主数据"],
+                ["Redis", "缓存 · 会话"],
+                ["Elasticsearch", "商品检索"],
+                ["消息队列", "异步解耦"],
+                ["对象存储", "图片 · 文件"]
+            ];
+            const yl_dataXs = [91, 294, 497, 700, 903];
+            yl_context.beginPath();
+            for (const yl_x of yl_businessXs) {
+                const yl_centerX = yl_x + 95;
+                yl_context.moveTo(yl_centerX, 424);
+                yl_context.lineTo(yl_centerX, 451);
+            }
+            yl_context.moveTo(154, 451);
+            yl_context.lineTo(966, 451);
+            yl_context.strokeStyle = yl_colors.line;
+            yl_context.lineWidth = 1.5;
+            yl_context.stroke();
+            yl_dataNodes.forEach((yl_node, yl_index) => {
+                const yl_centerX = yl_dataXs[yl_index] + 63;
+                yl_drawNode(yl_dataXs[yl_index], 487, 126, yl_node[0], yl_node[1], "amber");
+                yl_drawArrow(yl_centerX, 451, yl_centerX, 486);
+                yl_drawArrow(yl_centerX, 545, yl_centerX, 594);
+            });
+
+            const yl_platformNodes = [
+                ["云基础设施", "容器 · 网络 · 弹性扩缩"],
+                ["服务治理与安全", "注册配置 · 权限 · 密钥"],
+                ["可观测与交付", "日志 · 指标 · CI/CD"]
+            ];
+            const yl_platformXs = [186, 460, 734];
+            yl_platformNodes.forEach((yl_node, yl_index) => {
+                yl_drawNode(yl_platformXs[yl_index], 611, 200, yl_node[0], yl_node[1], "blue");
+            });
+        }
+
+        yl_drawArchitecture();
+        window.addEventListener("resize", yl_drawArchitecture);
+    </script>
+</body>
+</html>

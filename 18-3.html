@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-05；功能名称：知识库智能客服 SVG 系统架构 -->
+    <meta name="description" content="课堂实践 18-3：以 SVG 展示面向科研探索的知识库智能客服系统架构">
+    <title>18-3 · 知识库智能客服架构</title>
+    <style>
+        :root {
+            --yl_ink: #25263c;
+            --yl_muted: #686c84;
+            --yl_paper: #f6f5fb;
+            --yl_border: #e3e1ef;
+            --yl_purple: #6558b5;
+            --yl_teal: #318b86;
+            --yl_amber: #a87322;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 44px 20px 56px;
+            background:
+                radial-gradient(circle at 88% 2%, #e9e5fb, transparent 31rem),
+                var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1240px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_purple);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 880px;
+            margin: 14px 0 24px;
+            color: var(--yl_muted);
+            font-size: 15px;
+            line-height: 1.85;
+        }
+
+        .yl_diagram-card {
+            overflow: hidden;
+            border: 1px solid var(--yl_border);
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 18px 52px rgb(49 43 90 / 8%);
+        }
+
+        .yl_diagram-scroll {
+            overflow-x: auto;
+            padding: 12px;
+        }
+
+        .yl_architecture {
+            display: block;
+            width: 1380px;
+            height: auto;
+        }
+
+        .yl_legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 22px;
+            padding: 15px 20px;
+            border-top: 1px solid var(--yl_border);
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .yl_swatch {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            background: var(--yl_purple);
+        }
+
+        .yl_swatch.yl_swatch-teal {
+            background: var(--yl_teal);
+        }
+
+        .yl_swatch.yl_swatch-amber {
+            background: var(--yl_amber);
+        }
+
+        .yl_research {
+            margin-top: 24px;
+        }
+
+        .yl_research h2 {
+            margin: 0 0 12px;
+            font-size: 20px;
+        }
+
+        .yl_research-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .yl_research-card {
+            padding: 17px 18px;
+            border: 1px solid var(--yl_border);
+            border-radius: 13px;
+            background: rgb(255 255 255 / 82%);
+        }
+
+        .yl_research-card h3 {
+            margin: 0 0 7px;
+            color: var(--yl_purple);
+            font-size: 14px;
+        }
+
+        .yl_research-card p {
+            margin: 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .yl_note {
+            margin: 15px 0 0;
+            color: var(--yl_muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 32px 14px 40px;
+            }
+
+            .yl_research-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_diagram-scroll {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 18-3 / RESEARCH ARCHITECTURE</p>
+        <h1>知识库智能客服系统</h1>
+        <p class="yl_intro">面向企业知识服务研究，围绕检索增强生成（RAG）构建可追溯、可评测、可转人工的问答闭环。SVG 图展示离线知识治理、在线问答链路与研究评估反馈；小屏幕可横向滚动查看。</p>
+        <section class="yl_diagram-card" aria-label="知识库智能客服系统架构图">
+            <div class="yl_diagram-scroll">
+                <svg class="yl_architecture" viewBox="0 0 1380 900" role="img" aria-labelledby="yl_svg-title yl_svg-description" xmlns="http://www.w3.org/2000/svg">
+                    <title id="yl_svg-title">知识库智能客服系统架构图</title>
+                    <desc id="yl_svg-description">架构包括离线知识采集与索引构建、在线检索增强问答、可信安全治理以及评估与人工反馈闭环。</desc>
+                    <defs>
+                        <marker id="yl_arrow" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#9b9bb3"/>
+                        </marker>
+                        <marker id="yl_arrow-purple" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#7669c6"/>
+                        </marker>
+                        <marker id="yl_arrow-teal" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 Z" fill="#4a9d94"/>
+                        </marker>
+                        <style>
+                            .yl_svg-text { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+                            .yl_svg-title { font-size: 15px; font-weight: 700; }
+                            .yl_svg-sub { font-size: 11px; }
+                            .yl_svg-label { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+                            .yl_svg-flow { fill: none; stroke: #9b9bb3; stroke-width: 1.7; marker-end: url(#yl_arrow); }
+                            .yl_svg-flow-purple { fill: none; stroke: #7669c6; stroke-width: 1.8; marker-end: url(#yl_arrow-purple); }
+                            .yl_svg-flow-teal { fill: none; stroke: #4a9d94; stroke-width: 1.7; marker-end: url(#yl_arrow-teal); }
+                            .yl_svg-dashed { stroke-dasharray: 6 5; }
+                        </style>
+                    </defs>
+                    <rect width="1380" height="900" fill="#ffffff"/>
+
+                    <rect x="18" y="20" width="1344" height="254" rx="18" fill="#faf9ff" stroke="#e6e3f2"/>
+                    <text class="yl_svg-text yl_svg-label" x="42" y="50" fill="#6558b5">01 · 离线知识治理与索引构建</text>
+                    <text class="yl_svg-text yl_svg-sub" x="1335" y="50" text-anchor="end" fill="#88869e">增量更新 · 版本管理 · 权限继承</text>
+
+                    <g>
+                        <rect x="48" y="88" width="194" height="126" rx="13" fill="#fff" stroke="#dcd8ef"/>
+                        <text class="yl_svg-text yl_svg-title" x="145" y="118" text-anchor="middle" fill="#403b70">多源知识</text>
+                        <text class="yl_svg-text yl_svg-sub" x="145" y="145" text-anchor="middle" fill="#75758d">产品手册 · FAQ</text>
+                        <text class="yl_svg-text yl_svg-sub" x="145" y="165" text-anchor="middle" fill="#75758d">工单 · 制度文档</text>
+                        <text class="yl_svg-text yl_svg-sub" x="145" y="185" text-anchor="middle" fill="#75758d">网页 · 结构化数据</text>
+
+                        <rect x="290" y="88" width="194" height="126" rx="13" fill="#fff" stroke="#dcd8ef"/>
+                        <text class="yl_svg-text yl_svg-title" x="387" y="118" text-anchor="middle" fill="#403b70">接入与解析</text>
+                        <text class="yl_svg-text yl_svg-sub" x="387" y="145" text-anchor="middle" fill="#75758d">格式解析 · OCR</text>
+                        <text class="yl_svg-text yl_svg-sub" x="387" y="165" text-anchor="middle" fill="#75758d">去重 · 清洗 · 脱敏</text>
+                        <text class="yl_svg-text yl_svg-sub" x="387" y="185" text-anchor="middle" fill="#75758d">元数据与权限标注</text>
+
+                        <rect x="532" y="88" width="194" height="126" rx="13" fill="#fff" stroke="#dcd8ef"/>
+                        <text class="yl_svg-text yl_svg-title" x="629" y="118" text-anchor="middle" fill="#403b70">知识加工</text>
+                        <text class="yl_svg-text yl_svg-sub" x="629" y="145" text-anchor="middle" fill="#75758d">语义分块 · 重叠策略</text>
+                        <text class="yl_svg-text yl_svg-sub" x="629" y="165" text-anchor="middle" fill="#75758d">实体与主题抽取</text>
+                        <text class="yl_svg-text yl_svg-sub" x="629" y="185" text-anchor="middle" fill="#75758d">来源与版本绑定</text>
+
+                        <rect x="774" y="88" width="194" height="126" rx="13" fill="#fff" stroke="#dcd8ef"/>
+                        <text class="yl_svg-text yl_svg-title" x="871" y="118" text-anchor="middle" fill="#403b70">表示与索引</text>
+                        <text class="yl_svg-text yl_svg-sub" x="871" y="145" text-anchor="middle" fill="#75758d">Embedding 向量化</text>
+                        <text class="yl_svg-text yl_svg-sub" x="871" y="165" text-anchor="middle" fill="#75758d">关键词倒排索引</text>
+                        <text class="yl_svg-text yl_svg-sub" x="871" y="185" text-anchor="middle" fill="#75758d">索引质量检查</text>
+
+                        <rect x="1016" y="88" width="292" height="126" rx="13" fill="#f3f1ff" stroke="#cfc8ef"/>
+                        <text class="yl_svg-text yl_svg-title" x="1162" y="118" text-anchor="middle" fill="#5548a5">知识检索底座</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1162" y="147" text-anchor="middle" fill="#6e6992">向量数据库 + 关键词索引</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1162" y="169" text-anchor="middle" fill="#6e6992">文档片段 · 来源 · ACL</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1162" y="190" text-anchor="middle" fill="#6e6992">索引版本与更新状态</text>
+                    </g>
+                    <path class="yl_svg-flow" d="M242 151 H285"/>
+                    <path class="yl_svg-flow" d="M484 151 H527"/>
+                    <path class="yl_svg-flow" d="M726 151 H769"/>
+                    <path class="yl_svg-flow" d="M968 151 H1011"/>
+
+                    <rect x="18" y="296" width="1344" height="296" rx="18" fill="#f5fbfa" stroke="#d9ece8"/>
+                    <text class="yl_svg-text yl_svg-label" x="42" y="326" fill="#318b86">02 · 在线检索增强问答链路</text>
+                    <text class="yl_svg-text yl_svg-sub" x="1335" y="326" text-anchor="end" fill="#738f8b">低延迟编排 · 证据优先 · 置信度路由</text>
+
+                    <g>
+                        <rect x="44" y="379" width="132" height="112" rx="13" fill="#fff" stroke="#cfe5df"/>
+                        <text class="yl_svg-text yl_svg-title" x="110" y="411" text-anchor="middle" fill="#246d68">用户入口</text>
+                        <text class="yl_svg-text yl_svg-sub" x="110" y="440" text-anchor="middle" fill="#718783">网页 · App</text>
+                        <text class="yl_svg-text yl_svg-sub" x="110" y="460" text-anchor="middle" fill="#718783">企业 IM</text>
+
+                        <rect x="208" y="379" width="142" height="112" rx="13" fill="#fff" stroke="#cfe5df"/>
+                        <text class="yl_svg-text yl_svg-title" x="279" y="411" text-anchor="middle" fill="#246d68">会话编排</text>
+                        <text class="yl_svg-text yl_svg-sub" x="279" y="440" text-anchor="middle" fill="#718783">身份 · 上下文</text>
+                        <text class="yl_svg-text yl_svg-sub" x="279" y="460" text-anchor="middle" fill="#718783">意图识别</text>
+
+                        <rect x="382" y="379" width="142" height="112" rx="13" fill="#fff" stroke="#cfe5df"/>
+                        <text class="yl_svg-text yl_svg-title" x="453" y="411" text-anchor="middle" fill="#246d68">问题理解</text>
+                        <text class="yl_svg-text yl_svg-sub" x="453" y="440" text-anchor="middle" fill="#718783">指代消解</text>
+                        <text class="yl_svg-text yl_svg-sub" x="453" y="460" text-anchor="middle" fill="#718783">查询改写</text>
+
+                        <rect x="556" y="379" width="162" height="112" rx="13" fill="#eef8f6" stroke="#b8ded5"/>
+                        <text class="yl_svg-text yl_svg-title" x="637" y="411" text-anchor="middle" fill="#246d68">混合检索</text>
+                        <text class="yl_svg-text yl_svg-sub" x="637" y="440" text-anchor="middle" fill="#718783">向量 + 关键词</text>
+                        <text class="yl_svg-text yl_svg-sub" x="637" y="460" text-anchor="middle" fill="#718783">权限过滤 · Top-K</text>
+
+                        <rect x="750" y="379" width="150" height="112" rx="13" fill="#fff" stroke="#cfe5df"/>
+                        <text class="yl_svg-text yl_svg-title" x="825" y="411" text-anchor="middle" fill="#246d68">重排与证据</text>
+                        <text class="yl_svg-text yl_svg-sub" x="825" y="440" text-anchor="middle" fill="#718783">相关性重排</text>
+                        <text class="yl_svg-text yl_svg-sub" x="825" y="460" text-anchor="middle" fill="#718783">证据片段组装</text>
+
+                        <rect x="932" y="379" width="150" height="112" rx="13" fill="#fff" stroke="#cfe5df"/>
+                        <text class="yl_svg-text yl_svg-title" x="1007" y="411" text-anchor="middle" fill="#246d68">生成式回答</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1007" y="440" text-anchor="middle" fill="#718783">LLM + 提示模板</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1007" y="460" text-anchor="middle" fill="#718783">受证据约束生成</text>
+
+                        <rect x="1114" y="379" width="150" height="112" rx="13" fill="#fff" stroke="#cfe5df"/>
+                        <text class="yl_svg-text yl_svg-title" x="1189" y="411" text-anchor="middle" fill="#246d68">可信校验</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1189" y="440" text-anchor="middle" fill="#718783">引用 · 忠实度</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1189" y="460" text-anchor="middle" fill="#718783">置信度与拒答</text>
+
+                        <rect x="1290" y="379" width="58" height="112" rx="13" fill="#e9f5f2" stroke="#b8ded5"/>
+                        <text class="yl_svg-text yl_svg-sub" x="1319" y="423" text-anchor="middle" fill="#246d68">回答</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1319" y="444" text-anchor="middle" fill="#246d68">或转</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1319" y="465" text-anchor="middle" fill="#246d68">人工</text>
+                    </g>
+                    <path class="yl_svg-flow-teal" d="M176 435 H203"/>
+                    <path class="yl_svg-flow-teal" d="M350 435 H377"/>
+                    <path class="yl_svg-flow-teal" d="M524 435 H551"/>
+                    <path class="yl_svg-flow-teal" d="M718 435 H745"/>
+                    <path class="yl_svg-flow-teal" d="M900 435 H927"/>
+                    <path class="yl_svg-flow-teal" d="M1082 435 H1109"/>
+                    <path class="yl_svg-flow-teal" d="M1264 435 H1285"/>
+                    <path class="yl_svg-flow-purple" d="M1162 214 V272 H637 V374"/>
+                    <text class="yl_svg-text yl_svg-sub" x="892" y="266" text-anchor="middle" fill="#7669c6">授权知识片段与来源</text>
+
+                    <rect x="18" y="614" width="1344" height="244" rx="18" fill="#fbf9f4" stroke="#eee5d3"/>
+                    <text class="yl_svg-text yl_svg-label" x="42" y="644" fill="#a87322">03 · 安全治理、评估与研究反馈</text>
+                    <text class="yl_svg-text yl_svg-sub" x="1335" y="644" text-anchor="end" fill="#93846b">离线评测 + 在线观测 + 人工复核</text>
+
+                    <g>
+                        <rect x="48" y="680" width="252" height="112" rx="13" fill="#fff" stroke="#eadcbd"/>
+                        <text class="yl_svg-text yl_svg-title" x="174" y="711" text-anchor="middle" fill="#8d641f">安全与权限治理</text>
+                        <text class="yl_svg-text yl_svg-sub" x="174" y="740" text-anchor="middle" fill="#827b6e">租户隔离 · 文档 ACL</text>
+                        <text class="yl_svg-text yl_svg-sub" x="174" y="761" text-anchor="middle" fill="#827b6e">脱敏 · 注入防护 · 审计</text>
+
+                        <rect x="334" y="680" width="252" height="112" rx="13" fill="#fff" stroke="#eadcbd"/>
+                        <text class="yl_svg-text yl_svg-title" x="460" y="711" text-anchor="middle" fill="#8d641f">离线基准评测</text>
+                        <text class="yl_svg-text yl_svg-sub" x="460" y="740" text-anchor="middle" fill="#827b6e">检索召回 · MRR · nDCG</text>
+                        <text class="yl_svg-text yl_svg-sub" x="460" y="761" text-anchor="middle" fill="#827b6e">正确性 · 忠实度 · 引用率</text>
+
+                        <rect x="620" y="680" width="252" height="112" rx="13" fill="#fff" stroke="#eadcbd"/>
+                        <text class="yl_svg-text yl_svg-title" x="746" y="711" text-anchor="middle" fill="#8d641f">在线观测与实验</text>
+                        <text class="yl_svg-text yl_svg-sub" x="746" y="740" text-anchor="middle" fill="#827b6e">时延 · 成本 · 满意度</text>
+                        <text class="yl_svg-text yl_svg-sub" x="746" y="761" text-anchor="middle" fill="#827b6e">A/B 测试 · 消融对比</text>
+
+                        <rect x="906" y="680" width="194" height="112" rx="13" fill="#fff" stroke="#eadcbd"/>
+                        <text class="yl_svg-text yl_svg-title" x="1003" y="711" text-anchor="middle" fill="#8d641f">人工复核</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1003" y="740" text-anchor="middle" fill="#827b6e">低置信度转接</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1003" y="761" text-anchor="middle" fill="#827b6e">问题标注与纠错</text>
+
+                        <rect x="1134" y="680" width="194" height="112" rx="13" fill="#fff7e8" stroke="#e8d5ab"/>
+                        <text class="yl_svg-text yl_svg-title" x="1231" y="711" text-anchor="middle" fill="#8d641f">知识迭代</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1231" y="740" text-anchor="middle" fill="#827b6e">补充知识 · 调优策略</text>
+                        <text class="yl_svg-text yl_svg-sub" x="1231" y="761" text-anchor="middle" fill="#827b6e">审核后发布新版本</text>
+                    </g>
+                    <path class="yl_svg-flow-purple yl_svg-dashed" d="M746 675 V620 H1007 V496"/>
+                    <text class="yl_svg-text yl_svg-sub" x="874" y="615" text-anchor="middle" fill="#7669c6">指标与实验结果</text>
+                    <path class="yl_svg-flow" d="M1100 736 H1129"/>
+                    <path class="yl_svg-flow" d="M1231 675 V280 H1162 V219"/>
+                    <path class="yl_svg-flow-teal yl_svg-dashed" d="M1003 675 V600 H1189 V496"/>
+                    <text class="yl_svg-text yl_svg-sub" x="1092" y="596" text-anchor="middle" fill="#4a8f87">低置信度 / 无证据</text>
+
+                    <text class="yl_svg-text yl_svg-sub" x="42" y="833" fill="#8b8798">研究关注：检索策略、知识切分粒度、重排效果、生成忠实度、拒答边界与用户反馈对知识质量的影响。</text>
+                </svg>
+            </div>
+            <div class="yl_legend" aria-label="架构图图例">
+                <span><i class="yl_swatch yl_swatch-purple"></i>离线知识与检索增强</span>
+                <span><i class="yl_swatch yl_swatch-teal"></i>在线问答链路</span>
+                <span><i class="yl_swatch yl_swatch-amber"></i>安全、评估与反馈</span>
+                <span>实线为主要数据流，虚线为评估或反馈路径</span>
+            </div>
+        </section>
+        <section class="yl_research" aria-labelledby="yl_research-title">
+            <h2 id="yl_research-title">可延展的科研方向</h2>
+            <div class="yl_research-grid">
+                <article class="yl_research-card">
+                    <h3>检索与知识表达</h3>
+                    <p>比较语义分块、混合检索、查询改写和重排序对召回率及答案质量的影响。</p>
+                </article>
+                <article class="yl_research-card">
+                    <h3>可信生成与安全</h3>
+                    <p>评估答案忠实度、证据引用、拒答校准，以及知识权限和提示注入防护。</p>
+                </article>
+                <article class="yl_research-card">
+                    <h3>闭环评测与效率</h3>
+                    <p>结合离线基准、在线实验与人工标注，研究准确率、响应时延和推理成本的权衡。</p>
+                </article>
+            </div>
+            <p class="yl_note">图中模块与指标为研究方案示意，不代表已接入实际模型、知识库或线上服务。真实部署需补充数据授权、隐私保护、模型评测与人工审核流程。</p>
+        </section>
+    </main>
+</body>
+</html>

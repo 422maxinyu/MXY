@@ -1,0 +1,86 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-16 | 大模型：Trae -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>AI 聊天 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+  <main class="ma_shell">
+    <header class="ma_topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <a class="ma_back-link" href="./index.html">← 返回首页</a>
+    </header>
+
+    <section class="ma_chat-main" aria-labelledby="ma_chat-title">
+      <div class="ma_chat-heading">
+        <div>
+          <p class="ma_eyebrow">SILICONFLOW · DEEPSEEK · QWEN3-ASR · QWEN3-VL</p>
+          <h1 id="ma_chat-title">AI 聊天</h1>
+          <p class="ma_lead">文字、语音、图片 — 多种方式和 AI 对话。</p>
+        </div>
+        <span class="ma_chat-badge"><span class="ma_status-dot"></span> 后端安全代理</span>
+      </div>
+
+      <section class="ma_chat-card" aria-label="聊天窗口">
+        <ol class="ma_chat-messages" id="ma_chat-messages" aria-live="polite">
+          <li class="ma_chat-message ma_chat-message--assistant">
+            <span class="ma_chat-avatar" aria-hidden="true">AI</span>
+            <p class="ma_chat-bubble">你好！我是 AI 助手。可以文字聊天 📝、语音输入 🎤、上传图片让我识别 🖼️。</p>
+          </li>
+        </ol>
+        <p class="ma_chat-status" id="ma_chat-status" role="status">提示词与接口返回数据会输出到浏览器控制台。</p>
+        <form class="ma_chat-form" id="ma_chat-form">
+          <label class="ma_chat-label" for="ma_chat-input">发送消息</label>
+          <div class="ma_chat-input-wrap">
+            <div class="ma_chat-tools">
+              <button class="ma_chat-tool ma_chat-tool--image" id="ma_chat-image" type="button" aria-label="上传图片" title="上传图片让 AI 识别">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2ZM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5ZM17.5 8.5A1.5 1.5 0 1 1 16 7a1.5 1.5 0 0 1 1.5 1.5Z"/></svg>
+                <span>识图</span>
+              </button>
+              <input class="ma_chat-image-input" id="ma_chat-image-input" type="file" accept="image/*" hidden>
+              <button class="ma_chat-voice" id="ma_chat-voice" type="button" aria-label="语音输入" title="点击开始录音">
+                <svg class="ma_chat-voice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z" fill="currentColor"/></svg>
+                <span class="ma_chat-voice-ring" aria-hidden="true"></span>
+              </button>
+            </div>
+            <textarea class="ma_chat-input" id="ma_chat-input" name="ma_prompt" rows="2" maxlength="4000" placeholder="输入消息…也可点击左侧『识图』上传图片，或点击麦克风语音输入" required></textarea>
+          </div>
+          <div class="ma_chat-image-preview" id="ma_chat-image-preview" hidden>
+            <img id="ma_chat-image-thumb" alt="待识别图片预览">
+            <div class="ma_chat-image-preview-body">
+              <strong id="ma_chat-image-name">image.png</strong>
+              <span class="ma_chat-image-size" id="ma_chat-image-size"></span>
+              <span class="ma_chat-image-hint">上传后可在下方补充问题，如："这张图里有什么？"</span>
+            </div>
+            <button class="ma_chat-image-remove" id="ma_chat-image-remove" type="button" aria-label="移除图片">×</button>
+          </div>
+          <div class="ma_chat-form-footer">
+            <span class="ma_chat-hint">图片最大约 10 MB，支持 jpg / png / webp 等常见格式。</span>
+            <div class="ma_chat-form-actions">
+              <span class="ma_chat-voice-tip" id="ma_chat-voice-tip" hidden><span class="ma_chat-voice-dot"></span><span id="ma_chat-voice-countdown">录音中 0s</span></span>
+              <button class="ma_chat-submit" id="ma_chat-submit" type="submit">
+                <span id="ma_chat-submit-label">发送</span> <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </section>
+
+    <footer class="ma_footer">
+      <span>用好奇心构建，用细节表达。</span>
+      <span>马欣宇 <span class="ma_footer-dot">·</span> 2026</span>
+    </footer>
+  </main>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/chat.js" defer></script>
+</body>
+</html>

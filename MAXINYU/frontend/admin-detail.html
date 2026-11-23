@@ -1,0 +1,62 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>实体详情 · 小米商城 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+
+  <main class="ma_admin-main">
+    <header class="ma_admin-topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <nav class="ma_admin-nav" aria-label="后台导航">
+        <a href="./admin.html">实体管理</a>
+        <a href="./dashboard.html">图表仪表盘</a>
+        <a href="./ai-lab.html">大模型实验室</a>
+        <a href="./index.html">返回首页</a>
+      </nav>
+    </header>
+
+    <section class="ma_admin-head">
+      <div>
+        <p class="ma_eyebrow">ENTITY DETAIL</p>
+        <h1 id="ma_detail-title">实体详情<span class="ma_auth-dot">.</span></h1>
+        <p id="ma_detail-desc">
+          详情数据由 <code>GET /api/{实体}/{id}</code> 模拟接口返回，地址栏中的
+          <code>ma_type</code> 与 <code>ma_id</code> 决定展示哪一条记录。
+        </p>
+      </div>
+      <div class="ma_kt-row" aria-label="本页覆盖的考点">
+        <span class="ma_kt-tag">KT25 接口请求</span>
+      </div>
+    </section>
+
+    <section class="ma_detail-card" aria-live="polite">
+      <div class="ma_detail-head">
+        <h2 id="ma_detail-name">正在加载…</h2>
+        <span class="ma_badge" id="ma_detail-type">—</span>
+      </div>
+      <dl class="ma_detail-grid" id="ma_detail-grid"></dl>
+      <div class="ma_detail-actions">
+        <a class="ma_btn" id="ma_detail-back" href="./admin.html">← 返回列表</a>
+        <a class="ma_btn ma_btn--ghost" href="./dashboard.html">查看仪表盘</a>
+      </div>
+    </section>
+  </main>
+
+  <div class="ma_toast" id="ma_toast" hidden role="status"></div>
+
+  <script src="./js/mock-db.js" defer></script>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/admin-detail.js" defer></script>
+</body>
+</html>

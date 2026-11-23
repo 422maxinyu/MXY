@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-02；功能名称：JavaScript 两种定时器 -->
+    <meta name="description" content="课堂实践 17-5：使用 setInterval 和 setTimeout 创建与清除定时器">
+    <title>17-5 · JavaScript 定时器</title>
+    <style>
+        :root {
+            --yl_ink: #20302b;
+            --yl_muted: #73817a;
+            --yl_paper: #f3f6f1;
+            --yl_card: #fff;
+            --yl_green: #35735a;
+            --yl_border: #e1e9e1;
+            --yl_code: #18251f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 44px 20px 60px;
+            background: var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1000px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_green);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 44px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 720px;
+            margin: 12px 0 26px;
+            color: var(--yl_muted);
+            line-height: 1.8;
+        }
+
+        .yl_timer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .yl_timer-card {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            padding: 24px;
+            border: 1px solid var(--yl_border);
+            border-radius: 18px;
+            background: var(--yl_card);
+            box-shadow: 0 12px 32px rgb(34 62 45 / 5%);
+        }
+
+        .yl_method {
+            display: inline-flex;
+            align-self: flex-start;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #e8f1e8;
+            color: var(--yl_green);
+            font: 700 12px Consolas, "Courier New", monospace;
+        }
+
+        .yl_timer-card h2 {
+            margin: 14px 0 8px;
+            font-size: 21px;
+        }
+
+        .yl_description {
+            min-height: 48px;
+            margin: 0;
+            color: var(--yl_muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .yl_display {
+            display: grid;
+            min-height: 146px;
+            flex: 1;
+            align-content: center;
+            justify-items: center;
+            gap: 8px;
+            margin: 20px 0;
+            padding: 18px;
+            border-radius: 14px;
+            background: var(--yl_code);
+            color: #d7f0dc;
+            text-align: center;
+        }
+
+        .yl_number {
+            font: 700 clamp(38px, 7vw, 58px)/1 Consolas, "Courier New", monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .yl_display-label {
+            color: #a7bdab;
+            font-size: 13px;
+        }
+
+        .yl_status {
+            min-height: 22px;
+            margin: 0 0 14px;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .yl_button {
+            min-height: 42px;
+            padding: 9px 15px;
+            border: 1px solid var(--yl_border);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--yl_ink);
+            cursor: pointer;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .yl_button:hover:not(:disabled) {
+            border-color: var(--yl_green);
+            color: var(--yl_green);
+        }
+
+        .yl_button:focus-visible,
+        .yl_input:focus-visible {
+            outline: 3px solid rgb(53 115 90 / 22%);
+            outline-offset: 2px;
+        }
+
+        .yl_button.yl_primary {
+            border-color: var(--yl_green);
+            background: var(--yl_green);
+            color: #fff;
+        }
+
+        .yl_button.yl_primary:hover:not(:disabled) {
+            background: #285d46;
+            color: #fff;
+        }
+
+        .yl_button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .yl_delay-control {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 0 0 14px;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_input {
+            width: 82px;
+            min-height: 38px;
+            padding: 7px 9px;
+            border: 1px solid var(--yl_border);
+            border-radius: 8px;
+            color: var(--yl_ink);
+            font: inherit;
+        }
+
+        .yl_explanation {
+            margin-top: 20px;
+            padding: 17px 19px;
+            border-left: 3px solid var(--yl_green);
+            border-radius: 0 10px 10px 0;
+            background: #e8f1e8;
+            color: #496052;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .yl_explanation p {
+            margin: 0;
+        }
+
+        .yl_explanation p + p {
+            margin-top: 6px;
+        }
+
+        code {
+            color: var(--yl_ink);
+            font-family: Consolas, "Courier New", monospace;
+            font-weight: 700;
+        }
+
+        @media (max-width: 680px) {
+            body {
+                padding: 30px 15px 44px;
+            }
+
+            .yl_timer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_timer-card {
+                padding: 20px;
+            }
+
+            .yl_description {
+                min-height: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 17-5</p>
+        <h1>JavaScript 定时器</h1>
+        <p class="yl_intro">JavaScript 提供两种常用定时器：<code>setInterval</code> 按固定间隔重复执行，<code>setTimeout</code> 在指定延迟后执行一次。点击按钮观察它们的运行与清除。</p>
+
+        <section class="yl_timer-grid" aria-label="两种 JavaScript 定时器">
+            <article class="yl_timer-card">
+                <span class="yl_method">setInterval()</span>
+                <h2>重复计时</h2>
+                <p class="yl_description">每隔一秒执行一次回调，累加计数。使用 <code>clearInterval()</code> 停止重复执行。</p>
+                <div class="yl_display" aria-live="polite">
+                    <span class="yl_number" id="yl_interval-count">0</span>
+                    <span class="yl_display-label">已执行次数</span>
+                </div>
+                <p class="yl_status" id="yl_interval-status" role="status">定时器尚未启动</p>
+                <div class="yl_controls">
+                    <button class="yl_button yl_primary" id="yl_interval-start" type="button">启动定时器</button>
+                    <button class="yl_button" id="yl_interval-stop" type="button" disabled>停止定时器</button>
+                    <button class="yl_button" id="yl_interval-reset" type="button">归零</button>
+                </div>
+            </article>
+
+            <article class="yl_timer-card">
+                <span class="yl_method">setTimeout()</span>
+                <h2>延迟执行</h2>
+                <p class="yl_description">等待设定时间后执行一次回调。回调执行前，可以用 <code>clearTimeout()</code> 取消。</p>
+                <div class="yl_display" aria-live="polite">
+                    <span class="yl_number" id="yl_timeout-countdown">—</span>
+                    <span class="yl_display-label" id="yl_timeout-label">等待启动</span>
+                </div>
+                <label class="yl_delay-control" for="yl_delay">
+                    延迟时间
+                    <input class="yl_input" id="yl_delay" type="number" min="1" max="60" step="1" value="3">
+                    秒
+                </label>
+                <p class="yl_status" id="yl_timeout-status" role="status">尚未安排延迟任务</p>
+                <div class="yl_controls">
+                    <button class="yl_button yl_primary" id="yl_timeout-start" type="button">开始延迟</button>
+                    <button class="yl_button" id="yl_timeout-cancel" type="button" disabled>取消延迟</button>
+                </div>
+            </article>
+        </section>
+
+        <aside class="yl_explanation" aria-label="定时器用法说明">
+            <p><code>setInterval(callback, delay)</code>：每隔 <code>delay</code> 毫秒重复调用回调；需要时用 <code>clearInterval(timerId)</code> 清除。</p>
+            <p><code>setTimeout(callback, delay)</code>：经过 <code>delay</code> 毫秒后调用一次回调；执行前可以用 <code>clearTimeout(timerId)</code> 取消。</p>
+        </aside>
+    </main>
+    <script>
+        const yl_intervalCount = document.getElementById("yl_interval-count");
+        const yl_intervalStatus = document.getElementById("yl_interval-status");
+        const yl_intervalStart = document.getElementById("yl_interval-start");
+        const yl_intervalStop = document.getElementById("yl_interval-stop");
+        const yl_intervalReset = document.getElementById("yl_interval-reset");
+        const yl_timeoutCountdown = document.getElementById("yl_timeout-countdown");
+        const yl_timeoutLabel = document.getElementById("yl_timeout-label");
+        const yl_timeoutStatus = document.getElementById("yl_timeout-status");
+        const yl_timeoutStart = document.getElementById("yl_timeout-start");
+        const yl_timeoutCancel = document.getElementById("yl_timeout-cancel");
+        const yl_delayInput = document.getElementById("yl_delay");
+        let yl_intervalId = null;
+        let yl_timeoutId = null;
+        let yl_count = 0;
+        let yl_remainingSeconds = 0;
+        let yl_countdownId = null;
+
+        function yl_startInterval() {
+            if (yl_intervalId !== null) {
+                return;
+            }
+
+            yl_intervalStart.disabled = true;
+            yl_intervalStop.disabled = false;
+            yl_intervalStatus.textContent = "运行中：每秒执行一次";
+            yl_intervalId = window.setInterval(() => {
+                yl_count += 1;
+                yl_intervalCount.textContent = String(yl_count);
+            }, 1000);
+        }
+
+        function yl_stopInterval() {
+            if (yl_intervalId === null) {
+                return;
+            }
+
+            window.clearInterval(yl_intervalId);
+            yl_intervalId = null;
+            yl_intervalStart.disabled = false;
+            yl_intervalStop.disabled = true;
+            yl_intervalStatus.textContent = `已停止，共执行 ${yl_count} 次`;
+        }
+
+        function yl_cancelTimeout() {
+            if (yl_timeoutId !== null) {
+                window.clearTimeout(yl_timeoutId);
+                yl_timeoutId = null;
+            }
+
+            if (yl_countdownId !== null) {
+                window.clearInterval(yl_countdownId);
+                yl_countdownId = null;
+            }
+
+            yl_timeoutStart.disabled = false;
+            yl_timeoutCancel.disabled = true;
+        }
+
+        function yl_startTimeout() {
+            if (yl_timeoutId !== null) {
+                return;
+            }
+
+            const yl_delaySeconds = Number(yl_delayInput.value);
+            if (!Number.isInteger(yl_delaySeconds) || yl_delaySeconds < 1 || yl_delaySeconds > 60) {
+                yl_timeoutStatus.textContent = "请输入 1 到 60 之间的整数秒。";
+                yl_delayInput.focus();
+                return;
+            }
+
+            yl_remainingSeconds = yl_delaySeconds;
+            yl_timeoutCountdown.textContent = String(yl_remainingSeconds);
+            yl_timeoutLabel.textContent = "秒后执行";
+            yl_timeoutStatus.textContent = `已安排任务，将在 ${yl_delaySeconds} 秒后执行一次`;
+            yl_timeoutStart.disabled = true;
+            yl_timeoutCancel.disabled = false;
+
+            yl_countdownId = window.setInterval(() => {
+                yl_remainingSeconds -= 1;
+                yl_timeoutCountdown.textContent = String(Math.max(yl_remainingSeconds, 0));
+                if (yl_remainingSeconds <= 0 && yl_countdownId !== null) {
+                    window.clearInterval(yl_countdownId);
+                    yl_countdownId = null;
+                }
+            }, 1000);
+
+            yl_timeoutId = window.setTimeout(() => {
+                yl_timeoutId = null;
+                if (yl_countdownId !== null) {
+                    window.clearInterval(yl_countdownId);
+                    yl_countdownId = null;
+                }
+                yl_timeoutCountdown.textContent = "✓";
+                yl_timeoutLabel.textContent = "回调已执行一次";
+                yl_timeoutStatus.textContent = "延迟任务完成";
+                yl_timeoutStart.disabled = false;
+                yl_timeoutCancel.disabled = true;
+            }, yl_delaySeconds * 1000);
+        }
+
+        yl_intervalStart.addEventListener("click", yl_startInterval);
+        yl_intervalStop.addEventListener("click", yl_stopInterval);
+        yl_intervalReset.addEventListener("click", () => {
+            yl_stopInterval();
+            yl_count = 0;
+            yl_intervalCount.textContent = "0";
+            yl_intervalStatus.textContent = "计数已归零";
+        });
+        yl_timeoutStart.addEventListener("click", yl_startTimeout);
+        yl_timeoutCancel.addEventListener("click", () => {
+            yl_cancelTimeout();
+            yl_timeoutCountdown.textContent = "×";
+            yl_timeoutLabel.textContent = "任务已取消";
+            yl_timeoutStatus.textContent = "已使用 clearTimeout() 取消延迟任务";
+        });
+    </script>
+</body>
+</html>

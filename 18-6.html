@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-05；功能名称：Mermaid 智能客服流程图与 ER 图 -->
+    <meta name="description" content="课堂实践 18-6：使用 Mermaid 绘制知识库智能客服问答流程图与数据库 ER 图">
+    <title>18-6 · 智能客服流程与 ER 图</title>
+    <style>
+        :root {
+            --yl_ink: #20293b;
+            --yl_muted: #68758a;
+            --yl_paper: #f3f6fa;
+            --yl_card: #fff;
+            --yl_border: #e0e7f0;
+            --yl_purple: #6658bd;
+            --yl_teal: #258a80;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 42px 20px 56px;
+            background:
+                radial-gradient(circle at 90% 0%, #e8e8fa, transparent 30rem),
+                var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1200px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_purple);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 860px;
+            margin: 14px 0 25px;
+            color: var(--yl_muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .yl_diagrams {
+            display: grid;
+            gap: 18px;
+        }
+
+        .yl_diagram-card {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--yl_border);
+            border-radius: 17px;
+            background: var(--yl_card);
+            box-shadow: 0 16px 42px rgb(34 53 79 / 6%);
+        }
+
+        .yl_card-heading {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 19px 22px 0;
+        }
+
+        .yl_card-heading h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .yl_card-heading p {
+            margin: 0;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_diagram-scroll {
+            overflow: auto;
+            padding: 16px 20px 22px;
+        }
+
+        .yl_diagram {
+            min-width: 800px;
+            text-align: center;
+        }
+
+        .yl_diagram svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .yl_error {
+            margin: 18px 0;
+            padding: 13px 15px;
+            border: 1px solid #efb9b9;
+            border-radius: 10px;
+            background: #fff0f0;
+            color: #962e2e;
+            font-size: 14px;
+        }
+
+        .yl_note {
+            margin: 16px 2px 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 30px 13px 42px;
+            }
+
+            .yl_card-heading {
+                display: block;
+                padding: 16px 16px 0;
+            }
+
+            .yl_card-heading p {
+                margin-top: 6px;
+            }
+
+            .yl_diagram-scroll {
+                padding: 13px 12px 18px;
+            }
+
+            .yl_diagram {
+                min-width: 820px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 18-6 / MERMAID</p>
+        <h1>智能客服：从问答到知识沉淀</h1>
+        <p class="yl_intro">通过 Mermaid 描述知识库智能客服的在线处理流程，以及支撑对话、检索、反馈与人工转接的核心数据实体。流程图与 ER 图均由本地 Mermaid 文件渲染。</p>
+        <div class="yl_error" id="yl_diagram-error" role="alert" hidden></div>
+        <div class="yl_diagrams">
+            <section class="yl_diagram-card" aria-labelledby="yl_flow-heading">
+                <div class="yl_card-heading">
+                    <h2 id="yl_flow-heading">智能客服问答流程</h2>
+                    <p>意图识别 · RAG 检索 · 置信度路由 · 人工闭环</p>
+                </div>
+                <div class="yl_diagram-scroll">
+                    <div class="yl_diagram yl_mermaid" id="yl_flow-diagram">
+flowchart TD
+    U["用户提问"] --> C["会话接入<br/>身份校验 / 上下文"]
+    C --> G["安全与意图识别"]
+    G --> S{"是否敏感<br/>或越权？"}
+    S -- 是 --> R["安全拒答 / 引导"]
+    S -- 否 --> Q["查询改写与补全"]
+    Q --> V["混合检索<br/>向量 + 关键词"]
+    V --> A["权限过滤与重排序"]
+    A --> E{"证据是否<br/>足够可信？"}
+    E -- 是 --> L["LLM 基于证据生成"]
+    L --> F["引用校验与安全检查"]
+    F --> O["返回带来源的答案"]
+    E -- 否 --> H["转人工客服"]
+    R --> END["记录会话与反馈"]
+    O --> END
+    H --> END
+    END --> K["反馈审核与知识更新"]
+
+    subgraph OFFLINE["离线知识治理"]
+        D["知识源<br/>FAQ / 手册 / 工单"] --> P["解析、脱敏、分块"]
+        P --> I["向量与关键词索引"]
+    end
+    I -. "供在线查询" .-> V
+                    </div>
+                </div>
+            </section>
+
+            <section class="yl_diagram-card" aria-labelledby="yl_er-heading">
+                <div class="yl_card-heading">
+                    <h2 id="yl_er-heading">知识库智能客服 ER 图</h2>
+                    <p>记录会话消息、知识来源、检索证据与用户反馈</p>
+                </div>
+                <div class="yl_diagram-scroll">
+                    <div class="yl_diagram yl_mermaid" id="yl_er-diagram">
+erDiagram
+    CUSTOMER ||--o{ CONVERSATION : starts
+    CONVERSATION ||--|{ MESSAGE : contains
+    MESSAGE ||--o{ RETRIEVAL_LOG : retrieves
+    RETRIEVAL_LOG }o--|| KNOWLEDGE_CHUNK : cites
+    KNOWLEDGE_DOCUMENT ||--|{ KNOWLEDGE_CHUNK : splits_into
+    MESSAGE ||--o{ FEEDBACK : receives
+    CONVERSATION ||--o| HUMAN_HANDOFF : escalates_to
+
+    CUSTOMER {
+        string customer_id PK
+        string display_name
+        datetime created_at
+    }
+    CONVERSATION {
+        string conversation_id PK
+        string customer_id FK
+        string status
+        datetime started_at
+        datetime closed_at
+    }
+    MESSAGE {
+        string message_id PK
+        string conversation_id FK
+        string role
+        text content
+        float confidence
+        datetime created_at
+    }
+    KNOWLEDGE_DOCUMENT {
+        string document_id PK
+        string title
+        string source_type
+        string version
+        string access_policy
+        datetime updated_at
+    }
+    KNOWLEDGE_CHUNK {
+        string chunk_id PK
+        string document_id FK
+        text content
+        string embedding_ref
+        int chunk_index
+    }
+    RETRIEVAL_LOG {
+        string retrieval_id PK
+        string message_id FK
+        string chunk_id FK
+        float relevance_score
+        int rank
+    }
+    FEEDBACK {
+        string feedback_id PK
+        string message_id FK
+        string rating
+        text comment
+        datetime created_at
+    }
+    HUMAN_HANDOFF {
+        string handoff_id PK
+        string conversation_id FK
+        string reason
+        string agent_id
+        string status
+    }
+                    </div>
+                </div>
+            </section>
+        </div>
+        <p class="yl_note">本图为课堂系统设计示意。正式业务应根据隐私政策设置数据保留周期、访问控制、审计记录与知识发布审批。</p>
+    </main>
+    <script src="./cdn/mermaid/mermaid.min.js"></script>
+    <script>
+        const yl_error = document.getElementById("yl_diagram-error");
+
+        if (!window.mermaid) {
+            yl_error.hidden = false;
+            yl_error.textContent = "Mermaid 加载失败，请确认 cdn/mermaid/mermaid.min.js 文件存在。";
+            throw new Error("Mermaid local script failed to load.");
+        }
+
+        window.mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: "strict",
+            theme: "base",
+            themeVariables: {
+                primaryColor: "#f1efff",
+                primaryTextColor: "#29254b",
+                primaryBorderColor: "#bdb5e8",
+                lineColor: "#8792a8",
+                secondaryColor: "#eaf7f4",
+                tertiaryColor: "#fff7e8",
+                fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif'
+            },
+            er: {
+                useMaxWidth: true,
+                fontSize: 13
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: "basis"
+            }
+        });
+
+        window.mermaid.run({
+            querySelector: ".yl_mermaid"
+        }).catch((yl_renderError) => {
+            yl_error.hidden = false;
+            yl_error.textContent = "图表渲染失败，请检查 Mermaid 图表语法。";
+            console.error("Mermaid diagram rendering failed:", yl_renderError);
+        });
+    </script>
+</body>
+</html>

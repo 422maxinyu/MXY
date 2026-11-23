@@ -1,0 +1,63 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-09 | 大模型：Copilot（具体模型名称未提供） -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- 姓名：马欣宇；日期：2026-11-09；功能名称：科技新闻列表 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>科技新闻 · 小米商城</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+  <main class="ma_shell">
+    <header class="ma_topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回小米商城首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <a class="ma_back-link" href="./index.html">返回首页 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <section class="ma_news-main" aria-labelledby="ma_news-title">
+      <p class="ma_eyebrow">TECHNOLOGY <span>—</span> NEWSROOM</p>
+      <h1 id="ma_news-title">科技<span class="ma_name">新闻</span><span class="ma_cursor">.</span></h1>
+      <p class="ma_lead">从人工智能到智能硬件，浏览保存在项目数据库中的科技资讯。</p>
+
+      <section class="ma_api-panel" aria-labelledby="ma_api-title">
+        <div>
+          <p class="ma_api-caption" id="ma_api-title">后端数据接口</p>
+          <a class="ma_api-link" id="ma_news-api-link" href="/api/news" target="_blank" rel="noopener">
+            http://localhost:8422/api/news
+          </a>
+        </div>
+        <span class="ma_api-method">GET</span>
+      </section>
+
+      <div class="ma_news-toolbar">
+        <h2>最新资讯 <span class="ma_news-total" id="ma_news-total">读取中</span></h2>
+        <p class="ma_news-status" id="ma_news-status" role="status" aria-live="polite">正在从后端加载新闻…</p>
+      </div>
+
+      <section class="ma_news-list" id="ma_news-list" aria-label="科技新闻列表">
+        <p class="ma_news-empty">正在读取新闻数据…</p>
+      </section>
+
+      <details class="ma_json-details">
+        <summary>查看接口返回的 JSON 数据</summary>
+        <pre class="ma_json-output" id="ma_news-json">等待接口返回数据…</pre>
+      </details>
+
+      <p class="ma_news-note">当前数据库中的新闻为课程项目演示数据，可在数据库中维护和替换。</p>
+    </section>
+
+    <footer class="ma_footer">
+      <span>用好奇心构建，用细节表达。</span>
+      <span>马欣宇 <span class="ma_footer-dot">·</span> 2026</span>
+    </footer>
+  </main>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/news.js" defer></script>
+</body>
+</html>

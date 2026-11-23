@@ -1,0 +1,189 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>注册账号 · 小米商城 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+
+  <main class="ma_auth-shell">
+    <section class="ma_auth-brand" aria-labelledby="ma_register-heading">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+
+      <p class="ma_eyebrow">CREATE ACCOUNT <span>—</span> KT3 / KT20 / KT25</p>
+      <h1 id="ma_register-heading">加入我们<span class="ma_auth-dot">.</span></h1>
+      <p class="ma_auth-lead">
+        注册表单包含用户名、邮箱、手机号与密码校验；提交时通过 AJAX 以 JSON 发送到模拟接口，
+        注册成功后跳转登录页并自动回填用户名。
+      </p>
+
+      <ul class="ma_auth-points" aria-label="本页覆盖的考点">
+        <li>
+          <span class="ma_kt-tag">KT3</span>
+          <div>
+            <strong>表单与表单校验</strong>
+            <span>必填、格式、两次密码一致、协议勾选共 7 项校验</span>
+          </div>
+        </li>
+        <li>
+          <span class="ma_kt-tag">KT20</span>
+          <div>
+            <strong>Canvas 图形验证码</strong>
+            <span>每次刷新重新生成 4 位随机字符</span>
+          </div>
+        </li>
+        <li>
+          <span class="ma_kt-tag">KT25</span>
+          <div>
+            <strong>AJAX 与本地存储</strong>
+            <span>JSON 请求体提交注册信息，写入 localStorage 模拟用户表</span>
+          </div>
+        </li>
+      </ul>
+
+      <p class="ma_auth-note">已有账号？<a class="ma_auth-sub-link" href="./login.html">返回登录 →</a></p>
+    </section>
+
+    <section class="ma_auth-panel">
+      <div class="ma_auth-card">
+        <header class="ma_auth-card-head">
+          <p class="ma_eyebrow">SIGN UP</p>
+          <h2>注册新账号</h2>
+          <p class="ma_auth-sub">已有账号？<a href="./login.html">直接登录 →</a></p>
+        </header>
+
+        <form class="ma_auth-form" id="ma_register-form" novalidate>
+          <!-- KT3 考点：必填 + 格式校验 -->
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_register-username">
+              用户名<span class="ma_kt-tag ma_kt-tag--mini">KT3</span>
+            </label>
+            <input
+              class="ma_field-input"
+              id="ma_register-username"
+              name="ma_username"
+              type="text"
+              autocomplete="username"
+              maxlength="16"
+              placeholder="3-16 位字母、数字或下划线"
+            >
+            <p class="ma_field-error" id="ma_register-username-error" role="alert"></p>
+          </div>
+
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_register-email">邮箱</label>
+            <input
+              class="ma_field-input"
+              id="ma_register-email"
+              name="ma_email"
+              type="email"
+              autocomplete="email"
+              maxlength="60"
+              placeholder="name@example.com"
+            >
+            <p class="ma_field-error" id="ma_register-email-error" role="alert"></p>
+          </div>
+
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_register-phone">手机号</label>
+            <input
+              class="ma_field-input"
+              id="ma_register-phone"
+              name="ma_phone"
+              type="tel"
+              autocomplete="tel"
+              maxlength="11"
+              placeholder="11 位手机号"
+            >
+            <p class="ma_field-error" id="ma_register-phone-error" role="alert"></p>
+          </div>
+
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_register-password">密码</label>
+            <div class="ma_password-wrap">
+              <input
+                class="ma_field-input"
+                id="ma_register-password"
+                name="ma_password"
+                type="password"
+                autocomplete="new-password"
+                maxlength="20"
+                placeholder="6-20 位，需同时包含字母和数字"
+              >
+              <button class="ma_password-toggle" type="button" data-ma-password-toggle="#ma_register-password">显示</button>
+            </div>
+            <p class="ma_field-error" id="ma_register-password-error" role="alert"></p>
+          </div>
+
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_register-confirm">确认密码</label>
+            <input
+              class="ma_field-input"
+              id="ma_register-confirm"
+              name="ma_confirm"
+              type="password"
+              autocomplete="new-password"
+              maxlength="20"
+              placeholder="请再次输入密码"
+            >
+            <p class="ma_field-error" id="ma_register-confirm-error" role="alert"></p>
+          </div>
+
+          <!-- KT20 考点：Canvas 图形验证码 -->
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_register-captcha">
+              图形验证码<span class="ma_kt-tag ma_kt-tag--mini">KT20</span>
+            </label>
+            <div class="ma_captcha-row">
+              <input
+                class="ma_field-input"
+                id="ma_register-captcha"
+                name="ma_captcha"
+                type="text"
+                inputmode="latin"
+                maxlength="4"
+                autocomplete="off"
+                placeholder="输入右侧 4 位字符"
+              >
+              <button class="ma_captcha" type="button" title="看不清？点击刷新验证码">
+                <canvas id="ma_register-captcha-canvas" width="132" height="46" aria-label="图形验证码，点击刷新"></canvas>
+              </button>
+            </div>
+            <p class="ma_field-error" id="ma_register-captcha-error" role="alert"></p>
+          </div>
+
+          <div class="ma_field">
+            <label class="ma_agreement" for="ma_register-agreement">
+              <input id="ma_register-agreement" type="checkbox">
+              <span>我已阅读并同意 <a href="./index.html">《用户协议》</a> 与《隐私政策》</span>
+            </label>
+            <p class="ma_field-error" id="ma_register-agreement-error" role="alert"></p>
+          </div>
+
+          <p class="ma_auth-status" id="ma_register-status" role="status"></p>
+
+          <button class="ma_auth-submit" id="ma_register-submit" type="submit">注 册</button>
+        </form>
+
+        <footer class="ma_auth-card-foot">
+          <span>注册信息仅保存在本机 localStorage 中</span>
+          <a href="./login.html">已有账号，去登录</a>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/mock-api.js" defer></script>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/auth.js" defer></script>
+</body>
+</html>

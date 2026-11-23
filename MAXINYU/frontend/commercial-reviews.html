@@ -1,0 +1,101 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-16 | 大模型：Copilot（具体模型名称未提供） -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>商业评论分析 · 小米商城</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+  <main class="ma_shell">
+    <header class="ma_topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回小米商城首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <a class="ma_back-link" href="./index.html">返回首页 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <section class="ma_reviews-main" aria-labelledby="ma_reviews-title">
+      <p class="ma_eyebrow">CUSTOMER VOICE <span>—</span> REVIEW INSIGHTS</p>
+      <h1 id="ma_reviews-title">商业评论<span class="ma_name">分析</span><span class="ma_cursor">.</span></h1>
+      <p class="ma_lead">上传 Excel，AI 逐条归纳评论情绪与可行动价值，快速发现产品口碑和改进线索。</p>
+
+      <section class="ma_reviews-upload ma_reviews-panel" aria-labelledby="ma_upload-title">
+        <div class="ma_reviews-panel-heading">
+          <div>
+            <p class="ma_api-caption">EXCEL · LLM · JSON</p>
+            <h2 id="ma_upload-title">导入评论数据</h2>
+          </div>
+          <a class="ma_reviews-download" href="/api/commercial-reviews/template">下载 Excel 模板 <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="ma_reviews-hint">首个工作表需包含“评论内容”列；支持评论ID、商品名称、评分和评论时间等可选列。仅支持 .xlsx，单文件不超过 5 MB、最多 100 条评论。</p>
+        <label class="ma_reviews-file" for="ma_reviews-file">
+          <span class="ma_reviews-file-icon" aria-hidden="true">↑</span>
+          <span><strong id="ma_reviews-file-name">选择 Excel 文件</strong><small>也可以将 .xlsx 文件拖放到此区域</small></span>
+          <input class="ma_reviews-file-input" id="ma_reviews-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        </label>
+        <div class="ma_reviews-actions">
+          <p class="ma_reviews-status" id="ma_reviews-status" role="status" aria-live="polite">选择一个评论文件开始分析。</p>
+          <button class="ma_reviews-submit" id="ma_reviews-submit" type="button" disabled>开始分析 <span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="ma_reviews-samples" aria-label="下载模拟评论数据">
+          <span>20 条示例数据：</span>
+          <a href="/api/commercial-reviews/samples/1">智能手机</a>
+          <a href="/api/commercial-reviews/samples/2">无线耳机</a>
+          <a href="/api/commercial-reviews/samples/3">智能手环</a>
+        </div>
+      </section>
+
+      <section class="ma_reviews-results" id="ma_reviews-results" aria-labelledby="ma_results-title" hidden>
+        <div class="ma_reviews-results-heading">
+          <div>
+            <p class="ma_api-caption">SENTIMENT OVERVIEW</p>
+            <h2 id="ma_results-title">评论分析结果</h2>
+          </div>
+          <span class="ma_reviews-total" id="ma_reviews-total"></span>
+        </div>
+        <div class="ma_reviews-dashboard">
+          <section class="ma_reviews-panel ma_reviews-chart-panel" aria-labelledby="ma_chart-title">
+            <h3 id="ma_chart-title">情绪分布</h3>
+            <div class="ma_reviews-chart-wrap">
+              <svg class="ma_reviews-chart" id="ma_reviews-chart" viewBox="0 0 220 220" role="img" aria-label="评论情绪分布饼图"></svg>
+              <ul class="ma_reviews-legend" id="ma_reviews-legend"></ul>
+            </div>
+          </section>
+          <section class="ma_reviews-panel ma_reviews-highlight-panel" aria-labelledby="ma_highlights-title">
+            <div class="ma_reviews-section-heading">
+              <div>
+                <p class="ma_api-caption">ACTIONABLE FEEDBACK</p>
+                <h3 id="ma_highlights-title">值得关注的评论</h3>
+              </div>
+              <span class="ma_reviews-highlight-count" id="ma_reviews-highlight-count"></span>
+            </div>
+            <ul class="ma_reviews-highlight-list" id="ma_reviews-highlights"></ul>
+          </section>
+        </div>
+        <details class="ma_reviews-all-details">
+          <summary>查看全部评论分析</summary>
+          <ol class="ma_reviews-list" id="ma_reviews-list"></ol>
+        </details>
+        <details class="ma_json-details">
+          <summary>查看接口返回的 JSON 数据</summary>
+          <pre class="ma_json-output" id="ma_reviews-json">等待分析结果…</pre>
+        </details>
+      </section>
+
+      <p class="ma_reviews-note">分析结果供商业决策参考；评论文本会发送至配置的 AI 服务，请勿上传含个人隐私或敏感信息的内容。</p>
+    </section>
+
+    <footer class="ma_footer">
+      <span>用好奇心构建，用细节表达。</span>
+      <span>马欣宇 <span class="ma_footer-dot">·</span> 2026</span>
+    </footer>
+  </main>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/commercial-reviews.js" defer></script>
+</body>
+</html>

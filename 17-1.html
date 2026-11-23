@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-02；功能名称：JSON 数据展示与解析 -->
+    <meta name="description" content="课堂实践 17-1：使用原生 JavaScript 展示 JSON 数据并演示序列化与解析">
+    <title>17-1 · JSON 数据展示</title>
+    <style>
+        :root {
+            --yl_ink: #20302b;
+            --yl_muted: #73817a;
+            --yl_paper: #f3f6f1;
+            --yl_card: #fff;
+            --yl_green: #35735a;
+            --yl_border: #e1e9e1;
+            --yl_code: #18251f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 48px 20px;
+            background: var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(940px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 12px;
+            color: var(--yl_green);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 6vw, 48px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            margin: 14px 0 28px;
+            color: var(--yl_muted);
+            line-height: 1.8;
+        }
+
+        .yl_grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .yl_panel {
+            min-width: 0;
+            padding: 22px;
+            border: 1px solid var(--yl_border);
+            border-radius: 18px;
+            background: var(--yl_card);
+            box-shadow: 0 12px 32px rgb(34 62 45 / 5%);
+        }
+
+        .yl_panel h2 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .yl_panel p {
+            margin: 0 0 16px;
+            color: var(--yl_muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .yl_json {
+            overflow: auto;
+            min-height: 270px;
+            margin: 0;
+            padding: 18px;
+            border-radius: 12px;
+            background: var(--yl_code);
+            color: #d7f0dc;
+            font: 13px/1.8 Consolas, "Courier New", monospace;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .yl_properties {
+            display: grid;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .yl_property {
+            display: grid;
+            grid-template-columns: minmax(90px, 0.7fr) minmax(0, 1.3fr);
+            gap: 12px;
+            padding: 12px 14px;
+            border: 1px solid var(--yl_border);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .yl_property dt {
+            color: var(--yl_green);
+            font-weight: 700;
+        }
+
+        .yl_property dd {
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .yl_note {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-left: 3px solid var(--yl_green);
+            border-radius: 0 10px 10px 0;
+            background: #e8f1e8;
+            color: #496052;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 680px) {
+            body {
+                padding: 32px 16px;
+            }
+
+            .yl_grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_json {
+                min-height: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 17-1</p>
+        <h1>JSON 数据展示</h1>
+        <p class="yl_intro">JSON 是一种常见的数据交换格式。下面将 JavaScript 对象序列化为 JSON 文本，再解析文本并逐项展示数据。</p>
+        <div class="yl_grid">
+            <section class="yl_panel" aria-labelledby="yl_json-title">
+                <h2 id="yl_json-title">JSON 文本</h2>
+                <p>由 <code>JSON.stringify(data, null, 2)</code> 格式化生成。</p>
+                <pre class="yl_json" id="yl_json-output" aria-label="JSON 格式数据"></pre>
+            </section>
+            <section class="yl_panel" aria-labelledby="yl_object-title">
+                <h2 id="yl_object-title">解析后的对象</h2>
+                <p>使用 <code>JSON.parse(jsonText)</code> 读取 JSON 文本。</p>
+                <dl class="yl_properties" id="yl_property-list"></dl>
+                <div class="yl_note" id="yl_json-summary" role="status"></div>
+            </section>
+        </div>
+    </main>
+    <script>
+        const yl_data = {
+            lesson: "接口与 JSON",
+            student: "马欣宇",
+            lessonNumber: 17,
+            topics: ["JSON 格式", "数据解析", "接口展示"],
+            completed: true
+        };
+        const yl_jsonText = JSON.stringify(yl_data, null, 2);
+        const yl_parsedData = JSON.parse(yl_jsonText);
+        const yl_jsonOutput = document.getElementById("yl_json-output");
+        const yl_propertyList = document.getElementById("yl_property-list");
+        const yl_jsonSummary = document.getElementById("yl_json-summary");
+
+        yl_jsonOutput.textContent = yl_jsonText;
+
+        Object.entries(yl_parsedData).forEach(([yl_key, yl_value]) => {
+            const yl_item = document.createElement("div");
+            const yl_term = document.createElement("dt");
+            const yl_description = document.createElement("dd");
+            yl_item.className = "yl_property";
+            yl_term.textContent = yl_key;
+            yl_description.textContent = Array.isArray(yl_value)
+                ? yl_value.join("、")
+                : String(yl_value);
+            yl_item.append(yl_term, yl_description);
+            yl_propertyList.append(yl_item);
+        });
+
+        yl_jsonSummary.textContent = `共解析 ${Object.keys(yl_parsedData).length} 个属性；topics 数组包含 ${yl_parsedData.topics.length} 项。`;
+    </script>
+</body>
+</html>

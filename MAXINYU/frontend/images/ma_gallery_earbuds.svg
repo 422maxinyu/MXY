@@ -1,0 +1,20 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-09 | 大模型：Copilot（无线耳机原创矢量插画） -->
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">
+  <defs>
+    <linearGradient id="ma_bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dcd6f5"/><stop offset="1" stop-color="#aaa5d8"/></linearGradient>
+    <linearGradient id="ma_case" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#d9d7ec"/></linearGradient>
+    <filter id="ma_shadow" x="-40%" y="-30%" width="180%" height="180%"><feDropShadow dx="0" dy="15" stdDeviation="13" flood-color="#484365" flood-opacity=".26"/></filter>
+  </defs>
+  <rect width="480" height="320" rx="26" fill="url(#ma_bg)"/>
+  <circle cx="104" cy="80" r="52" fill="#fff" opacity=".34"/><circle cx="400" cy="254" r="82" fill="#716aab" opacity=".16"/>
+  <path d="M0 250Q104 222 214 263t266-8v65H0Z" fill="#9890ca" opacity=".45"/>
+  <g filter="url(#ma_shadow)">
+    <rect x="142" y="147" width="196" height="106" rx="52" fill="url(#ma_case)"/>
+    <path d="M143 189h194" stroke="#b6b2cf" stroke-width="3"/>
+    <circle cx="240" cy="217" r="5" fill="#9a91c6"/>
+    <path d="M173 132v-38a29 29 0 0 1 58 0v42h-23v-34a6 6 0 0 0-12 0v34Z" fill="#fff"/>
+    <path d="M249 136V94a29 29 0 0 1 58 0v38h-23V98a6 6 0 0 0-12 0v38Z" fill="#eceaf6"/>
+    <path d="M191 101h19M268 101h19" stroke="#c7c3da" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <text x="30" y="286" fill="#4a456f" font-family="sans-serif" font-size="12" letter-spacing="3">MI · TRUE WIRELESS</text>
+</svg>

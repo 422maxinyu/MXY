@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-02；功能名称：Promise 与 async 包饺子流程 -->
+    <meta name="description" content="课堂实践 17-6：使用 Promise、async/await 和 setTimeout 演示包饺子的异步流程">
+    <title>17-6 · 异步包饺子</title>
+    <style>
+        :root {
+            --yl_ink: #342b25;
+            --yl_muted: #85786d;
+            --yl_paper: #fbf6ed;
+            --yl_card: #fffdfa;
+            --yl_accent: #bb653e;
+            --yl_border: #ecdfce;
+            --yl_green: #4b7955;
+            --yl_code: #2e2925;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 42px 20px 60px;
+            background:
+                radial-gradient(circle at 8% 10%, rgb(230 190 135 / 18%), transparent 25rem),
+                var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1060px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 760px;
+            margin: 12px 0 24px;
+            color: var(--yl_muted);
+            line-height: 1.8;
+        }
+
+        .yl_intro code,
+        .yl_explanation code {
+            color: var(--yl_accent);
+            font-family: Consolas, "Courier New", monospace;
+            font-weight: 700;
+        }
+
+        .yl_toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+            padding: 16px 18px;
+            border: 1px solid var(--yl_border);
+            border-radius: 14px;
+            background: var(--yl_card);
+        }
+
+        .yl_status {
+            margin: 0;
+            color: var(--yl_muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .yl_status.yl_done {
+            color: var(--yl_green);
+            font-weight: 700;
+        }
+
+        .yl_controls {
+            display: flex;
+            flex: 0 0 auto;
+            gap: 9px;
+        }
+
+        .yl_button {
+            min-height: 42px;
+            padding: 9px 16px;
+            border: 1px solid var(--yl_border);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--yl_ink);
+            cursor: pointer;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .yl_button.yl_primary {
+            border-color: var(--yl_accent);
+            background: var(--yl_accent);
+            color: #fff;
+        }
+
+        .yl_button:hover:not(:disabled) {
+            border-color: var(--yl_accent);
+            color: var(--yl_accent);
+        }
+
+        .yl_button.yl_primary:hover:not(:disabled) {
+            background: #9e4f30;
+            color: #fff;
+        }
+
+        .yl_button:focus-visible {
+            outline: 3px solid rgb(187 101 62 / 24%);
+            outline-offset: 3px;
+        }
+
+        .yl_button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .yl_flow {
+            display: grid;
+            gap: 14px;
+        }
+
+        .yl_step-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .yl_step {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 15px;
+            padding: 17px 19px;
+            border: 1px solid var(--yl_border);
+            border-radius: 14px;
+            background: var(--yl_card);
+            transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .yl_step.yl_active {
+            transform: translateY(-2px);
+            border-color: var(--yl_accent);
+            background: #fff8f1;
+            box-shadow: 0 8px 20px rgb(130 83 48 / 8%);
+        }
+
+        .yl_step.yl_complete {
+            border-color: #cee0d0;
+            background: #f3f8f2;
+        }
+
+        .yl_step-number {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 50%;
+            background: #f4ecdf;
+            color: var(--yl_accent);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .yl_step.yl_complete .yl_step-number {
+            background: #e0eee0;
+            color: var(--yl_green);
+        }
+
+        .yl_step-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .yl_step-title {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .yl_step-detail {
+            margin: 5px 0 0;
+            color: var(--yl_muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .yl_step-state {
+            flex: 0 0 auto;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_step.yl_active .yl_step-state {
+            color: var(--yl_accent);
+            font-weight: 700;
+        }
+
+        .yl_step.yl_complete .yl_step-state {
+            color: var(--yl_green);
+            font-weight: 700;
+        }
+
+        .yl_parallel {
+            padding: 15px;
+            border: 1px dashed #d9c6ae;
+            border-radius: 17px;
+            background: rgb(255 253 250 / 65%);
+        }
+
+        .yl_parallel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 0 0 12px;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_parallel-heading strong {
+            color: var(--yl_accent);
+        }
+
+        .yl_log-panel {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid var(--yl_border);
+            border-radius: 16px;
+            background: var(--yl_card);
+        }
+
+        .yl_log-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .yl_log-header h2 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .yl_log-header span {
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_log {
+            display: grid;
+            max-height: 240px;
+            gap: 8px;
+            overflow: auto;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .yl_log-item {
+            display: grid;
+            grid-template-columns: 58px minmax(0, 1fr);
+            gap: 10px;
+            color: #5f554c;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .yl_log-time {
+            color: var(--yl_accent);
+            font-family: Consolas, "Courier New", monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .yl_explanation {
+            margin-top: 18px;
+            padding: 15px 18px;
+            border-left: 3px solid var(--yl_accent);
+            border-radius: 0 10px 10px 0;
+            background: #f4ecdf;
+            color: #65584b;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .yl_explanation p {
+            margin: 0;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 30px 15px 44px;
+            }
+
+            .yl_toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .yl_controls {
+                width: 100%;
+            }
+
+            .yl_controls .yl_button {
+                flex: 1;
+            }
+
+            .yl_step-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_step {
+                padding: 14px;
+            }
+
+            .yl_step-state {
+                max-width: 74px;
+                text-align: right;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 17-6</p>
+        <h1>用 Promise 包饺子</h1>
+        <p class="yl_intro">每个步骤都用 <code>setTimeout</code> 模拟耗时，并封装成 Promise。买好原料后，同时和面、和馅；两项都完成，再包饺子、吃饺子。</p>
+
+        <section class="yl_toolbar" aria-label="流程控制">
+            <p class="yl_status" id="yl_status" role="status" aria-live="polite">点击开始，看看异步任务如何按顺序与并行完成。</p>
+            <div class="yl_controls">
+                <button class="yl_button yl_primary" id="yl_start" type="button">开始包饺子</button>
+                <button class="yl_button" id="yl_reset" type="button" disabled>重新开始</button>
+            </div>
+        </section>
+
+        <section class="yl_flow" aria-label="包饺子流程">
+            <article class="yl_step" id="yl_step-buy">
+                <span class="yl_step-number">1</span>
+                <div class="yl_step-content">
+                    <h2 class="yl_step-title">买原料</h2>
+                    <p class="yl_step-detail">购买面粉、猪肉、白菜等材料 · 6 秒</p>
+                </div>
+                <span class="yl_step-state" id="yl_state-buy">等待中</span>
+            </article>
+            <article class="yl_step" id="yl_step-pick">
+                <span class="yl_step-number">2</span>
+                <div class="yl_step-content">
+                    <h2 class="yl_step-title">取原料</h2>
+                    <p class="yl_step-detail">把买好的材料带回厨房 · 2 秒</p>
+                </div>
+                <span class="yl_step-state" id="yl_state-pick">等待中</span>
+            </article>
+
+            <section class="yl_parallel" aria-label="和面和和馅同时进行">
+                <p class="yl_parallel-heading"><strong>并行阶段</strong><span>以下两个任务同时开始，全部完成后才能继续</span></p>
+                <div class="yl_step-grid">
+                    <article class="yl_step" id="yl_step-dough">
+                        <span class="yl_step-number">3</span>
+                        <div class="yl_step-content">
+                            <h2 class="yl_step-title">和面</h2>
+                            <p class="yl_step-detail">加水揉面，准备饺子皮 · 4 秒</p>
+                        </div>
+                        <span class="yl_step-state" id="yl_state-dough">等待中</span>
+                    </article>
+                    <article class="yl_step" id="yl_step-filling">
+                        <span class="yl_step-number">4</span>
+                        <div class="yl_step-content">
+                            <h2 class="yl_step-title">和馅</h2>
+                            <p class="yl_step-detail">调好猪肉白菜馅 · 5 秒</p>
+                        </div>
+                        <span class="yl_step-state" id="yl_state-filling">等待中</span>
+                    </article>
+                </div>
+            </section>
+
+            <article class="yl_step" id="yl_step-wrap">
+                <span class="yl_step-number">5</span>
+                <div class="yl_step-content">
+                    <h2 class="yl_step-title">包饺子</h2>
+                    <p class="yl_step-detail">面皮和馅料准备好，开始包饺子 · 3 秒</p>
+                </div>
+                <span class="yl_step-state" id="yl_state-wrap">等待中</span>
+            </article>
+            <article class="yl_step" id="yl_step-eat">
+                <span class="yl_step-number">6</span>
+                <div class="yl_step-content">
+                    <h2 class="yl_step-title">吃饺子</h2>
+                    <p class="yl_step-detail">饺子出锅，开动啦！ · 2 秒</p>
+                </div>
+                <span class="yl_step-state" id="yl_state-eat">等待中</span>
+            </article>
+        </section>
+
+        <section class="yl_log-panel" aria-labelledby="yl_log-title">
+            <div class="yl_log-header">
+                <h2 id="yl_log-title">流程记录</h2>
+                <span id="yl_elapsed">总耗时：0 秒</span>
+            </div>
+            <ol class="yl_log" id="yl_log" aria-live="polite">
+                <li class="yl_log-item"><span class="yl_log-time">00:00</span><span>流程准备就绪。</span></li>
+            </ol>
+        </section>
+
+        <aside class="yl_explanation" aria-label="异步流程说明">
+            <p><code>async/await</code> 让买原料、取原料、包饺子、吃饺子依次等待；<code>Promise.all()</code> 让和面与和馅并行执行，并在两者都完成后继续。</p>
+        </aside>
+    </main>
+    <script>
+        const yl_status = document.getElementById("yl_status");
+        const yl_startButton = document.getElementById("yl_start");
+        const yl_resetButton = document.getElementById("yl_reset");
+        const yl_log = document.getElementById("yl_log");
+        const yl_elapsed = document.getElementById("yl_elapsed");
+        let yl_startedAt = 0;
+        let yl_timerId = null;
+        let yl_running = false;
+
+        const yl_steps = [
+            { id: "buy", name: "买原料", duration: 6000 },
+            { id: "pick", name: "取原料", duration: 2000 },
+            { id: "dough", name: "和面", duration: 4000 },
+            { id: "filling", name: "和馅", duration: 5000 },
+            { id: "wrap", name: "包饺子", duration: 3000 },
+            { id: "eat", name: "吃饺子", duration: 2000 }
+        ];
+
+        function yl_formatTime(yl_milliseconds) {
+            const yl_seconds = Math.floor(yl_milliseconds / 1000);
+            const yl_minutesText = String(Math.floor(yl_seconds / 60)).padStart(2, "0");
+            const yl_secondsText = String(yl_seconds % 60).padStart(2, "0");
+            return `${yl_minutesText}:${yl_secondsText}`;
+        }
+
+        function yl_addLog(yl_message) {
+            const yl_item = document.createElement("li");
+            const yl_time = document.createElement("span");
+            const yl_text = document.createElement("span");
+            yl_item.className = "yl_log-item";
+            yl_time.className = "yl_log-time";
+            yl_time.textContent = yl_formatTime(performance.now() - yl_startedAt);
+            yl_text.textContent = yl_message;
+            yl_item.append(yl_time, yl_text);
+            yl_log.append(yl_item);
+            yl_item.scrollIntoView({ block: "nearest" });
+        }
+
+        function yl_wait(yl_duration) {
+            return new Promise((yl_resolve) => {
+                window.setTimeout(yl_resolve, yl_duration);
+            });
+        }
+
+        async function yl_runStep(yl_step) {
+            const yl_card = document.getElementById(`yl_step-${yl_step.id}`);
+            const yl_stepState = document.getElementById(`yl_state-${yl_step.id}`);
+            yl_card.classList.remove("yl_complete");
+            yl_card.classList.add("yl_active");
+            yl_stepState.textContent = "进行中…";
+            yl_status.textContent = `正在${yl_step.name}…`;
+            yl_addLog(`开始${yl_step.name}（预计 ${yl_step.duration / 1000} 秒）。`);
+
+            await yl_wait(yl_step.duration);
+
+            yl_card.classList.remove("yl_active");
+            yl_card.classList.add("yl_complete");
+            yl_stepState.textContent = "已完成";
+            yl_addLog(`${yl_step.name}完成。`);
+        }
+
+        function yl_updateElapsed() {
+            if (!yl_running) {
+                return;
+            }
+            yl_elapsed.textContent = `总耗时：${((performance.now() - yl_startedAt) / 1000).toFixed(1)} 秒`;
+        }
+
+        async function yl_startProcess() {
+            if (yl_running) {
+                return;
+            }
+
+            yl_running = true;
+            yl_startedAt = performance.now();
+            yl_startButton.disabled = true;
+            yl_resetButton.disabled = true;
+            yl_status.classList.remove("yl_done");
+            yl_log.replaceChildren();
+            yl_elapsed.textContent = "总耗时：0.0 秒";
+            yl_timerId = window.setInterval(yl_updateElapsed, 100);
+            yl_addLog("开始准备饺子，按流程依次完成各项任务。");
+
+            const yl_stepById = (yl_id) => yl_steps.find((yl_step) => yl_step.id === yl_id);
+
+            try {
+                await yl_runStep(yl_stepById("buy"));
+                await yl_runStep(yl_stepById("pick"));
+
+                yl_status.textContent = "原料准备好了，开始同时和面、和馅…";
+                yl_addLog("和面与和馅同时开始。");
+                await Promise.all([
+                    yl_runStep(yl_stepById("dough")),
+                    yl_runStep(yl_stepById("filling"))
+                ]);
+                yl_addLog("和面、和馅都已完成，可以继续包饺子。");
+
+                await yl_runStep(yl_stepById("wrap"));
+                await yl_runStep(yl_stepById("eat"));
+
+                yl_status.textContent = "饺子吃完啦！整个异步流程已完成。";
+                yl_status.classList.add("yl_done");
+                yl_addLog("包饺子流程全部完成，开饭！");
+            } catch (yl_error) {
+                yl_status.textContent = `流程执行失败：${yl_error.message}`;
+                yl_addLog(`流程执行失败：${yl_error.message}`);
+            } finally {
+                yl_running = false;
+                window.clearInterval(yl_timerId);
+                yl_timerId = null;
+                yl_startButton.disabled = false;
+                yl_resetButton.disabled = false;
+                yl_updateElapsed();
+            }
+        }
+
+        function yl_resetProcess() {
+            if (yl_running) {
+                return;
+            }
+
+            yl_steps.forEach((yl_step) => {
+                document.getElementById(`yl_step-${yl_step.id}`).classList.remove("yl_active", "yl_complete");
+                document.getElementById(`yl_state-${yl_step.id}`).textContent = "等待中";
+            });
+            yl_status.classList.remove("yl_done");
+            yl_status.textContent = "点击开始，看看异步任务如何按顺序与并行完成。";
+            yl_elapsed.textContent = "总耗时：0 秒";
+            yl_log.replaceChildren();
+            const yl_item = document.createElement("li");
+            const yl_time = document.createElement("span");
+            const yl_text = document.createElement("span");
+            yl_item.className = "yl_log-item";
+            yl_time.className = "yl_log-time";
+            yl_time.textContent = "00:00";
+            yl_text.textContent = "流程准备就绪。";
+            yl_item.append(yl_time, yl_text);
+            yl_log.append(yl_item);
+            yl_resetButton.disabled = true;
+        }
+
+        yl_startButton.addEventListener("click", yl_startProcess);
+        yl_resetButton.addEventListener("click", yl_resetProcess);
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-12 | 大模型：Copilot（具体模型名称未提供） -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>知识库管理 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+  <main class="ma_shell">
+    <header class="ma_topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <a class="ma_back-link" href="./service.html">前往知识库客服 →</a>
+    </header>
+
+    <section class="ma_knowledge-main" aria-labelledby="ma_knowledge-title">
+      <p class="ma_eyebrow">KNOWLEDGE BASE · RAG</p>
+      <h1 id="ma_knowledge-title">知识库管理</h1>
+      <p class="ma_lead">上传 TXT 或可检索文字的 PDF，解析内容并保存到本地知识库，供专属客服检索回答。</p>
+
+      <section class="ma_knowledge-card" aria-labelledby="ma_upload-title">
+        <h2 id="ma_upload-title">添加知识库文件</h2>
+        <label class="ma_upload-dropzone" id="ma_upload-dropzone" for="ma_upload-input">
+          <span class="ma_upload-icon" aria-hidden="true">↑</span>
+          <strong>选择文件，或拖放到此处</strong>
+          <span>支持 TXT / PDF，单个文件最大 6 MB</span>
+          <input id="ma_upload-input" class="ma_upload-input" type="file" accept=".txt,.pdf,text/plain,application/pdf" multiple>
+        </label>
+        <p class="ma_knowledge-status" id="ma_knowledge-status" role="status">文件解析后仅保存在本机 backend/data/ma_knowledge.json。</p>
+        <div class="ma_sample-files">
+          <span>示例资料：</span>
+          <a href="./knowledge-samples/ma_产品与保修示例.txt" download>产品与保修</a>
+          <a href="./knowledge-samples/ma_退换货与配送示例.txt" download>退换货与配送</a>
+        </div>
+      </section>
+
+      <section class="ma_knowledge-library" aria-labelledby="ma_library-title">
+        <div class="ma_knowledge-toolbar">
+          <h2 id="ma_library-title">已收录文件 <span class="ma_knowledge-count" id="ma_knowledge-count">0 个</span></h2>
+          <a class="ma_knowledge-chat-link" href="./service.html">试用客服 ↗</a>
+        </div>
+        <ul class="ma_knowledge-list" id="ma_knowledge-list" aria-live="polite">
+          <li class="ma_knowledge-empty">正在读取本地知识库…</li>
+        </ul>
+      </section>
+    </section>
+
+    <footer class="ma_footer">
+      <span>上传的文件保存在本机，不会自动发送给模型。</span>
+      <span>马欣宇 <span class="ma_footer-dot">·</span> 2026</span>
+    </footer>
+  </main>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/knowledge.js" defer></script>
+</body>
+</html>

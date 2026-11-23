@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-10-29；功能名称：JavaScript 数组常用方法实验台 -->
+    <meta name="description" content="课堂实践 16-1：通过可交互的水果数组认识 JavaScript 数组常用方法">
+    <title>16-1 · 数组方法实验台</title>
+    <style>
+        :root {
+            --yl_ink: #1c2a32;
+            --yl_muted: #69777d;
+            --yl_paper: #f4f2eb;
+            --yl_card: #fffefa;
+            --yl_line: rgba(28, 42, 50, 0.14);
+            --yl_coral: #e76f51;
+            --yl_teal: #248b80;
+            --yl_gold: #d49b2a;
+            --yl_blue: #5577a8;
+            --yl_shadow: 0 20px 50px rgba(28, 42, 50, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--yl_ink);
+            background:
+                radial-gradient(circle at 8% 8%, rgba(231, 111, 81, 0.13), transparent 23rem),
+                radial-gradient(circle at 95% 54%, rgba(36, 139, 128, 0.12), transparent 26rem),
+                var(--yl_paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.7;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .yl_page-shell {
+            width: min(1080px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .yl_intro {
+            padding: 64px 0 30px;
+        }
+
+        .yl_eyebrow {
+            margin: 0 0 14px;
+            color: var(--yl_coral);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 12px;
+            font-size: clamp(36px, 6vw, 62px);
+            letter-spacing: -0.05em;
+            line-height: 1.12;
+        }
+
+        .yl_intro-copy {
+            max-width: 720px;
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 16px;
+        }
+
+        .yl_hero-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 22px;
+            padding: 8px 13px;
+            border: 1px solid rgba(36, 139, 128, 0.24);
+            border-radius: 999px;
+            background: rgba(36, 139, 128, 0.08);
+            color: var(--yl_teal);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .yl_lab {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(290px, 0.8fr);
+            gap: 18px;
+            align-items: start;
+            margin-bottom: 58px;
+        }
+
+        .yl_panel {
+            min-width: 0;
+            border: 1px solid var(--yl_line);
+            border-radius: 18px;
+            background: rgba(255, 254, 250, 0.9);
+            box-shadow: var(--yl_shadow);
+        }
+
+        .yl_array-panel {
+            padding: 24px;
+        }
+
+        .yl_panel-heading {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .yl_panel-heading h2 {
+            margin-bottom: 4px;
+            font-size: 21px;
+        }
+
+        .yl_panel-heading p {
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_count {
+            flex: 0 0 auto;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(212, 155, 42, 0.14);
+            color: #80600f;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_array-rail {
+            display: flex;
+            min-height: 144px;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+            padding: 15px;
+            overflow-x: auto;
+            border: 1px dashed rgba(28, 42, 50, 0.2);
+            border-radius: 14px;
+            background:
+                linear-gradient(rgba(255, 254, 250, 0.82), rgba(255, 254, 250, 0.82)),
+                repeating-linear-gradient(90deg, transparent 0 69px, rgba(28, 42, 50, 0.07) 69px 70px);
+        }
+
+        .yl_slot {
+            position: relative;
+            display: grid;
+            width: 92px;
+            min-width: 92px;
+            min-height: 98px;
+            align-content: center;
+            justify-items: center;
+            gap: 4px;
+            padding: 10px 6px 7px;
+            border: 1px solid rgba(36, 139, 128, 0.28);
+            border-radius: 13px;
+            background: var(--yl_card);
+            box-shadow: 0 7px 16px rgba(28, 42, 50, 0.07);
+            animation: yl_pop-in 240ms ease both;
+        }
+
+        .yl_slot-emoji {
+            font-size: 25px;
+            line-height: 1.2;
+        }
+
+        .yl_slot-value {
+            max-width: 100%;
+            overflow: hidden;
+            font-size: 13px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .yl_slot-index {
+            position: absolute;
+            top: -9px;
+            left: 8px;
+            padding: 0 5px;
+            border-radius: 5px;
+            background: var(--yl_teal);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .yl_empty {
+            width: 100%;
+            color: var(--yl_muted);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .yl_input-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .yl_field {
+            display: grid;
+            gap: 5px;
+        }
+
+        .yl_field label {
+            color: var(--yl_muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_field input {
+            width: 150px;
+            max-width: 42vw;
+            padding: 9px 11px;
+            border: 1px solid var(--yl_line);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--yl_ink);
+        }
+
+        .yl_field input[type="number"] {
+            width: 92px;
+        }
+
+        .yl_reset,
+        .yl_method-button {
+            border: 1px solid var(--yl_line);
+            border-radius: 9px;
+            background: var(--yl_card);
+            color: var(--yl_ink);
+            cursor: pointer;
+            transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+        }
+
+        .yl_reset {
+            padding: 9px 13px;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_reset:hover,
+        .yl_method-button:hover {
+            border-color: var(--yl_teal);
+            color: var(--yl_teal);
+            transform: translateY(-1px);
+        }
+
+        .yl_method-groups {
+            display: grid;
+            gap: 15px;
+        }
+
+        .yl_method-group h3 {
+            margin: 0 0 8px;
+            color: var(--yl_muted);
+            font-size: 12px;
+            letter-spacing: 0.04em;
+        }
+
+        .yl_method-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .yl_method-button {
+            padding: 7px 10px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .yl_method-button[aria-pressed="true"] {
+            border-color: var(--yl_teal);
+            background: var(--yl_teal);
+            color: #fff;
+        }
+
+        .yl_method-button:focus-visible,
+        .yl_reset:focus-visible,
+        .yl_field input:focus-visible {
+            outline: 3px solid rgba(85, 119, 168, 0.35);
+            outline-offset: 2px;
+        }
+
+        .yl_info-panel {
+            position: sticky;
+            top: 18px;
+            padding: 23px;
+        }
+
+        .yl_method-tag {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(85, 119, 168, 0.12);
+            color: var(--yl_blue);
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_info-panel h2 {
+            margin-bottom: 8px;
+            font-size: 23px;
+        }
+
+        .yl_method-description {
+            min-height: 48px;
+            margin-bottom: 17px;
+            color: var(--yl_muted);
+            font-size: 14px;
+        }
+
+        .yl_code-label {
+            margin: 0 0 7px;
+            color: var(--yl_muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .yl_code {
+            display: block;
+            min-height: 45px;
+            margin-bottom: 14px;
+            padding: 11px 12px;
+            overflow-wrap: anywhere;
+            border-radius: 10px;
+            background: #202c33;
+            color: #f8d991;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .yl_change-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: rgba(36, 139, 128, 0.1);
+            color: var(--yl_teal);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_change-badge.yl_returns-copy {
+            background: rgba(212, 155, 42, 0.14);
+            color: #80600f;
+        }
+
+        .yl_result {
+            min-height: 58px;
+            margin: 17px 0 0;
+            padding: 12px;
+            border: 1px solid var(--yl_line);
+            border-radius: 10px;
+            background: rgba(244, 242, 235, 0.75);
+            color: var(--yl_ink);
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .yl_result-label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--yl_muted);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .yl_hint {
+            margin: 13px 0 0;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        @keyframes yl_pop-in {
+            from {
+                opacity: 0;
+                transform: translateY(7px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .yl_page-shell {
+                width: min(100% - 28px, 560px);
+            }
+
+            .yl_intro {
+                padding-top: 46px;
+            }
+
+            .yl_lab {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_info-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .yl_array-panel,
+            .yl_info-panel {
+                padding: 18px;
+            }
+
+            .yl_array-rail {
+                min-height: 126px;
+                padding: 12px;
+            }
+
+            .yl_slot {
+                width: 82px;
+                min-width: 82px;
+            }
+
+            .yl_panel-heading {
+                display: block;
+            }
+
+            .yl_count {
+                display: inline-block;
+                margin-top: 8px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page-shell">
+        <header class="yl_intro">
+            <p class="yl_eyebrow">JAVASCRIPT · LESSON 16-1</p>
+            <h1>数组方法实验台</h1>
+            <p class="yl_intro-copy">把数组想象成一排水果格子：添加、拿走、排序或筛选，点一点就能看到数据如何变化。</p>
+            <span class="yl_hero-note">🍓 点选右侧方法，观察真实数组</span>
+        </header>
+
+        <section class="yl_lab" aria-label="JavaScript 数组方法交互演示">
+            <div class="yl_panel yl_array-panel">
+                <div class="yl_panel-heading">
+                    <div>
+                        <h2>我的水果篮 <code>yl_fruits</code></h2>
+                        <p>每个卡片就是一个元素，左上角数字是它的索引。</p>
+                    </div>
+                    <span class="yl_count" id="yl_count" aria-live="polite">4 个元素</span>
+                </div>
+
+                <div class="yl_array-rail" id="yl_array-rail" aria-label="当前数组内容" aria-live="polite"></div>
+
+                <div class="yl_input-row">
+                    <div class="yl_field">
+                        <label for="yl_value-input">添加 / 查找的水果</label>
+                        <input id="yl_value-input" type="text" value="桃子" maxlength="20">
+                    </div>
+                    <div class="yl_field">
+                        <label for="yl_index-input">索引位置</label>
+                        <input id="yl_index-input" type="number" value="1" min="0" step="1">
+                    </div>
+                    <button class="yl_reset" id="yl_reset" type="button">↺ 重置水果篮</button>
+                </div>
+
+                <div class="yl_method-groups" id="yl_method-groups">
+                    <section class="yl_method-group" aria-labelledby="yl_change-title">
+                        <h3 id="yl_change-title">改变原数组 · Mutate</h3>
+                        <div class="yl_method-list">
+                            <button class="yl_method-button" type="button" data-action="push" aria-pressed="false">push</button>
+                            <button class="yl_method-button" type="button" data-action="pop" aria-pressed="false">pop</button>
+                            <button class="yl_method-button" type="button" data-action="unshift" aria-pressed="false">unshift</button>
+                            <button class="yl_method-button" type="button" data-action="shift" aria-pressed="false">shift</button>
+                            <button class="yl_method-button" type="button" data-action="splice" aria-pressed="false">splice</button>
+                            <button class="yl_method-button" type="button" data-action="sort" aria-pressed="false">sort</button>
+                            <button class="yl_method-button" type="button" data-action="reverse" aria-pressed="false">reverse</button>
+                        </div>
+                    </section>
+                    <section class="yl_method-group" aria-labelledby="yl_read-title">
+                        <h3 id="yl_read-title">读取或组合 · Read</h3>
+                        <div class="yl_method-list">
+                            <button class="yl_method-button" type="button" data-action="slice" aria-pressed="false">slice</button>
+                            <button class="yl_method-button" type="button" data-action="concat" aria-pressed="false">concat</button>
+                            <button class="yl_method-button" type="button" data-action="includes" aria-pressed="false">includes</button>
+                            <button class="yl_method-button" type="button" data-action="indexOf" aria-pressed="false">indexOf</button>
+                            <button class="yl_method-button" type="button" data-action="join" aria-pressed="false">join</button>
+                        </div>
+                    </section>
+                    <section class="yl_method-group" aria-labelledby="yl_loop-title">
+                        <h3 id="yl_loop-title">遍历与筛选 · Iterate</h3>
+                        <div class="yl_method-list">
+                            <button class="yl_method-button" type="button" data-action="forEach" aria-pressed="false">forEach</button>
+                            <button class="yl_method-button" type="button" data-action="map" aria-pressed="false">map</button>
+                            <button class="yl_method-button" type="button" data-action="filter" aria-pressed="false">filter</button>
+                            <button class="yl_method-button" type="button" data-action="find" aria-pressed="false">find</button>
+                            <button class="yl_method-button" type="button" data-action="reduce" aria-pressed="false">reduce</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <aside class="yl_panel yl_info-panel" aria-live="polite">
+                <span class="yl_method-tag" id="yl_method-tag">array methods</span>
+                <h2 id="yl_method-title">选择一个方法</h2>
+                <p class="yl_method-description" id="yl_method-description">试着点击左边的方法按钮，看看它如何读取或改变水果篮。</p>
+                <p class="yl_code-label">示例代码</p>
+                <code class="yl_code" id="yl_code">yl_fruits</code>
+                <span class="yl_change-badge" id="yl_change-badge">先从 push 开始探索吧</span>
+                <p class="yl_result" id="yl_result" role="status">
+                    <span class="yl_result-label">运行结果</span>
+                    <span id="yl_result-value">等待操作……</span>
+                </p>
+                <p class="yl_hint">提示：黄色提示表示返回新结果、不改动原数组；绿色提示表示原数组会发生变化。</p>
+            </aside>
+        </section>
+    </main>
+
+    <script>
+        var yl_initialFruits = ["苹果", "柠檬", "葡萄", "猕猴桃"];
+        var yl_fruits = yl_initialFruits.slice();
+        var yl_arrayRail = document.getElementById("yl_array-rail");
+        var yl_count = document.getElementById("yl_count");
+        var yl_valueInput = document.getElementById("yl_value-input");
+        var yl_indexInput = document.getElementById("yl_index-input");
+        var yl_methodTitle = document.getElementById("yl_method-title");
+        var yl_methodTag = document.getElementById("yl_method-tag");
+        var yl_methodDescription = document.getElementById("yl_method-description");
+        var yl_code = document.getElementById("yl_code");
+        var yl_changeBadge = document.getElementById("yl_change-badge");
+        var yl_resultValue = document.getElementById("yl_result-value");
+        var yl_methodGroups = document.getElementById("yl_method-groups");
+        var yl_methodInfo = {
+            push: ["从末尾添加", "把一个或多个元素放到数组最后，并返回新的长度。", "yl_fruits.push(yl_value)", true],
+            pop: ["从末尾删除", "移除并返回数组最后一个元素；空数组会返回 undefined。", "yl_fruits.pop()", true],
+            unshift: ["从开头添加", "把元素插到数组最前面，并返回新的长度。", "yl_fruits.unshift(yl_value)", true],
+            shift: ["从开头删除", "移除并返回数组第一个元素；后面的索引会向前移动。", "yl_fruits.shift()", true],
+            splice: ["按索引增删", "从指定索引开始删除一个元素，返回被删除元素组成的新数组。", "yl_fruits.splice(yl_index, 1)", true],
+            sort: ["排序", "按中文顺序排列水果名称。sort() 会直接改变原数组。", 'yl_fruits.sort(function (yl_a, yl_b) { return yl_a.localeCompare(yl_b, "zh-CN"); })', true],
+            reverse: ["反转顺序", "把数组中的元素前后反转，原数组会被改变。", "yl_fruits.reverse()", true],
+            slice: ["截取一段", "从索引 0 截取到索引 2（不包含 2），返回新数组。", "yl_fruits.slice(0, 2)", false],
+            concat: ["连接数组", "把另一个数组接在后面，返回组合后的新数组。", 'yl_fruits.concat(["火龙果", "蓝莓"])', false],
+            includes: ["是否包含", "检查水果篮中是否有输入的水果，返回 true 或 false。", "yl_fruits.includes(yl_value)", false],
+            indexOf: ["查找索引", "查找输入水果第一次出现的位置；没有找到时返回 -1。", "yl_fruits.indexOf(yl_value)", false],
+            join: ["拼接成文字", "用顿号把所有元素连接成一个字符串，原数组不变。", 'yl_fruits.join("、")', false],
+            forEach: ["逐个做事情", "依次访问每个元素。forEach() 本身不返回新数组。", "yl_fruits.forEach(function (yl_fruit) { console.log(yl_fruit); })", false],
+            map: ["逐个变换", "对每个水果执行转换，并生成一个长度相同的新数组。", "yl_fruits.map(function (yl_fruit) { return yl_fruit + \"！\"; })", false],
+            filter: ["筛选元素", "留下名称长度至少为 3 的水果，返回符合条件的新数组。", "yl_fruits.filter(function (yl_fruit) { return yl_fruit.length >= 3; })", false],
+            find: ["找到第一个", "返回第一个名称长度至少为 3 的水果；没有符合项时返回 undefined。", "yl_fruits.find(function (yl_fruit) { return yl_fruit.length >= 3; })", false],
+            reduce: ["累积成一个值", "把所有水果名称的字数累加成一个总数。", "yl_fruits.reduce(function (yl_total, yl_fruit) { return yl_total + yl_fruit.length; }, 0)", false],
+            reset: ["重置水果篮", "用 slice() 复制初始数组，重新开始练习。", "yl_fruits = yl_initialFruits.slice()", false]
+        };
+
+        function yl_getFruitEmoji(yl_fruit) {
+            var yl_emojis = {
+                "苹果": "🍎",
+                "柠檬": "🍋",
+                "葡萄": "🍇",
+                "猕猴桃": "🥝",
+                "桃子": "🍑",
+                "火龙果": "🐉",
+                "蓝莓": "🫐",
+                "西瓜": "🍉",
+                "香蕉": "🍌",
+                "橙子": "🍊",
+                "草莓": "🍓"
+            };
+
+            return yl_emojis[yl_fruit] || "🍬";
+        }
+
+        function yl_renderArray() {
+            yl_arrayRail.replaceChildren();
+            yl_count.textContent = yl_fruits.length + " 个元素";
+
+            if (yl_fruits.length === 0) {
+                var yl_emptyMessage = document.createElement("p");
+                yl_emptyMessage.className = "yl_empty";
+                yl_emptyMessage.textContent = "水果篮空啦，试试用 push 放入一个水果。";
+                yl_arrayRail.appendChild(yl_emptyMessage);
+                return;
+            }
+
+            var yl_fragment = document.createDocumentFragment();
+
+            yl_fruits.forEach(function (yl_fruit, yl_index) {
+                var yl_slot = document.createElement("div");
+                var yl_indexLabel = document.createElement("span");
+                var yl_emoji = document.createElement("span");
+                var yl_value = document.createElement("span");
+
+                yl_slot.className = "yl_slot";
+                yl_indexLabel.className = "yl_slot-index";
+                yl_indexLabel.textContent = "[" + yl_index + "]";
+                yl_emoji.className = "yl_slot-emoji";
+                yl_emoji.setAttribute("aria-hidden", "true");
+                yl_emoji.textContent = yl_getFruitEmoji(yl_fruit);
+                yl_value.className = "yl_slot-value";
+                yl_value.textContent = yl_fruit;
+                yl_slot.append(yl_indexLabel, yl_emoji, yl_value);
+                yl_fragment.appendChild(yl_slot);
+            });
+
+            yl_arrayRail.appendChild(yl_fragment);
+        }
+
+        function yl_showMethod(yl_action, yl_output) {
+            var yl_info = yl_methodInfo[yl_action];
+
+            yl_methodTag.textContent = yl_action === "reset" ? "yl_initialFruits.slice()" : "yl_fruits." + yl_action + "()";
+            yl_methodTitle.textContent = yl_info[0];
+            yl_methodDescription.textContent = yl_info[1];
+            yl_code.textContent = yl_info[2];
+            yl_changeBadge.textContent = yl_action === "reset"
+                ? "↺ 已恢复初始数组"
+                : yl_info[3] ? "↻ 会改变原数组" : "✦ 返回新结果 · 原数组不变";
+            yl_changeBadge.classList.toggle("yl_returns-copy", !yl_info[3] && yl_action !== "reset");
+            yl_resultValue.textContent = yl_output;
+
+            yl_methodGroups.querySelectorAll("[data-action]").forEach(function (yl_button) {
+                yl_button.setAttribute("aria-pressed", String(yl_button.dataset.action === yl_action));
+            });
+        }
+
+        function yl_getInputValue() {
+            var yl_value = yl_valueInput.value.trim();
+
+            if (!yl_value) {
+                yl_valueInput.focus();
+                return "";
+            }
+
+            return yl_value;
+        }
+
+        function yl_runMethod(yl_action) {
+            var yl_value = "";
+            var yl_index = Number(yl_indexInput.value);
+            var yl_result;
+            var yl_output;
+
+            if (yl_action === "push" || yl_action === "unshift" || yl_action === "includes" || yl_action === "indexOf") {
+                yl_value = yl_getInputValue();
+                if (!yl_value) {
+                    yl_showMethod(yl_action, "请先在输入框中填写水果名称。");
+                    return;
+                }
+            }
+
+            switch (yl_action) {
+                case "push":
+                    yl_result = yl_fruits.push(yl_value);
+                    yl_output = "新长度：" + yl_result;
+                    break;
+                case "pop":
+                    yl_result = yl_fruits.pop();
+                    yl_output = "取出的元素：" + (yl_result === undefined ? "undefined（数组原本为空）" : yl_result);
+                    break;
+                case "unshift":
+                    yl_result = yl_fruits.unshift(yl_value);
+                    yl_output = "新长度：" + yl_result;
+                    break;
+                case "shift":
+                    yl_result = yl_fruits.shift();
+                    yl_output = "取出的元素：" + (yl_result === undefined ? "undefined（数组原本为空）" : yl_result);
+                    break;
+                case "splice":
+                    if (!Number.isInteger(yl_index) || yl_index < 0 || yl_index >= yl_fruits.length) {
+                        yl_showMethod(yl_action, yl_fruits.length ? "请输入 0 到 " + (yl_fruits.length - 1) + " 之间的有效索引。" : "数组为空，没有可以删除的索引。");
+                        return;
+                    }
+                    yl_result = yl_fruits.splice(yl_index, 1);
+                    yl_output = "删除的元素：" + JSON.stringify(yl_result);
+                    break;
+                case "sort":
+                    yl_fruits.sort(function (yl_first, yl_second) {
+                        return yl_first.localeCompare(yl_second, "zh-CN");
+                    });
+                    yl_output = "已按中文顺序排列。";
+                    break;
+                case "reverse":
+                    yl_fruits.reverse();
+                    yl_output = "已将元素顺序反转。";
+                    break;
+                case "slice":
+                    yl_result = yl_fruits.slice(0, 2);
+                    yl_output = "截取结果：" + JSON.stringify(yl_result);
+                    break;
+                case "concat":
+                    yl_result = yl_fruits.concat(["火龙果", "蓝莓"]);
+                    yl_output = "组合结果：" + JSON.stringify(yl_result);
+                    break;
+                case "includes":
+                    yl_result = yl_fruits.includes(yl_value);
+                    yl_output = "是否包含“" + yl_value + "”？ " + yl_result;
+                    break;
+                case "indexOf":
+                    yl_result = yl_fruits.indexOf(yl_value);
+                    yl_output = "“" + yl_value + "”的索引：" + yl_result;
+                    break;
+                case "join":
+                    yl_result = yl_fruits.join("、");
+                    yl_output = "拼接结果：" + (yl_result || "（空字符串）");
+                    break;
+                case "forEach":
+                    yl_result = [];
+                    yl_fruits.forEach(function (yl_fruit, yl_position) {
+                        yl_result.push((yl_position + 1) + ". " + yl_fruit);
+                    });
+                    yl_output = yl_result.length ? "逐个访问：" + yl_result.join("；") : "没有元素可供遍历。forEach() 返回 undefined。";
+                    if (yl_result.length) {
+                        yl_output += "（forEach() 返回 undefined）";
+                    }
+                    break;
+                case "map":
+                    yl_result = yl_fruits.map(function (yl_fruit) {
+                        return yl_fruit + "！";
+                    });
+                    yl_output = "变换后的新数组：" + JSON.stringify(yl_result);
+                    break;
+                case "filter":
+                    yl_result = yl_fruits.filter(function (yl_fruit) {
+                        return yl_fruit.length >= 3;
+                    });
+                    yl_output = "名称至少 3 个字：" + JSON.stringify(yl_result);
+                    break;
+                case "find":
+                    yl_result = yl_fruits.find(function (yl_fruit) {
+                        return yl_fruit.length >= 3;
+                    });
+                    yl_output = "第一个名称至少 3 个字的水果：" + (yl_result === undefined ? "undefined（没有符合项）" : yl_result);
+                    break;
+                case "reduce":
+                    yl_result = yl_fruits.reduce(function (yl_total, yl_fruit) {
+                        return yl_total + yl_fruit.length;
+                    }, 0);
+                    yl_output = "所有水果名称的总字数：" + yl_result;
+                    break;
+                default:
+                    return;
+            }
+
+            yl_renderArray();
+            yl_showMethod(yl_action, yl_output);
+        }
+
+        yl_methodGroups.addEventListener("click", function (yl_event) {
+            var yl_button = yl_event.target.closest("[data-action]");
+
+            if (yl_button && yl_methodGroups.contains(yl_button)) {
+                yl_runMethod(yl_button.dataset.action);
+            }
+        });
+
+        document.getElementById("yl_reset").addEventListener("click", function () {
+            yl_fruits = yl_initialFruits.slice();
+            yl_renderArray();
+            yl_showMethod("reset", "水果篮已恢复为最初的 4 种水果。");
+        });
+
+        yl_renderArray();
+    </script>
+</body>
+</html>

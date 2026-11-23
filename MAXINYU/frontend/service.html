@@ -1,0 +1,61 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-12 | 大模型：Copilot（具体模型名称未提供） -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>知识库客服 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+  <main class="ma_shell">
+    <header class="ma_topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <a class="ma_back-link" href="./knowledge.html">管理知识库 →</a>
+    </header>
+
+    <section class="ma_service-main" aria-labelledby="ma_service-title">
+      <div class="ma_service-heading">
+        <div>
+          <p class="ma_eyebrow">RAG · CUSTOMER SERVICE</p>
+          <h1 id="ma_service-title">知识库客服</h1>
+          <p class="ma_lead">客服会先检索已上传资料，再根据资料回答；没有依据时会明确告知。</p>
+        </div>
+        <span class="ma_chat-badge"><span class="ma_status-dot"></span> 本地知识库检索</span>
+      </div>
+
+      <section class="ma_chat-card ma_service-card" aria-label="知识库客服聊天窗口">
+        <ol class="ma_chat-messages" id="ma_service-messages" aria-live="polite">
+          <li class="ma_chat-message ma_chat-message--assistant">
+            <span class="ma_chat-avatar" aria-hidden="true">AI</span>
+            <div class="ma_service-answer">
+              <p class="ma_chat-bubble">你好！请问你想了解什么？我会根据当前知识库资料为你解答。</p>
+            </div>
+          </li>
+        </ol>
+        <p class="ma_chat-status" id="ma_service-status" role="status">发送的问题与接口返回数据会输出到浏览器控制台。</p>
+        <form class="ma_chat-form" id="ma_service-form">
+          <label class="ma_chat-label" for="ma_service-input">咨询问题</label>
+          <textarea class="ma_chat-input" id="ma_service-input" name="ma_question" rows="2" maxlength="1000" placeholder="例如：商品有质量问题，怎么申请退货？" required></textarea>
+          <div class="ma_chat-form-footer">
+            <span class="ma_chat-hint">答案仅基于已上传的知识库资料。</span>
+            <button class="ma_chat-submit" id="ma_service-submit" type="submit">发送 <span aria-hidden="true">↗</span></button>
+          </div>
+        </form>
+      </section>
+    </section>
+
+    <footer class="ma_footer">
+      <span>本地检索相关资料 · AI 生成客服回复</span>
+      <span>马欣宇 <span class="ma_footer-dot">·</span> 2026</span>
+    </footer>
+  </main>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/knowledge-chat.js" defer></script>
+</body>
+</html>

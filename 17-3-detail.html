@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-02；功能名称：Fetch 商品详情 -->
+    <meta name="description" content="课堂实践 17-3：根据商品 ID 获取并展示商品详情">
+    <title>17-3 · 商品详情</title>
+    <style>
+        :root {
+            --yl_ink: #28251f;
+            --yl_muted: #827d73;
+            --yl_paper: #f7f5f0;
+            --yl_card: #fff;
+            --yl_accent: #bb653e;
+            --yl_border: #e9e4dc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px 60px;
+            background: var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1000px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_back {
+            display: inline-flex;
+            margin-bottom: 22px;
+            color: var(--yl_accent);
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .yl_back:hover {
+            text-decoration: underline;
+        }
+
+        .yl_status {
+            color: var(--yl_muted);
+            line-height: 1.7;
+        }
+
+        .yl_status.yl_error {
+            color: #b42318;
+        }
+
+        .yl_detail {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            overflow: hidden;
+            border: 1px solid var(--yl_border);
+            border-radius: 20px;
+            background: var(--yl_card);
+            box-shadow: 0 12px 35px rgb(44 38 28 / 6%);
+        }
+
+        .yl_gallery {
+            display: grid;
+            min-height: 420px;
+            place-items: center;
+            padding: 38px;
+            background: #fff;
+        }
+
+        .yl_image {
+            width: 100%;
+            max-height: 440px;
+            object-fit: contain;
+        }
+
+        .yl_content {
+            align-self: center;
+            padding: 38px;
+        }
+
+        .yl_category {
+            margin: 0 0 12px;
+            color: var(--yl_accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(26px, 4vw, 38px);
+            line-height: 1.25;
+        }
+
+        .yl_rating {
+            margin: 12px 0;
+            color: #9c7228;
+            font-size: 14px;
+        }
+
+        .yl_price {
+            margin: 14px 0 20px;
+            color: var(--yl_ink);
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .yl_description {
+            color: #625e56;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .yl_meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin: 24px 0 0;
+        }
+
+        .yl_meta-item {
+            padding: 12px;
+            border: 1px solid var(--yl_border);
+            border-radius: 10px;
+        }
+
+        .yl_meta-item dt {
+            margin-bottom: 5px;
+            color: var(--yl_muted);
+            font-size: 11px;
+        }
+
+        .yl_meta-item dd {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 28px 15px 44px;
+            }
+
+            .yl_detail {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_gallery {
+                min-height: 280px;
+                padding: 26px;
+            }
+
+            .yl_image {
+                max-height: 300px;
+            }
+
+            .yl_content {
+                padding: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <a class="yl_back" href="./17-3.html">← 返回商品列表</a>
+        <p class="yl_status" id="yl_status" role="status" aria-live="polite">正在加载商品详情…</p>
+        <article class="yl_detail" id="yl_detail" hidden>
+            <div class="yl_gallery">
+                <img class="yl_image" id="yl_image" alt="">
+            </div>
+            <div class="yl_content">
+                <p class="yl_category" id="yl_category"></p>
+                <h1 id="yl_title"></h1>
+                <p class="yl_rating" id="yl_rating"></p>
+                <p class="yl_price" id="yl_price"></p>
+                <p class="yl_description" id="yl_description"></p>
+                <dl class="yl_meta" id="yl_meta"></dl>
+            </div>
+        </article>
+    </main>
+    <script>
+        const yl_status = document.getElementById("yl_status");
+        const yl_detail = document.getElementById("yl_detail");
+        const yl_searchParams = new URLSearchParams(window.location.search);
+        const yl_productId = Number(yl_searchParams.get("id") || "1");
+
+        function yl_addMeta(label, value) {
+            const yl_item = document.createElement("div");
+            const yl_term = document.createElement("dt");
+            const yl_description = document.createElement("dd");
+            yl_item.className = "yl_meta-item";
+            yl_term.textContent = label;
+            yl_description.textContent = value;
+            yl_item.append(yl_term, yl_description);
+            document.getElementById("yl_meta").append(yl_item);
+        }
+
+        async function yl_loadProduct() {
+            if (!Number.isSafeInteger(yl_productId) || yl_productId < 1) {
+                yl_status.classList.add("yl_error");
+                yl_status.textContent = "商品 ID 无效，请从商品列表选择一个商品。";
+                return;
+            }
+
+            try {
+                const yl_response = await fetch(`https://dummyjson.com/products/${yl_productId}`);
+                if (!yl_response.ok) {
+                    throw new Error(`接口请求失败：HTTP ${yl_response.status}`);
+                }
+
+                const yl_product = await yl_response.json();
+                if (!yl_product || yl_product.id !== yl_productId) {
+                    throw new Error("接口未返回对应的商品详情。");
+                }
+
+                const yl_image = document.getElementById("yl_image");
+                yl_image.src = yl_product.images?.[0] || yl_product.thumbnail || "";
+                yl_image.alt = `${yl_product.title || "商品"} 图片`;
+                document.getElementById("yl_category").textContent = yl_product.category || "未分类";
+                document.getElementById("yl_title").textContent = yl_product.title || "未命名商品";
+                document.getElementById("yl_rating").textContent = `★ ${Number(yl_product.rating || 0).toFixed(1)} / 5 · 库存 ${yl_product.stock ?? "未知"}`;
+                document.getElementById("yl_price").textContent = `$${Number(yl_product.price || 0).toFixed(2)}`;
+                document.getElementById("yl_description").textContent = yl_product.description || "暂无商品描述。";
+                yl_addMeta("商品编号", String(yl_product.id));
+                yl_addMeta("品牌", yl_product.brand || "未提供");
+                yl_addMeta("折扣", `${Number(yl_product.discountPercentage || 0).toFixed(1)}%`);
+                yl_addMeta("库存状态", yl_product.availabilityStatus || "未提供");
+
+                yl_status.hidden = true;
+                yl_detail.hidden = false;
+                document.title = `${yl_product.title || "商品详情"} · 17-3`;
+            } catch (yl_error) {
+                yl_status.classList.add("yl_error");
+                yl_status.textContent = `商品详情加载失败：${yl_error.message}。请返回列表或检查网络后重试。`;
+            }
+        }
+
+        yl_loadProduct();
+    </script>
+</body>
+</html>

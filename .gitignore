@@ -1,0 +1,17 @@
+# 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-23 | 大模型：DeepSeek-V4.1-Flash
+node_modules/
+**/node_modules/
+.env
+**/.env
+*.log
+npm-debug.log*
+
+# IDE 与工具生成物
+.trae/
+.trae-html-share-packages/
+
+# 第三方本地库（体积较大）
+cdn/
+
+# 本地运行时数据
+MAXINYU/backend/data/ma_knowledge.json

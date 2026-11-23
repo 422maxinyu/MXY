@@ -1,0 +1,146 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>账号登录 · 小米商城 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+
+  <main class="ma_auth-shell">
+    <!-- 左侧：标题与三个考点说明 -->
+    <section class="ma_auth-brand" aria-labelledby="ma_login-heading">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+
+      <p class="ma_eyebrow">ACCOUNT SYSTEM <span>—</span> KT3 / KT20 / KT25</p>
+      <h1 id="ma_login-heading">欢迎回来<span class="ma_auth-dot">.</span></h1>
+      <p class="ma_auth-lead">
+        使用原生 HTML、CSS 与 JavaScript 实现的账号体系：表单校验、Canvas 图形验证码、
+        AJAX 传递 JSON，并用 localStorage 中的 token 维持登录状态。
+      </p>
+
+      <ul class="ma_auth-points" aria-label="本页覆盖的考点">
+        <li>
+          <span class="ma_kt-tag">KT3</span>
+          <div>
+            <strong>表单与表单校验</strong>
+            <span>用户名、密码、验证码的失焦校验与实时错误提示</span>
+          </div>
+        </li>
+        <li>
+          <span class="ma_kt-tag">KT20</span>
+          <div>
+            <strong>Canvas 图形验证码</strong>
+            <span>随机字符、旋转角度、干扰线与干扰点，点击可刷新</span>
+          </div>
+        </li>
+        <li>
+          <span class="ma_kt-tag">KT25</span>
+          <div>
+            <strong>AJAX 与本地存储</strong>
+            <span>fetch 发送 JSON 登录请求，localStorage 保存 token</span>
+          </div>
+        </li>
+      </ul>
+
+      <p class="ma_auth-note">
+        接口为前端模拟：用户表存放在 localStorage 中，无需启动后端即可完整体验。
+      </p>
+    </section>
+
+    <!-- 右侧：登录表单 -->
+    <section class="ma_auth-panel">
+      <div class="ma_auth-card">
+        <header class="ma_auth-card-head">
+          <p class="ma_eyebrow">SIGN IN</p>
+          <h2>账号登录</h2>
+          <p class="ma_auth-sub">还没有账号？<a href="./register.html">立即注册 →</a></p>
+        </header>
+
+        <div class="ma_auth-notice" id="ma_login-notice" hidden></div>
+
+        <form class="ma_auth-form" id="ma_login-form" novalidate>
+          <!-- KT3 考点：表单控件 + 自定义校验 -->
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_login-username">
+              用户名<span class="ma_kt-tag ma_kt-tag--mini">KT3</span>
+            </label>
+            <input
+              class="ma_field-input"
+              id="ma_login-username"
+              name="ma_username"
+              type="text"
+              autocomplete="username"
+              maxlength="16"
+              placeholder="3-16 位字母、数字或下划线"
+            >
+            <p class="ma_field-error" id="ma_login-username-error" role="alert"></p>
+          </div>
+
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_login-password">密码</label>
+            <div class="ma_password-wrap">
+              <input
+                class="ma_field-input"
+                id="ma_login-password"
+                name="ma_password"
+                type="password"
+                autocomplete="current-password"
+                maxlength="20"
+                placeholder="请输入登录密码"
+              >
+              <button class="ma_password-toggle" type="button" data-ma-password-toggle="#ma_login-password">显示</button>
+            </div>
+            <p class="ma_field-error" id="ma_login-password-error" role="alert"></p>
+          </div>
+
+          <!-- KT20 考点：Canvas 图形验证码 -->
+          <div class="ma_field">
+            <label class="ma_field-label" for="ma_login-captcha">
+              图形验证码<span class="ma_kt-tag ma_kt-tag--mini">KT20</span>
+            </label>
+            <div class="ma_captcha-row">
+              <input
+                class="ma_field-input"
+                id="ma_login-captcha"
+                name="ma_captcha"
+                type="text"
+                inputmode="latin"
+                maxlength="4"
+                autocomplete="off"
+                placeholder="输入右侧 4 位字符"
+              >
+              <button class="ma_captcha" id="ma_login-captcha-btn" type="button" title="看不清？点击刷新验证码">
+                <canvas id="ma_login-captcha-canvas" width="132" height="46" aria-label="图形验证码，点击刷新"></canvas>
+              </button>
+            </div>
+            <p class="ma_field-error" id="ma_login-captcha-error" role="alert"></p>
+            <p class="ma_field-hint">验证码不区分大小写，点击图片可刷新。</p>
+          </div>
+
+          <p class="ma_auth-status" id="ma_login-status" role="status"></p>
+
+          <button class="ma_auth-submit" id="ma_login-submit" type="submit">登 录</button>
+        </form>
+
+        <footer class="ma_auth-card-foot">
+          <span>演示账号：maxinyu / Maxinyu2026</span>
+          <a href="./index.html">返回首页</a>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/mock-api.js" defer></script>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/auth.js" defer></script>
+</body>
+</html>

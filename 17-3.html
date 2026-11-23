@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-02；功能名称：Fetch 商品列表 -->
+    <meta name="description" content="课堂实践 17-3：通过 Fetch 获取商品列表并跳转至商品详情">
+    <title>17-3 · 商品列表</title>
+    <style>
+        :root {
+            --yl_ink: #28251f;
+            --yl_muted: #827d73;
+            --yl_paper: #f7f5f0;
+            --yl_card: #fff;
+            --yl_accent: #bb653e;
+            --yl_border: #e9e4dc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 42px 20px 60px;
+            background: var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1160px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 9px;
+            color: var(--yl_accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 44px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            margin: 10px 0 22px;
+            color: var(--yl_muted);
+            line-height: 1.7;
+        }
+
+        .yl_status {
+            min-height: 24px;
+            margin: 0 0 16px;
+            color: var(--yl_muted);
+            font-size: 14px;
+        }
+
+        .yl_status.yl_error {
+            color: #b42318;
+        }
+
+        .yl_product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .yl_product-card {
+            overflow: hidden;
+            min-width: 0;
+            border: 1px solid var(--yl_border);
+            border-radius: 15px;
+            background: var(--yl_card);
+            box-shadow: 0 8px 22px rgb(44 38 28 / 5%);
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .yl_product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgb(44 38 28 / 10%);
+        }
+
+        .yl_product-link {
+            display: block;
+            height: 100%;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .yl_product-link:focus-visible {
+            outline: 3px solid var(--yl_accent);
+            outline-offset: -3px;
+        }
+
+        .yl_image-wrap {
+            display: grid;
+            height: 190px;
+            place-items: center;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .yl_product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .yl_product-info {
+            padding: 15px 16px 17px;
+        }
+
+        .yl_category {
+            margin: 0 0 8px;
+            color: var(--yl_accent);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .yl_product-info h2 {
+            display: -webkit-box;
+            overflow: hidden;
+            min-height: 44px;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.5;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+        .yl_product-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 12px;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_price {
+            color: var(--yl_ink);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 900px) {
+            .yl_product-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+            body {
+                padding: 30px 15px 44px;
+            }
+
+            .yl_product-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .yl_image-wrap {
+                height: 150px;
+                padding: 14px;
+            }
+
+            .yl_product-info {
+                padding: 12px;
+            }
+
+            .yl_product-meta {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 17-3</p>
+        <h1>商品列表</h1>
+        <p class="yl_intro">商品信息来自 DummyJSON 接口，选择商品卡片查看对应详情。</p>
+        <p class="yl_status" id="yl_status" role="status" aria-live="polite">正在加载商品…</p>
+        <section class="yl_product-grid" id="yl_product-list" aria-label="商品列表"></section>
+    </main>
+    <script>
+        const yl_apiUrl = "https://dummyjson.com/products?limit=8";
+        const yl_productList = document.getElementById("yl_product-list");
+        const yl_status = document.getElementById("yl_status");
+
+        function yl_createProductCard(yl_product) {
+            const yl_card = document.createElement("article");
+            const yl_link = document.createElement("a");
+            const yl_imageWrap = document.createElement("div");
+            const yl_image = document.createElement("img");
+            const yl_info = document.createElement("div");
+            const yl_category = document.createElement("p");
+            const yl_title = document.createElement("h2");
+            const yl_meta = document.createElement("div");
+            const yl_price = document.createElement("span");
+            const yl_rating = document.createElement("span");
+
+            yl_card.className = "yl_product-card";
+            yl_link.className = "yl_product-link";
+            yl_link.href = `./17-3-detail.html?id=${encodeURIComponent(yl_product.id)}`;
+            yl_imageWrap.className = "yl_image-wrap";
+            yl_image.className = "yl_product-image";
+            yl_image.src = yl_product.thumbnail || yl_product.images?.[0] || "";
+            yl_image.alt = yl_product.title ? `${yl_product.title} 商品图片` : "商品图片";
+            yl_image.loading = "lazy";
+            yl_info.className = "yl_product-info";
+            yl_category.className = "yl_category";
+            yl_category.textContent = yl_product.category || "未分类";
+            yl_title.textContent = yl_product.title || "未命名商品";
+            yl_meta.className = "yl_product-meta";
+            yl_price.className = "yl_price";
+            yl_price.textContent = `$${Number(yl_product.price || 0).toFixed(2)}`;
+            yl_rating.textContent = `★ ${Number(yl_product.rating || 0).toFixed(1)}`;
+
+            yl_imageWrap.append(yl_image);
+            yl_meta.append(yl_price, yl_rating);
+            yl_info.append(yl_category, yl_title, yl_meta);
+            yl_link.append(yl_imageWrap, yl_info);
+            yl_card.append(yl_link);
+            return yl_card;
+        }
+
+        async function yl_loadProducts() {
+            try {
+                const yl_response = await fetch(yl_apiUrl);
+                if (!yl_response.ok) {
+                    throw new Error(`接口请求失败：HTTP ${yl_response.status}`);
+                }
+
+                const yl_data = await yl_response.json();
+                if (!Array.isArray(yl_data.products)) {
+                    throw new Error("接口返回的数据格式不正确，未找到商品列表。");
+                }
+
+                yl_productList.append(...yl_data.products.map(yl_createProductCard));
+                yl_status.textContent = `已加载 ${yl_data.products.length} 件商品。`;
+            } catch (yl_error) {
+                yl_status.classList.add("yl_error");
+                yl_status.textContent = `商品加载失败：${yl_error.message}。请检查网络后刷新页面。`;
+            }
+        }
+
+        yl_loadProducts();
+    </script>
+</body>
+</html>

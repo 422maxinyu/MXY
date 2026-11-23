@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-10-29；功能名称：JavaScript 对象常用方法实验台 -->
+    <meta name="description" content="课堂实践 16-2：通过角色档案卡互动认识 JavaScript 对象常用方法">
+    <title>16-2 · 对象方法实验台</title>
+    <style>
+        :root {
+            --yl_ink: #1c2a32;
+            --yl_muted: #69777d;
+            --yl_paper: #f4f2eb;
+            --yl_card: #fffefa;
+            --yl_line: rgba(28, 42, 50, 0.14);
+            --yl_coral: #e76f51;
+            --yl_teal: #248b80;
+            --yl_gold: #d49b2a;
+            --yl_blue: #5577a8;
+            --yl_shadow: 0 20px 50px rgba(28, 42, 50, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--yl_ink);
+            background:
+                radial-gradient(circle at 8% 8%, rgba(231, 111, 81, 0.13), transparent 23rem),
+                radial-gradient(circle at 95% 54%, rgba(36, 139, 128, 0.12), transparent 26rem),
+                var(--yl_paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.7;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .yl_page-shell {
+            width: min(1080px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .yl_intro {
+            padding: 64px 0 30px;
+        }
+
+        .yl_eyebrow {
+            margin: 0 0 14px;
+            color: var(--yl_coral);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 12px;
+            font-size: clamp(36px, 6vw, 62px);
+            letter-spacing: -0.05em;
+            line-height: 1.12;
+        }
+
+        .yl_intro-copy {
+            max-width: 720px;
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 16px;
+        }
+
+        .yl_hero-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 22px;
+            padding: 8px 13px;
+            border: 1px solid rgba(36, 139, 128, 0.24);
+            border-radius: 999px;
+            background: rgba(36, 139, 128, 0.08);
+            color: var(--yl_teal);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .yl_lab {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(290px, 0.8fr);
+            gap: 18px;
+            align-items: start;
+            margin-bottom: 58px;
+        }
+
+        .yl_panel {
+            min-width: 0;
+            border: 1px solid var(--yl_line);
+            border-radius: 18px;
+            background: rgba(255, 254, 250, 0.9);
+            box-shadow: var(--yl_shadow);
+        }
+
+        .yl_object-panel {
+            padding: 24px;
+        }
+
+        .yl_panel-heading {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .yl_panel-heading h2 {
+            margin-bottom: 4px;
+            font-size: 21px;
+        }
+
+        .yl_panel-heading p {
+            margin-bottom: 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_status {
+            flex: 0 0 auto;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(36, 139, 128, 0.1);
+            color: var(--yl_teal);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_status.yl_locked {
+            background: rgba(231, 111, 81, 0.13);
+            color: #a44734;
+        }
+
+        .yl_object-card {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 18px;
+            border: 1px solid rgba(85, 119, 168, 0.22);
+            border-radius: 15px;
+            background:
+                linear-gradient(135deg, rgba(85, 119, 168, 0.07), transparent 58%),
+                var(--yl_card);
+        }
+
+        .yl_object-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--yl_line);
+        }
+
+        .yl_avatar {
+            display: grid;
+            width: 52px;
+            height: 52px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 16px;
+            background: rgba(212, 155, 42, 0.18);
+            font-size: 29px;
+        }
+
+        .yl_object-heading h3 {
+            margin: 0 0 2px;
+            font-size: 17px;
+        }
+
+        .yl_object-heading p {
+            margin: 0;
+            color: var(--yl_muted);
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+        }
+
+        .yl_property-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
+        }
+
+        .yl_property {
+            min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid var(--yl_line);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.72);
+            animation: yl_pop-in 220ms ease both;
+        }
+
+        .yl_property-key {
+            display: block;
+            margin-bottom: 2px;
+            color: var(--yl_blue);
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 11px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .yl_property-value {
+            display: block;
+            overflow-wrap: anywhere;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .yl_inherited {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+            margin-top: 13px;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_inherited code {
+            padding: 3px 7px;
+            border: 1px dashed rgba(85, 119, 168, 0.4);
+            border-radius: 6px;
+            color: var(--yl_blue);
+        }
+
+        .yl_editor {
+            display: grid;
+            grid-template-columns: minmax(90px, 0.75fr) minmax(120px, 1fr) auto;
+            align-items: end;
+            gap: 9px;
+            margin-bottom: 18px;
+        }
+
+        .yl_field {
+            display: grid;
+            gap: 5px;
+        }
+
+        .yl_field label {
+            color: var(--yl_muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_field input {
+            width: 100%;
+            min-width: 0;
+            padding: 9px 10px;
+            border: 1px solid var(--yl_line);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--yl_ink);
+        }
+
+        .yl_primary-button,
+        .yl_reset,
+        .yl_method-button {
+            border: 1px solid var(--yl_line);
+            border-radius: 9px;
+            background: var(--yl_card);
+            color: var(--yl_ink);
+            cursor: pointer;
+            transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+        }
+
+        .yl_primary-button {
+            padding: 9px 12px;
+            border-color: var(--yl_teal);
+            background: var(--yl_teal);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .yl_primary-button:hover {
+            background: #1f7169;
+        }
+
+        .yl_reset {
+            margin-top: 12px;
+            padding: 8px 12px;
+            color: var(--yl_muted);
+            font-size: 13px;
+        }
+
+        .yl_reset:hover,
+        .yl_method-button:hover {
+            border-color: var(--yl_teal);
+            color: var(--yl_teal);
+            transform: translateY(-1px);
+        }
+
+        .yl_method-groups {
+            display: grid;
+            gap: 15px;
+        }
+
+        .yl_method-group h3 {
+            margin: 0 0 8px;
+            color: var(--yl_muted);
+            font-size: 12px;
+            letter-spacing: 0.04em;
+        }
+
+        .yl_method-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .yl_method-button {
+            padding: 7px 10px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .yl_method-button[aria-pressed="true"] {
+            border-color: var(--yl_teal);
+            background: var(--yl_teal);
+            color: #fff;
+        }
+
+        .yl_primary-button:focus-visible,
+        .yl_reset:focus-visible,
+        .yl_method-button:focus-visible,
+        .yl_field input:focus-visible {
+            outline: 3px solid rgba(85, 119, 168, 0.35);
+            outline-offset: 2px;
+        }
+
+        .yl_info-panel {
+            position: sticky;
+            top: 18px;
+            padding: 23px;
+        }
+
+        .yl_method-tag {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(85, 119, 168, 0.12);
+            color: var(--yl_blue);
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .yl_info-panel h2 {
+            margin-bottom: 8px;
+            font-size: 23px;
+        }
+
+        .yl_method-description {
+            min-height: 48px;
+            margin-bottom: 17px;
+            color: var(--yl_muted);
+            font-size: 14px;
+        }
+
+        .yl_code-label {
+            margin: 0 0 7px;
+            color: var(--yl_muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .yl_code {
+            display: block;
+            min-height: 45px;
+            margin-bottom: 14px;
+            padding: 11px 12px;
+            overflow-wrap: anywhere;
+            border-radius: 10px;
+            background: #202c33;
+            color: #f8d991;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .yl_result {
+            min-height: 86px;
+            margin: 14px 0 0;
+            padding: 12px;
+            border: 1px solid var(--yl_line);
+            border-radius: 10px;
+            background: rgba(244, 242, 235, 0.75);
+            color: var(--yl_ink);
+            font-size: 13px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .yl_result-label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--yl_muted);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .yl_hint {
+            margin: 13px 0 0;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        @keyframes yl_pop-in {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .yl_page-shell {
+                width: min(100% - 28px, 560px);
+            }
+
+            .yl_intro {
+                padding-top: 46px;
+            }
+
+            .yl_lab {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_info-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .yl_object-panel,
+            .yl_info-panel {
+                padding: 18px;
+            }
+
+            .yl_panel-heading {
+                display: block;
+            }
+
+            .yl_status {
+                display: inline-block;
+                margin-top: 8px;
+            }
+
+            .yl_property-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .yl_editor {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .yl_primary-button {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page-shell">
+        <header class="yl_intro">
+            <p class="yl_eyebrow">JAVASCRIPT · LESSON 16-2</p>
+            <h1>对象方法实验台</h1>
+            <p class="yl_intro-copy">对象像一张角色档案卡：属性名是标签，属性值是内容。点选方法，看看 JavaScript 怎样查看、组合和保护这张卡片。</p>
+            <span class="yl_hero-note">🧭 认识属性、键值对与对象原型</span>
+        </header>
+
+        <section class="yl_lab" aria-label="JavaScript 对象方法交互演示">
+            <div class="yl_panel yl_object-panel">
+                <div class="yl_panel-heading">
+                    <div>
+                        <h2>探险家档案</h2>
+                        <p>卡片上的每一项都是对象自己的属性。</p>
+                    </div>
+                    <span class="yl_status" id="yl_status" aria-live="polite">可编辑 · 5 项属性</span>
+                </div>
+
+                <article class="yl_object-card" aria-label="探险家对象 yl_explorer">
+                    <div class="yl_object-heading">
+                        <span class="yl_avatar" aria-hidden="true">🧭</span>
+                        <div>
+                            <h3 id="yl_profile-title">小芽 · 森林探险家</h3>
+                            <p>yl_explorer</p>
+                        </div>
+                    </div>
+                    <div class="yl_property-grid" id="yl_property-grid" aria-live="polite"></div>
+                    <div class="yl_inherited" id="yl_inherited">
+                        原型提供：
+                        <code>species: "森林精灵"</code>
+                        <span>（不是对象自己的属性）</span>
+                    </div>
+                </article>
+
+                <div class="yl_editor">
+                    <div class="yl_field">
+                        <label for="yl_key-input">属性名 key</label>
+                        <input id="yl_key-input" type="text" value="favorite" maxlength="24">
+                    </div>
+                    <div class="yl_field">
+                        <label for="yl_value-input">属性值 value</label>
+                        <input id="yl_value-input" type="text" value="星星地图" maxlength="40">
+                    </div>
+                    <button class="yl_primary-button" id="yl_write-button" type="button">✎ 写入属性</button>
+                </div>
+
+                <div class="yl_method-groups" id="yl_method-groups">
+                    <section class="yl_method-group" aria-labelledby="yl_inspect-title">
+                        <h3 id="yl_inspect-title">查看属性 · Inspect</h3>
+                        <div class="yl_method-list">
+                            <button class="yl_method-button" type="button" data-action="keys" aria-pressed="false">Object.keys</button>
+                            <button class="yl_method-button" type="button" data-action="values" aria-pressed="false">Object.values</button>
+                            <button class="yl_method-button" type="button" data-action="entries" aria-pressed="false">Object.entries</button>
+                            <button class="yl_method-button" type="button" data-action="hasOwn" aria-pressed="false">Object.hasOwn</button>
+                            <button class="yl_method-button" type="button" data-action="hasOwnProperty" aria-pressed="false">hasOwnProperty</button>
+                            <button class="yl_method-button" type="button" data-action="toString" aria-pressed="false">toString</button>
+                        </div>
+                    </section>
+                    <section class="yl_method-group" aria-labelledby="yl_build-title">
+                        <h3 id="yl_build-title">组合与生成 · Build</h3>
+                        <div class="yl_method-list">
+                            <button class="yl_method-button" type="button" data-action="assign" aria-pressed="false">Object.assign</button>
+                            <button class="yl_method-button" type="button" data-action="fromEntries" aria-pressed="false">Object.fromEntries</button>
+                            <button class="yl_method-button" type="button" data-action="create" aria-pressed="false">Object.create</button>
+                        </div>
+                    </section>
+                    <section class="yl_method-group" aria-labelledby="yl_protect-title">
+                        <h3 id="yl_protect-title">对象保护 · Protect</h3>
+                        <div class="yl_method-list">
+                            <button class="yl_method-button" type="button" data-action="freeze" aria-pressed="false">Object.freeze</button>
+                            <button class="yl_method-button" type="button" data-action="isFrozen" aria-pressed="false">Object.isFrozen</button>
+                            <button class="yl_method-button" type="button" data-action="seal" aria-pressed="false">Object.seal</button>
+                            <button class="yl_method-button" type="button" data-action="isSealed" aria-pressed="false">Object.isSealed</button>
+                        </div>
+                    </section>
+                </div>
+
+                <button class="yl_reset" id="yl_reset" type="button">↺ 重置探险家档案</button>
+            </div>
+
+            <aside class="yl_panel yl_info-panel" aria-live="polite">
+                <span class="yl_method-tag" id="yl_method-tag">object methods</span>
+                <h2 id="yl_method-title">选择一个方法</h2>
+                <p class="yl_method-description" id="yl_method-description">点击左边的方法按钮，看看它如何读取或改变这张对象档案。</p>
+                <p class="yl_code-label">示例代码</p>
+                <code class="yl_code" id="yl_code">yl_explorer</code>
+                <p class="yl_result" id="yl_result" role="status">
+                    <span class="yl_result-label">运行结果</span>
+                    <span id="yl_result-value">等待操作……</span>
+                </p>
+                <p class="yl_hint">提示：Object.keys / values / entries 会返回对象自己的可枚举属性；原型上的属性另算。</p>
+            </aside>
+        </section>
+    </main>
+
+    <script>
+        var yl_initialExplorer = {
+            name: "小芽",
+            role: "森林探险家",
+            level: 7,
+            home: "云朵岛",
+            companion: "松果精灵"
+        };
+        var yl_explorer = Object.create({ species: "森林精灵" });
+        Object.assign(yl_explorer, yl_initialExplorer);
+
+        var yl_propertyGrid = document.getElementById("yl_property-grid");
+        var yl_status = document.getElementById("yl_status");
+        var yl_profileTitle = document.getElementById("yl_profile-title");
+        var yl_keyInput = document.getElementById("yl_key-input");
+        var yl_valueInput = document.getElementById("yl_value-input");
+        var yl_methodGroups = document.getElementById("yl_method-groups");
+        var yl_methodTag = document.getElementById("yl_method-tag");
+        var yl_methodTitle = document.getElementById("yl_method-title");
+        var yl_methodDescription = document.getElementById("yl_method-description");
+        var yl_code = document.getElementById("yl_code");
+        var yl_resultValue = document.getElementById("yl_result-value");
+        var yl_methodInfo = {
+            keys: ["列出属性名", "返回对象自己的可枚举属性名组成的数组。", "Object.keys(yl_explorer)", "read"],
+            values: ["读取属性值", "按照属性名的顺序，返回对象自己的可枚举属性值数组。", "Object.values(yl_explorer)", "read"],
+            entries: ["查看键值对", "把每个属性变成 [key, value]，组成一个二维数组。", "Object.entries(yl_explorer)", "read"],
+            hasOwn: ["检查自有属性", "判断属性是否直接属于对象，不会把原型继承来的属性算进去。", "Object.hasOwn(yl_explorer, yl_key)", "read"],
+            hasOwnProperty: ["检查自有属性（传统写法）", "hasOwnProperty() 也能检查自有属性；使用 call 可避免同名属性遮蔽方法。", "Object.prototype.hasOwnProperty.call(yl_explorer, yl_key)", "read"],
+            toString: ["对象类型标签", "借用 Object.prototype.toString，得到对象的类型标签。", "Object.prototype.toString.call(yl_explorer)", "read"],
+            assign: ["合并属性", "把补充对象的可枚举属性复制到目标对象，会修改目标对象。", 'Object.assign(yl_explorer, { level: 8, badge: "新手向导" })', "change"],
+            fromEntries: ["由键值对生成", "把 [key, value] 列表转换成一个全新的对象。", 'Object.fromEntries([["name", "小芽"], ["level", 7]])', "new"],
+            create: ["创建原型对象", "用指定对象作为新对象的原型；species 会继承自原型而不是自有属性。", 'Object.create({ species: "森林精灵" })', "new"],
+            freeze: ["冻结对象", "阻止新增、删除或修改自有属性；点击重置可恢复可编辑状态。", "Object.freeze(yl_explorer)", "protect"],
+            isFrozen: ["检查是否冻结", "返回对象是否被冻结。冻结状态比密封更严格。", "Object.isFrozen(yl_explorer)", "read"],
+            seal: ["密封对象", "阻止新增或删除属性，但已有属性仍可修改；点击重置可恢复。", "Object.seal(yl_explorer)", "protect"],
+            isSealed: ["检查是否密封", "返回对象是否已密封；被冻结的对象也会被视为已密封。", "Object.isSealed(yl_explorer)", "read"],
+            reset: ["重置探险家档案", "重新创建初始对象与原型，恢复所有属性并解除冻结或密封。", 'yl_explorer = Object.create({ species: "森林精灵" })', "reset"]
+        };
+
+        function yl_getPropertyEmoji(yl_key) {
+            var yl_emojis = {
+                name: "🌱",
+                role: "🧭",
+                level: "⭐",
+                home: "🏝️",
+                companion: "🌰",
+                favorite: "✨",
+                badge: "🏅"
+            };
+
+            return yl_emojis[yl_key] || "🔖";
+        }
+
+        function yl_renderObject() {
+            yl_propertyGrid.replaceChildren();
+            yl_profileTitle.textContent = String(yl_explorer.name) + " · " + String(yl_explorer.role);
+            Object.entries(yl_explorer).forEach(function (yl_entry) {
+                var yl_property = document.createElement("div");
+                var yl_key = document.createElement("span");
+                var yl_value = document.createElement("span");
+
+                yl_property.className = "yl_property";
+                yl_key.className = "yl_property-key";
+                yl_key.textContent = yl_getPropertyEmoji(yl_entry[0]) + " " + yl_entry[0];
+                yl_value.className = "yl_property-value";
+                yl_value.textContent = String(yl_entry[1]);
+                yl_property.append(yl_key, yl_value);
+                yl_propertyGrid.appendChild(yl_property);
+            });
+
+            var yl_isFrozen = Object.isFrozen(yl_explorer);
+            var yl_isSealed = Object.isSealed(yl_explorer);
+            var yl_statusText = yl_isFrozen
+                ? "已冻结 · 不可修改"
+                : yl_isSealed ? "已密封 · 只能修改" : "可编辑";
+
+            yl_status.textContent = yl_statusText + " · " + Object.keys(yl_explorer).length + " 项属性";
+            yl_status.classList.toggle("yl_locked", yl_isFrozen || yl_isSealed);
+        }
+
+        function yl_showMethod(yl_action, yl_output) {
+            var yl_info = yl_methodInfo[yl_action];
+
+            yl_methodTag.textContent = yl_action === "reset" ? "Object.assign + Object.create" : yl_info[2].split("(")[0];
+            yl_methodTitle.textContent = yl_info[0];
+            yl_methodDescription.textContent = yl_info[1];
+            yl_code.textContent = yl_info[2];
+            yl_resultValue.textContent = yl_output;
+            yl_methodGroups.querySelectorAll("[data-action]").forEach(function (yl_button) {
+                yl_button.setAttribute("aria-pressed", String(yl_button.dataset.action === yl_action));
+            });
+        }
+
+        function yl_getPropertyKey() {
+            var yl_key = yl_keyInput.value.trim();
+
+            if (!yl_key) {
+                yl_keyInput.focus();
+            }
+
+            return yl_key;
+        }
+
+        function yl_runMethod(yl_action) {
+            var yl_key;
+            var yl_result;
+            var yl_output;
+            var yl_info = yl_methodInfo[yl_action];
+
+            if (yl_action === "hasOwn" || yl_action === "hasOwnProperty") {
+                yl_key = yl_getPropertyKey();
+                if (!yl_key) {
+                    yl_showMethod(yl_action, "请先填写要检查的属性名。");
+                    return;
+                }
+            }
+
+            switch (yl_action) {
+                case "keys":
+                    yl_result = Object.keys(yl_explorer);
+                    yl_output = JSON.stringify(yl_result);
+                    break;
+                case "values":
+                    yl_result = Object.values(yl_explorer);
+                    yl_output = JSON.stringify(yl_result);
+                    break;
+                case "entries":
+                    yl_result = Object.entries(yl_explorer);
+                    yl_output = JSON.stringify(yl_result);
+                    break;
+                case "hasOwn":
+                    yl_result = Object.hasOwn(yl_explorer, yl_key);
+                    yl_output = "Object.hasOwn(yl_explorer, \"" + yl_key + "\") → " + yl_result;
+                    break;
+                case "hasOwnProperty":
+                    yl_result = Object.prototype.hasOwnProperty.call(yl_explorer, yl_key);
+                    yl_output = "hasOwnProperty(\"" + yl_key + "\") → " + yl_result;
+                    break;
+                case "toString":
+                    yl_output = Object.prototype.toString.call(yl_explorer);
+                    break;
+                case "assign":
+                    if (Object.isFrozen(yl_explorer)) {
+                        yl_output = "对象已冻结，Object.assign 无法更新它。点击重置后再试。";
+                    } else {
+                        var yl_previousLevel = yl_explorer.level;
+                        Object.assign(yl_explorer, {
+                            level: typeof yl_previousLevel === "number" ? yl_previousLevel + 1 : 8,
+                            role: "完成对象探索的探险家"
+                        });
+                        yl_output = "已合并属性：等级 " + yl_previousLevel + " → " + yl_explorer.level + "，角色资料也已更新。";
+                        if (Object.isSealed(yl_explorer)) {
+                            yl_output += " 密封状态允许修改已有属性。";
+                        }
+                    }
+                    break;
+                case "fromEntries":
+                    yl_result = Object.fromEntries([
+                        ["name", yl_explorer.name],
+                        ["level", yl_explorer.level],
+                        ["badge", "键值对新档案"]
+                    ]);
+                    yl_output = "新对象（原档案不变）：\n" + JSON.stringify(yl_result, null, 2);
+                    break;
+                case "create":
+                    var yl_prototype = { species: "森林精灵" };
+                    var yl_created = Object.create(yl_prototype);
+                    yl_created.name = "芽芽分身";
+                    yl_output = "新对象自己的属性：" + JSON.stringify(Object.keys(yl_created))
+                        + "\n继承的 species：" + yl_created.species
+                        + "\n自有属性检查：" + Object.hasOwn(yl_created, "species");
+                    break;
+                case "freeze":
+                    if (Object.isFrozen(yl_explorer)) {
+                        yl_output = "档案已经冻结，无法再进行更改；点击重置可恢复。";
+                    } else {
+                        Object.freeze(yl_explorer);
+                        yl_output = "档案已冻结。现在既不能改属性，也不能添加或删除；重置可解冻。";
+                    }
+                    break;
+                case "isFrozen":
+                    yl_output = "Object.isFrozen(yl_explorer) → " + Object.isFrozen(yl_explorer);
+                    break;
+                case "seal":
+                    if (Object.isFrozen(yl_explorer)) {
+                        yl_output = "档案已经冻结，冻结比密封更严格；点击重置可恢复。";
+                    } else if (Object.isSealed(yl_explorer)) {
+                        yl_output = "档案已经密封；已有属性仍能修改，点击重置可恢复。";
+                    } else {
+                        Object.seal(yl_explorer);
+                        yl_output = "档案已密封。已有属性仍能修改，但不能添加或删除；重置可恢复。";
+                    }
+                    break;
+                case "isSealed":
+                    yl_output = "Object.isSealed(yl_explorer) → " + Object.isSealed(yl_explorer);
+                    break;
+                default:
+                    return;
+            }
+
+            yl_renderObject();
+            yl_showMethod(yl_action, yl_output);
+        }
+
+        document.getElementById("yl_write-button").addEventListener("click", function () {
+            var yl_key = yl_getPropertyKey();
+            var yl_value = yl_valueInput.value.trim();
+
+            if (!yl_key || !yl_value) {
+                if (!yl_value) {
+                    yl_valueInput.focus();
+                }
+                yl_showMethod("assign", "属性名和属性值都需要填写。");
+                return;
+            }
+
+            if (yl_key === "__proto__") {
+                yl_keyInput.focus();
+                yl_showMethod("assign", "“__proto__”用于访问对象原型，请换一个属性名。");
+                return;
+            }
+
+            if (Object.isFrozen(yl_explorer)) {
+                yl_showMethod("assign", "对象已冻结，不能写入属性。点击重置后再试。");
+                return;
+            }
+
+            if (Object.isSealed(yl_explorer) && !Object.hasOwn(yl_explorer, yl_key)) {
+                yl_showMethod("assign", "对象已密封，不能新增属性；可以修改已有属性或重置。");
+                return;
+            }
+
+            yl_explorer[yl_key] = yl_value;
+            yl_renderObject();
+            yl_showMethod("assign", "已写入 " + yl_key + "：" + yl_value + "。对象档案已更新。");
+        });
+
+        yl_methodGroups.addEventListener("click", function (yl_event) {
+            var yl_button = yl_event.target.closest("[data-action]");
+
+            if (yl_button && yl_methodGroups.contains(yl_button)) {
+                yl_runMethod(yl_button.dataset.action);
+            }
+        });
+
+        document.getElementById("yl_reset").addEventListener("click", function () {
+            yl_explorer = Object.create({ species: "森林精灵" });
+            Object.assign(yl_explorer, yl_initialExplorer);
+            yl_renderObject();
+            yl_showMethod("reset", "档案已还原，重新变成可编辑状态。");
+        });
+
+        yl_renderObject();
+    </script>
+</body>
+</html>

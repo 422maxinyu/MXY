@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 姓名：马欣宇；日期：2026-11-05；功能名称：ECharts 数据集与极坐标图表 -->
+    <meta name="description" content="课堂实践 18-4：使用本地 ECharts 绘制德国与法国收入折线图和极坐标曲线">
+    <title>18-4 · ECharts 图表实践</title>
+    <style>
+        :root {
+            --yl_ink: #202a3a;
+            --yl_muted: #687789;
+            --yl_paper: #f3f6fa;
+            --yl_card: #fff;
+            --yl_border: #e1e8f0;
+            --yl_blue: #5470c6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 44px 20px 60px;
+            background:
+                radial-gradient(circle at 92% 3%, #e7eefb, transparent 30rem),
+                var(--yl_paper);
+            color: var(--yl_ink);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .yl_page {
+            width: min(1120px, 100%);
+            margin: 0 auto;
+        }
+
+        .yl_kicker {
+            margin: 0 0 10px;
+            color: var(--yl_blue);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -0.04em;
+        }
+
+        .yl_intro {
+            max-width: 800px;
+            margin: 14px 0 24px;
+            color: var(--yl_muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .yl_chart-card {
+            margin-top: 18px;
+            padding: 16px 18px 12px;
+            border: 1px solid var(--yl_border);
+            border-radius: 18px;
+            background: var(--yl_card);
+            box-shadow: 0 16px 42px rgb(31 56 85 / 7%);
+        }
+
+        .yl_chart-heading {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 2px 4px 0;
+        }
+
+        .yl_chart-heading h2 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .yl_chart-heading p {
+            margin: 0;
+            color: var(--yl_muted);
+            font-size: 12px;
+        }
+
+        .yl_chart {
+            width: 100%;
+            height: 440px;
+        }
+
+        .yl_chart.yl_polar-chart {
+            height: 500px;
+        }
+
+        .yl_alert {
+            margin: 14px 0;
+            padding: 12px 15px;
+            border: 1px solid #efb9b9;
+            border-radius: 10px;
+            background: #fff0f0;
+            color: #962e2e;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .yl_note {
+            margin: 17px 2px 0;
+            color: var(--yl_muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 30px 13px 42px;
+            }
+
+            .yl_chart-card {
+                padding: 12px 7px 8px;
+                border-radius: 14px;
+            }
+
+            .yl_chart-heading {
+                display: block;
+                padding: 2px 8px 0;
+            }
+
+            .yl_chart-heading p {
+                margin-top: 5px;
+            }
+
+            .yl_chart {
+                height: 370px;
+            }
+
+            .yl_chart.yl_polar-chart {
+                height: 410px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="yl_page">
+        <p class="yl_kicker">CLASSROOM PRACTICE · 18-4 / ECHARTS</p>
+        <h1>数据与极坐标可视化</h1>
+        <p class="yl_intro">通过 ECharts dataset 与数据转换绘制德国、法国的收入趋势，并使用极坐标系绘制周期曲线。图表库和示例数据均保存在项目本地，页面可直接离线打开。</p>
+        <div class="yl_alert" id="yl_chart-error" role="alert" hidden></div>
+
+        <section class="yl_chart-card" aria-labelledby="yl_income-heading">
+            <div class="yl_chart-heading">
+                <h2 id="yl_income-heading">数据集过滤 · 多系列折线图</h2>
+                <p>从原始数据中过滤 1950 年后的 Germany 与 France</p>
+            </div>
+            <div class="yl_chart" id="yl_income-chart" role="img" aria-label="1950 年以来德国和法国收入变化折线图"></div>
+        </section>
+
+        <section class="yl_chart-card" aria-labelledby="yl_polar-heading">
+            <div class="yl_chart-heading">
+                <h2 id="yl_polar-heading">极坐标 · 双数值轴</h2>
+                <p>角度与半径均使用数值轴</p>
+            </div>
+            <div class="yl_chart yl_polar-chart" id="yl_polar-chart" role="img" aria-label="展示周期花瓣曲线的 ECharts 极坐标图"></div>
+        </section>
+
+        <p class="yl_note">收入图使用 ECharts 示例中的生活水平数据（1950–2015 年 Germany、France 子集）；极坐标图根据 r = sin(2t) × cos(2t) 生成。缩放窗口时两张图会自动调整尺寸。</p>
+    </main>
+    <script src="./cdn/echarts/echarts.min.js"></script>
+    <script src="./data/life-expectancy-table.js"></script>
+    <script>
+        const yl_errorBox = document.getElementById("yl_chart-error");
+
+        function yl_showError(yl_message) {
+            yl_errorBox.hidden = false;
+            yl_errorBox.textContent = yl_message;
+        }
+
+        if (!window.echarts) {
+            yl_showError("图表库加载失败。请确认 cdn/echarts/echarts.min.js 文件存在后重新打开页面。");
+            throw new Error("ECharts local script failed to load.");
+        }
+
+        if (!Array.isArray(window.yl_lifeExpectancyTable) || window.yl_lifeExpectancyTable.length < 2) {
+            yl_showError("示例数据加载失败。请确认 data/life-expectancy-table.js 文件存在且内容有效。");
+            throw new Error("The local ECharts sample dataset is unavailable.");
+        }
+
+        const yl_incomeChart = window.echarts.init(document.getElementById("yl_income-chart"));
+        const yl_polarChart = window.echarts.init(document.getElementById("yl_polar-chart"));
+
+        const yl_incomeOption = {
+            dataset: [
+                {
+                    id: "dataset_raw",
+                    source: window.yl_lifeExpectancyTable
+                },
+                {
+                    id: "dataset_since_1950_of_germany",
+                    fromDatasetId: "dataset_raw",
+                    transform: {
+                        type: "filter",
+                        config: {
+                            and: [
+                                { dimension: "Year", gte: 1950 },
+                                { dimension: "Country", "=": "Germany" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: "dataset_since_1950_of_france",
+                    fromDatasetId: "dataset_raw",
+                    transform: {
+                        type: "filter",
+                        config: {
+                            and: [
+                                { dimension: "Year", gte: 1950 },
+                                { dimension: "Country", "=": "France" }
+                            ]
+                        }
+                    }
+                }
+            ],
+            title: {
+                text: "Income of Germany and France since 1950",
+                left: "center",
+                top: 16
+            },
+            tooltip: {
+                trigger: "axis"
+            },
+            grid: {
+                top: 82,
+                left: 72,
+                right: 28,
+                bottom: 42
+            },
+            xAxis: {
+                type: "category",
+                nameLocation: "middle",
+                axisLabel: {
+                    hideOverlap: true
+                }
+            },
+            yAxis: {
+                name: "Income"
+            },
+            series: [
+                {
+                    name: "Germany",
+                    type: "line",
+                    datasetId: "dataset_since_1950_of_germany",
+                    showSymbol: false,
+                    encode: {
+                        x: "Year",
+                        y: "Income",
+                        itemName: "Year",
+                        tooltip: ["Income"]
+                    }
+                },
+                {
+                    name: "France",
+                    type: "line",
+                    datasetId: "dataset_since_1950_of_france",
+                    showSymbol: false,
+                    encode: {
+                        x: "Year",
+                        y: "Income",
+                        itemName: "Year",
+                        tooltip: ["Income"]
+                    }
+                }
+            ]
+        };
+
+        const yl_polarData = [];
+        for (let yl_index = 0; yl_index <= 360; yl_index += 1) {
+            const yl_angle = (yl_index / 180) * Math.PI;
+            const yl_radius = Math.sin(2 * yl_angle) * Math.cos(2 * yl_angle);
+            yl_polarData.push([yl_radius, yl_index]);
+        }
+
+        const yl_polarOption = {
+            title: {
+                text: "Two Value-Axes in Polar",
+                left: "center",
+                top: 16
+            },
+            legend: {
+                data: ["line"],
+                bottom: 10
+            },
+            polar: {
+                center: ["50%", "54%"],
+                radius: "76%"
+            },
+            tooltip: {
+                trigger: "axis",
+                axisPointer: {
+                    type: "cross"
+                }
+            },
+            angleAxis: {
+                type: "value",
+                startAngle: 0
+            },
+            radiusAxis: {
+                min: 0
+            },
+            series: [
+                {
+                    coordinateSystem: "polar",
+                    name: "line",
+                    type: "line",
+                    showSymbol: false,
+                    data: yl_polarData
+                }
+            ],
+            animationDuration: 2000
+        };
+
+        yl_incomeChart.setOption(yl_incomeOption);
+        yl_polarChart.setOption(yl_polarOption);
+
+        window.addEventListener("resize", () => {
+            yl_incomeChart.resize();
+            yl_polarChart.resize();
+        });
+    </script>
+</body>
+</html>

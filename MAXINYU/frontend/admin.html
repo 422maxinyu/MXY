@@ -1,0 +1,102 @@
+<!-- 姓名：马欣宇 | 学号：24001010422 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10141e">
+  <title>后台实体管理 · 小米商城 · 马欣宇</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+  <canvas class="ma_background" aria-hidden="true"></canvas>
+
+  <main class="ma_admin-main">
+    <header class="ma_admin-topbar">
+      <a class="ma_brand" href="./index.html" aria-label="返回项目首页">
+        <span class="ma_brand-mark">MY</span>
+        <span>小米商城</span>
+      </a>
+      <nav class="ma_admin-nav" aria-label="后台导航">
+        <a class="is-active" href="./admin.html">实体管理</a>
+        <a href="./dashboard.html">图表仪表盘</a>
+        <a href="./ai-lab.html">大模型实验室</a>
+        <a href="./index.html">返回首页</a>
+      </nav>
+    </header>
+
+    <section class="ma_admin-head">
+      <div>
+        <p class="ma_eyebrow">ADMIN CONSOLE</p>
+        <h1>后台实体管理<span class="ma_auth-dot">.</span></h1>
+        <p>
+          三个实体（商品、订单、用户）均支持新增、修改、删除、关键词搜索与分页浏览，
+          点击任意一行右侧的「详情」可进入详情页。
+        </p>
+      </div>
+      <div class="ma_kt-row" aria-label="本页覆盖的考点">
+        <span class="ma_kt-tag">KT3 表单校验</span>
+        <span class="ma_kt-tag">KT20 Canvas</span>
+        <span class="ma_kt-tag">KT25 接口与本地存储</span>
+      </div>
+    </section>
+
+    <div class="ma_tabs" id="ma_tabs" role="tablist" aria-label="实体切换">
+      <button class="ma_tab is-active" type="button" role="tab" data-ma-entity="products">商品管理<small>products</small></button>
+      <button class="ma_tab" type="button" role="tab" data-ma-entity="orders">订单管理<small>orders</small></button>
+      <button class="ma_tab" type="button" role="tab" data-ma-entity="users">用户管理<small>users</small></button>
+    </div>
+
+    <div class="ma_toolbar">
+      <form class="ma_search-form" id="ma_search-form" role="search">
+        <input
+          class="ma_search-input"
+          id="ma_search-input"
+          type="search"
+          placeholder="搜索任意字段，如：手机 / 已完成 / 马欣宇"
+          aria-label="搜索关键词"
+        >
+        <button class="ma_btn" type="submit">搜索</button>
+        <button class="ma_btn ma_btn--ghost" type="button" id="ma_search-reset">重置</button>
+      </form>
+      <button class="ma_btn ma_btn--primary" id="ma_add" type="button">+ 新增商品</button>
+    </div>
+
+    <section class="ma_panel" aria-label="数据列表">
+      <div class="ma_table-wrap">
+        <table class="ma_table">
+          <thead id="ma_table-head"></thead>
+          <tbody id="ma_table-body"></tbody>
+        </table>
+      </div>
+      <div class="ma_pager">
+        <span class="ma_pager-info" id="ma_pager-info">正在加载…</span>
+        <div class="ma_pager-buttons" id="ma_pager-buttons"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- KT3 考点：新增 / 编辑共用同一个弹窗表单，带自定义校验 -->
+  <div class="ma_modal" id="ma_modal" hidden>
+    <div class="ma_modal-card" role="dialog" aria-modal="true" aria-labelledby="ma_modal-title">
+      <h2 id="ma_modal-title">新增商品</h2>
+      <p id="ma_modal-desc">带 * 的字段为必填项，失焦与提交时都会校验。</p>
+      <form id="ma_form" novalidate>
+        <div class="ma_form-grid" id="ma_form-grid"></div>
+        <p class="ma_form-error" id="ma_form-error" role="alert"></p>
+        <div class="ma_form-actions">
+          <button class="ma_btn" type="button" id="ma_form-cancel">取消</button>
+          <button class="ma_btn ma_btn--primary" type="submit" id="ma_form-submit">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="ma_toast" id="ma_toast" hidden role="status"></div>
+
+  <script src="./js/mock-db.js" defer></script>
+  <script src="./js/app.js" defer></script>
+  <script src="./js/admin.js" defer></script>
+</body>
+</html>
